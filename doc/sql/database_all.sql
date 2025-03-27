@@ -1,5 +1,0 @@
--- TABLAK
-
---TRIGGEREK
-
---ADATOK
