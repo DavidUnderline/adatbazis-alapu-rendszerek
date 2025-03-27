@@ -91,7 +91,6 @@ CREATE TABLE allaskereso (
 
 -------------------- allaslehetoseg tabla
 
-
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE allaslehetoseg CASCADE CONSTRAINTS PURGE';
 EXCEPTION
@@ -103,23 +102,21 @@ END;
 /
 
 CREATE TABLE allaslehetoseg (
-   id            INT
-      GENERATED ALWAYS AS IDENTITY
-   PRIMARY KEY NOT NULL,
+   id            INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
    cim           VARCHAR(255),
    leiras        VARCHAR2(255),
    kovetelmenyek VARCHAR2(255),
    mikor         DATE,
    ber           NUMBER,
-   is_accapted   boolean,
+   is_accepted   boolean,
    terulet_id    NUMBER,
-   ceg_id        NUMBER,
-   kulcsszo_id   NUMBER,
-   kategoria_id  NUMBER,
+   ceg_adoazonosito        NUMBER,
+   kulcsszo_neve   VARCHAR2(255),
+   kategoria_neve  VARCHAR2(255),
    CONSTRAINT foreign_key_teruletek FOREIGN KEY ( terulet_id ) REFERENCES terulet ( id ),
-   CONSTRAINT foreign_key_ceg FOREIGN KEY ( ceg_id ) REFERENCES ceg ( adoazonosito )--,
-   --CONSTRAINT foreign_key_kulcsszo FOREIGN KEY ( kulcsszo_id ) REFERENCES kulcsszo ( id ),
-   --CONSTRAINT foreign_key_kategoria FOREIGN KEY ( kategoria_id_id ) REFERENCES kategoria ( id )
+   CONSTRAINT foreign_key_ceg_allaslehetoseg FOREIGN KEY ( ceg_adoazonosito ) REFERENCES ceg ( adoazonosito )--,
+   --CONSTRAINT foreign_key_kulcsszo FOREIGN KEY ( kulcsszo_neve ) REFERENCES kulcsszo ( id ),
+   --CONSTRAINT foreign_key_kategoria FOREIGN KEY ( kategoria_neve ) REFERENCES kategoria ( id )
 )
 
 ---------------------------------------- TRIGGEREK ----------------------------------------
@@ -197,7 +194,7 @@ VALUES
     'password123', 
     TO_DATE('2023-01-01', 'YYYY-MM-DD'), 
     'Bachelor', 
-    TRUE, 
+    1, 
     1 
   ),
   ( 'jane.smith@example.com', 
@@ -205,7 +202,7 @@ VALUES
     'securepass', 
     TO_DATE('2023-02-15', 'YYYY-MM-DD'), 
     'Master', 
-    FALSE, 
+    0, 
     2 
   ),
   ( 'alice.wonderland@example.com', 
@@ -213,7 +210,7 @@ VALUES
     'alice2023', 
     TO_DATE('2023-03-10', 'YYYY-MM-DD'), 
     'PhD', 
-    TRUE, 
+    1, 
     3 
   ),
   ( 'bob.builder@example.com', 
@@ -221,7 +218,7 @@ VALUES
     'buildit', 
     TO_DATE('2023-04-20', 'YYYY-MM-DD'), 
     'Diploma', 
-    FALSE, 
+    0, 
     4 
   ),
   ( 'charlie.brown@example.com', 
@@ -229,34 +226,33 @@ VALUES
     'charlie123', 
     TO_DATE('2023-05-05', 'YYYY-MM-DD'), 
     'High School', 
-    TRUE, 
+    1, 
     5 
   );
 
 ---------- Pelda rekordok allaslehetoseg tabla
 
-  
 INSERT INTO allaslehetoseg (
    cim,
    leiras,
    kovetelmenyek,
    mikor,
    ber,
-   is_accapted,
+   is_accepted,
    terulet_id,
-   ceg_id,
-   kulcsszo_id,
-   kategoria_id
-) VALUES ( "Heggesztés",
-           "Óriási Munkalehetőség Heggesztő úraknak és hölgyeknek egyaránt.",
-           "Tudjá' heggeszeni.",
+   ceg_adoazonosito,
+   kulcsszo_neve,
+   kategoria_neve
+) VALUES ( 'Heggesztés',
+           'Óriási Munkalehetőség Heggesztő úraknak és hölgyeknek egyaránt.',
+           'Tudjá heggeszeni.',
            sysdate,
            500000,
-           TRUE,
+           1,
            1,
            35903957804,
-           1,
-           1 );
+           '1',
+           '1' );
 
 INSERT INTO allaslehetoseg (
    cim,
@@ -264,21 +260,21 @@ INSERT INTO allaslehetoseg (
    kovetelmenyek,
    mikor,
    ber,
-   is_accapted,
+   is_accepted,
    terulet_id,
-   ceg_id,
-   kulcsszo_id,
-   kategoria_id
+   ceg_adoazonosito,
+   kulcsszo_neve,
+   kategoria_neve
 ) VALUES ( 'Villanyszerelés',
            'Kiváló lehetőség tapasztalt villanyszerelők számára.',
            'Villanyszerelői végzettség és tapasztalat.',
            sysdate,
            450000,
-           TRUE,
+           1,
            2,
            13907287593,
-           2,
-           2 );
+           '2',
+           '2' );
 
 
 INSERT INTO allaslehetoseg (
@@ -287,21 +283,21 @@ INSERT INTO allaslehetoseg (
    kovetelmenyek,
    mikor,
    ber,
-   is_accapted,
+   is_accepted,
    terulet_id,
-   ceg_id,
-   kulcsszo_id,
-   kategoria_id
+   ceg_adoazonosito,
+   kulcsszo_neve,
+   kategoria_neve
 ) VALUES ( 'Programozás',
            'Junior programozói pozíció kezdőknek.',
            'Alapvető programozási ismeretek.',
            sysdate,
            600000,
-           FALSE,
+           0,
            3,
            13478097449,
-           3,
-           3 );
+           '3',
+           '3' );
 
 
 INSERT INTO allaslehetoseg (
@@ -310,21 +306,21 @@ INSERT INTO allaslehetoseg (
    kovetelmenyek,
    mikor,
    ber,
-   is_accapted,
+   is_accepted,
    terulet_id,
-   ceg_id,
-   kulcsszo_id,
-   kategoria_id
+   ceg_adoazonosito,
+   kulcsszo_neve,
+   kategoria_neve
 ) VALUES ( 'Építésvezetés',
            'Építkezési projektek vezetésére keresünk szakembert.',
            'Építészmérnöki diploma és vezetői tapasztalat.',
            sysdate,
            700000,
-           TRUE,
+           1,
            4,
            40560285869,
-           4,
-           4 );
+           '4',
+           '4' );
 
 
 INSERT INTO allaslehetoseg (
@@ -333,18 +329,18 @@ INSERT INTO allaslehetoseg (
    kovetelmenyek,
    mikor,
    ber,
-   is_accapted,
+   is_accepted,
    terulet_id,
-   ceg_id,
-   kulcsszo_id,
-   kategoria_id
+   ceg_adoazonosito,
+   kulcsszo_neve,
+   kategoria_neve
 ) VALUES ( 'Grafikai tervezés',
            'Kreatív grafikusokat keresünk hosszú távra.',
            'Grafikai szoftverek ismerete és kreativitás.',
            sysdate,
            550000,
-           FALSE,
+           0,
            5,
            79613553671,
-           5,
-           5 );
+           '5',
+           '5' );
