@@ -119,6 +119,92 @@ CREATE TABLE allaslehetoseg (
    --CONSTRAINT foreign_key_kategoria FOREIGN KEY ( kategoria_neve ) REFERENCES kategoria ( id )
 )
 
+-------------------- cv tabla
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE cv CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE cv(
+  cv_link VARCHAR2(255) PRIMARY KEY NOT NULL
+)
+
+-------------------- kategoria tabla
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE kategoria CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE kategoria (
+   neve VARCHAR2(255) PRIMARY KEY NOT NULL
+)
+
+-------------------- kulcsszo tabla
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE kulcsszo CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE kulcsszo(
+  neve VARCHAR2(255) PRIMARY KEY NOT NULL
+)
+
+-------------------- moderator tabla
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE moderator CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE moderator(
+  email VARCHAR2(255) PRIMARY KEY NOT NULL,
+  neve VARCHAR2(255) NOT NULL,
+  jelszo VARCHAR2(255) not NULL
+)
+
+-------------------- jelentkezo tabla
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE jelentkezo CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE jelentkezo(
+  allaskereso_email VARCHAR(255) NOT NULL,
+  allaslehetoseg_id NUMBER NOT NULL,
+
+  CONSTRAINT foreign_key_allaskereso FOREIGN KEY ( allaskereso_email ) REFERENCES allaskereso(email),
+  CONSTRAINT foreign_key_allaslehetoseg FOREIGN KEY ( allaslehetoseg_id ) REFERENCES allaslehetoseg(id)
+)
+
 ---------------------------------------- TRIGGEREK ----------------------------------------
 
 BEGIN
@@ -344,3 +430,43 @@ INSERT INTO allaslehetoseg (
            79613553671,
            '5',
            '5' );
+
+---------- Pelda cv allaslehetoseg tabla
+
+INSERT INTO cv (cv_link) VALUES ('http://example.com/cv1');
+INSERT INTO cv (cv_link) VALUES ('http://example.com/cv2');
+INSERT INTO cv (cv_link) VALUES ('http://example.com/cv3');
+INSERT INTO cv (cv_link) VALUES ('http://example.com/cv4');
+INSERT INTO cv (cv_link) VALUES ('http://example.com/cv5');
+
+---------- Pelda kategoria allaslehetoseg tabla
+
+INSERT INTO kategoria (neve) VALUES ('Hegesztés kategoria');
+INSERT INTO kategoria (neve) VALUES ('Gépészet kategoria');
+INSERT INTO kategoria (neve) VALUES ('Informatika kategoria');
+INSERT INTO kategoria (neve) VALUES ('Művészet kategoria');
+INSERT INTO kategoria (neve) VALUES ('Üzlet kategoria');
+
+---------- Pelda kulcsszo allaslehetoseg tabla
+
+INSERT INTO kulcsszo (neve) VALUES ('Hegesztés kulcsszo');
+INSERT INTO kulcsszo (neve) VALUES ('Gépészet kulcsszo');
+INSERT INTO kulcsszo (neve) VALUES ('Programozás kulcsszo');
+INSERT INTO kulcsszo (neve) VALUES ('Művészet kulcsszo');
+INSERT INTO kulcsszo (neve) VALUES ('Üzlet kulcsszo');
+
+---------- Pelda moderator allaslehetoseg tabla
+
+INSERT INTO moderator VALUES ('examolemoderator1@moderator.com', 'mod_1', 'kiscica1');
+INSERT INTO moderator VALUES ('examolemoderator2@moderator.com', 'mod_2', 'kiscica2');
+INSERT INTO moderator VALUES ('examolemoderator3@moderator.com', 'mod_3', 'kiscica3');
+INSERT INTO moderator VALUES ('examolemoderator4@moderator.com', 'mod_4', 'kiscica4');
+INSERT INTO moderator VALUES ('examolemoderator5@moderator.com', 'mod_5', 'kiscica5');
+
+---------- Pelda jelentkezo allaslehetoseg tabla
+
+INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( 'john.doe@example.com', 1);
+INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( 'jane.smith@example.com', 2);
+INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( 'alice.wonderland@example.com', 3);
+INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( 'bob.builder@example.com', 4);
+INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( 'charlie.brown@example.com', 5);

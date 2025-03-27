@@ -1,17 +1,13 @@
 BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE cv';
+    EXECUTE IMMEDIATE 'DROP TABLE cv CASCADE CONSTRAINTS PURGE';
 EXCEPTION
-  WHEN OTHERS THEN
-    NULL;
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
 END;
 /
 
 CREATE TABLE cv(
   cv_link VARCHAR2(255) PRIMARY KEY NOT NULL
 )
-
-INSERT INTO cv (cv_link) VALUES ('http://example.com/cv1');
-INSERT INTO cv (cv_link) VALUES ('http://example.com/cv2');
-INSERT INTO cv (cv_link) VALUES ('http://example.com/cv3');
-INSERT INTO cv (cv_link) VALUES ('http://example.com/cv4');
-INSERT INTO cv (cv_link) VALUES ('http://example.com/cv5');
