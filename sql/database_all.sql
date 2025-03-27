@@ -66,6 +66,61 @@ CREATE TABLE cegertekeles(
     -- CONSTRAINT foreign_key_allaskereso FOREIGN KEY (allaskereso_id) REFERENCES allaskereso(id)
 )
 
+-------------------- allaskereso tabla
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE allaskereso CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE allaskereso (
+   email                VARCHAR(255) PRIMARY KEY NOT NULL,
+   neve                 VARCHAR(255),
+   jelszo               VARCHAR(255),
+   utolso_bejelentkezes DATE,
+   vegzettseg           VARCHAR(255),
+   statusz              boolean,
+   cv_id                INT--,
+   --CONSTRAINT foreign_key_cv FOREIGN KEY ( cv_id ) REFERENCES cv ( cv_link )
+);
+
+-------------------- allaslehetoseg tabla
+
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE allaslehetoseg CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE allaslehetoseg (
+   id            INT
+      GENERATED ALWAYS AS IDENTITY
+   PRIMARY KEY NOT NULL,
+   cim           VARCHAR(255),
+   leiras        VARCHAR2(255),
+   kovetelmenyek VARCHAR2(255),
+   mikor         DATE,
+   ber           NUMBER,
+   is_accapted   boolean,
+   terulet_id    NUMBER,
+   ceg_id        NUMBER,
+   kulcsszo_id   NUMBER,
+   kategoria_id  NUMBER,
+   CONSTRAINT foreign_key_teruletek FOREIGN KEY ( terulet_id ) REFERENCES terulet ( id ),
+   CONSTRAINT foreign_key_ceg FOREIGN KEY ( ceg_id ) REFERENCES ceg ( adoazonosito )--,
+   --CONSTRAINT foreign_key_kulcsszo FOREIGN KEY ( kulcsszo_id ) REFERENCES kulcsszo ( id ),
+   --CONSTRAINT foreign_key_kategoria FOREIGN KEY ( kategoria_id_id ) REFERENCES kategoria ( id )
+)
 
 ---------------------------------------- TRIGGEREK ----------------------------------------
 
@@ -124,3 +179,172 @@ INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES (D
 INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES (DEFAULT, 13478097449, NULL);
 INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES (DEFAULT, 40560285869, NULL);
 INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES ( DEFAULT, 79613553671, NULL);
+
+---------- Pelda rekordok allaskereso tabla
+
+INSERT INTO allaskereso (
+  email,
+  neve,
+  jelszo,
+  utolso_bejelentkezes,
+  vegzettseg,
+  statusz,
+  cv_id
+) 
+VALUES 
+  ( 'john.doe@example.com', 
+    'John Doe', 
+    'password123', 
+    TO_DATE('2023-01-01', 'YYYY-MM-DD'), 
+    'Bachelor', 
+    TRUE, 
+    1 
+  ),
+  ( 'jane.smith@example.com', 
+    'Jane Smith', 
+    'securepass', 
+    TO_DATE('2023-02-15', 'YYYY-MM-DD'), 
+    'Master', 
+    FALSE, 
+    2 
+  ),
+  ( 'alice.wonderland@example.com', 
+    'Alice Wonderland', 
+    'alice2023', 
+    TO_DATE('2023-03-10', 'YYYY-MM-DD'), 
+    'PhD', 
+    TRUE, 
+    3 
+  ),
+  ( 'bob.builder@example.com', 
+    'Bob Builder', 
+    'buildit', 
+    TO_DATE('2023-04-20', 'YYYY-MM-DD'), 
+    'Diploma', 
+    FALSE, 
+    4 
+  ),
+  ( 'charlie.brown@example.com', 
+    'Charlie Brown', 
+    'charlie123', 
+    TO_DATE('2023-05-05', 'YYYY-MM-DD'), 
+    'High School', 
+    TRUE, 
+    5 
+  );
+
+---------- Pelda rekordok allaslehetoseg tabla
+
+  
+INSERT INTO allaslehetoseg (
+   cim,
+   leiras,
+   kovetelmenyek,
+   mikor,
+   ber,
+   is_accapted,
+   terulet_id,
+   ceg_id,
+   kulcsszo_id,
+   kategoria_id
+) VALUES ( "Heggesztés",
+           "Óriási Munkalehetőség Heggesztő úraknak és hölgyeknek egyaránt.",
+           "Tudjá' heggeszeni.",
+           sysdate,
+           500000,
+           TRUE,
+           1,
+           35903957804,
+           1,
+           1 );
+
+INSERT INTO allaslehetoseg (
+   cim,
+   leiras,
+   kovetelmenyek,
+   mikor,
+   ber,
+   is_accapted,
+   terulet_id,
+   ceg_id,
+   kulcsszo_id,
+   kategoria_id
+) VALUES ( 'Villanyszerelés',
+           'Kiváló lehetőség tapasztalt villanyszerelők számára.',
+           'Villanyszerelői végzettség és tapasztalat.',
+           sysdate,
+           450000,
+           TRUE,
+           2,
+           13907287593,
+           2,
+           2 );
+
+
+INSERT INTO allaslehetoseg (
+   cim,
+   leiras,
+   kovetelmenyek,
+   mikor,
+   ber,
+   is_accapted,
+   terulet_id,
+   ceg_id,
+   kulcsszo_id,
+   kategoria_id
+) VALUES ( 'Programozás',
+           'Junior programozói pozíció kezdőknek.',
+           'Alapvető programozási ismeretek.',
+           sysdate,
+           600000,
+           FALSE,
+           3,
+           13478097449,
+           3,
+           3 );
+
+
+INSERT INTO allaslehetoseg (
+   cim,
+   leiras,
+   kovetelmenyek,
+   mikor,
+   ber,
+   is_accapted,
+   terulet_id,
+   ceg_id,
+   kulcsszo_id,
+   kategoria_id
+) VALUES ( 'Építésvezetés',
+           'Építkezési projektek vezetésére keresünk szakembert.',
+           'Építészmérnöki diploma és vezetői tapasztalat.',
+           sysdate,
+           700000,
+           TRUE,
+           4,
+           40560285869,
+           4,
+           4 );
+
+
+INSERT INTO allaslehetoseg (
+   cim,
+   leiras,
+   kovetelmenyek,
+   mikor,
+   ber,
+   is_accapted,
+   terulet_id,
+   ceg_id,
+   kulcsszo_id,
+   kategoria_id
+) VALUES ( 'Grafikai tervezés',
+           'Kreatív grafikusokat keresünk hosszú távra.',
+           'Grafikai szoftverek ismerete és kreativitás.',
+           sysdate,
+           550000,
+           FALSE,
+           5,
+           79613553671,
+           5,
+           5 );
