@@ -1,22 +1,20 @@
 BEGIN
-    -- Akármi más kód itt
     EXECUTE IMMEDIATE 'DROP TRIGGER update_ertekeles';
 EXCEPTION
     WHEN OTHERS THEN
-        NULL; -- Ha nem létezik a trigger, akkor nem történik semmi
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
 END;
 /
 
-CREATE or REPLACE TRIGGER update_ertekeles
-AFTER INSERT ON cegertekeles
-FOR EACH ROW
+CREATE OR REPLACE TRIGGER update_ertekeles
+AFTER INSERT OR UPDATE OR DELETE ON cegertekeles
+DECLARE
 BEGIN
+    -- Frissíti a ceg táblát a beszúrt értékelések átlagával
     UPDATE ceg
-    SET ertekeles = (
-        SELECT AVG(ertekeles)
-        FROM cegertekeles
-        WHERE  ceg_adoazonosito = :NEW.ceg_adoazonosito
-    )
-    WHERE adoazonosito = :NEW.ceg_adoazonosito;
+    SET ertekeles = (SELECT NVL(AVG(ertekeles), 0) FROM cegertekeles WHERE ceg_adoazonosito = ceg.adoazonosito)
+    WHERE adoazonosito IN (SELECT DISTINCT ceg_adoazonosito FROM cegertekeles);
 END;
 /
