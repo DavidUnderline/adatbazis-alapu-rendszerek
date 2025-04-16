@@ -7,9 +7,9 @@ INSERT INTO allaslehetoseg (
    ber,
    is_accapted,
    terulet_id,
-   ceg_id,
-   kulcsszo_id,
-   kategoria_id
+   ceg_adoazonosito,
+   kulcsszo_neve,
+   kategoria_neve
 ) VALUES ( "Heggesztés",
            "Óriási Munkalehetőség Heggesztő úraknak és hölgyeknek egyaránt.",
            "Tudjá' heggeszeni.",
@@ -29,9 +29,9 @@ INSERT INTO allaslehetoseg (
    ber,
    is_accapted,
    terulet_id,
-   ceg_id,
-   kulcsszo_id,
-   kategoria_id
+   ceg_adoazonosito,
+   kulcsszo_neve,
+   kategoria_neve
 ) VALUES ( 'Villanyszerelés',
            'Kiváló lehetőség tapasztalt villanyszerelők számára.',
            'Villanyszerelői végzettség és tapasztalat.',
@@ -52,9 +52,9 @@ INSERT INTO allaslehetoseg (
    ber,
    is_accapted,
    terulet_id,
-   ceg_id,
-   kulcsszo_id,
-   kategoria_id
+   ceg_adoazonosito,
+   kulcsszo_neve,
+   kategoria_neve
 ) VALUES ( 'Programozás',
            'Junior programozói pozíció kezdőknek.',
            'Alapvető programozási ismeretek.',
@@ -75,9 +75,9 @@ INSERT INTO allaslehetoseg (
    ber,
    is_accapted,
    terulet_id,
-   ceg_id,
-   kulcsszo_id,
-   kategoria_id
+   ceg_adoazonosito,
+   kulcsszo_neve,
+   kategoria_neve
 ) VALUES ( 'Építésvezetés',
            'Építkezési projektek vezetésére keresünk szakembert.',
            'Építészmérnöki diploma és vezetői tapasztalat.',
@@ -98,9 +98,9 @@ INSERT INTO allaslehetoseg (
    ber,
    is_accapted,
    terulet_id,
-   ceg_id,
-   kulcsszo_id,
-   kategoria_id
+   ceg_adoazonosito,
+   kulcsszo_neve,
+   kategoria_neve
 ) VALUES ( 'Grafikai tervezés',
            'Kreatív grafikusokat keresünk hosszú távra.',
            'Grafikai szoftverek ismerete és kreativitás.',

@@ -12,4 +12,4 @@ CREATE TABLE terulet(
     orszag  VARCHAR2(255),
     megye VARCHAR2(255),
     varos VARCHAR2(255)
-)
+);
