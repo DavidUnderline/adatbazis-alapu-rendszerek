@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-white-500: #fafaff;
+  --color-dark_blue-500: #2b2d42;
+  --color-yellow-500: #ffa630;
+  --color-dark-gray-500: #353839;
+  --color-dark_red-500: #a30b37;
+  --color-light_blue-500: #4381c1;
+
+  --font-roboto: Roboto;
+}
+/*! Angular 19.x.x és Tailwind 4.x.x alatt nem működik >:( */
+/* .important { 
+  @apply text-red-800;
+} */
+
+@layer components {
+  html, body { height: 100%; }
+  body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+}
+

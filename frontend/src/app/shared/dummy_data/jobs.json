@@ -1,0 +1,62 @@
+[
+  {
+    "cim": "Frontend Fejlesztő",
+    "leiras": "Modern webalkalmazások fejlesztése Angular és React keretrendszerek segítségével, amelyek felhasználóbarát felületeket és interaktív élményt nyújtanak. A munkakör magában foglalja a legújabb technológiák alkalmazását és a kreatív megoldások kidolgozását.",
+    "kovetelmenyek": "Angular 2+ tapasztalat, TypeScript ismeret, HTML5, CSS3",
+    "mikor": "2023-06-15",
+    "ber": 800000,
+    "is_accepted": true,
+    "terulet_id": 5,
+    "ceg_adoazonosito": "12345678-2-41",
+    "kulcsszo_neve": "angular frontend typescript",
+    "kategoria_neve": "IT"
+  },
+  {
+    "cim": "Backend Fejlesztő",
+    "leiras": "Skálázható és megbízható backend rendszerek fejlesztése Node.js alapokon, amelyek hatékonyan támogatják a modern webes és mobilalkalmazásokat. A feladatkör része a REST API-k tervezése és implementálása, valamint az adatbázisok optimalizálása.",
+    "kovetelmenyek": "Node.js, Express, MongoDB, REST API tervezés",
+    "mikor": "2023-07-01",
+    "ber": 850000,
+    "is_accepted": false,
+    "terulet_id": 5,
+    "ceg_adoazonosito": "87654321-1-11",
+    "kulcsszo_neve": "nodejs backend mongodb",
+    "kategoria_neve": "IT"
+  },
+  {
+    "cim": "Marketing Manager",
+    "leiras": "Innovatív digitális marketing stratégiák kidolgozása és megvalósítása, amelyek növelik a vállalat online jelenlétét és elérhetőségét. A pozíció magában foglalja a PPC kampányok kezelését, SEO optimalizálást és a közösségi média platformok hatékony használatát.",
+    "kovetelmenyek": "5+ év marketing tapasztalat, PPC, SEO, Social Media ismeret",
+    "mikor": "2023-05-20",
+    "ber": 700000,
+    "is_accepted": true,
+    "terulet_id": 3,
+    "ceg_adoazonosito": "11223344-5-01",
+    "kulcsszo_neve": "marketing digital ppc",
+    "kategoria_neve": "Marketing"
+  },
+  {
+    "cim": "Pénzügyi Elemző",
+    "leiras": "Részletes vállalati pénzügyi elemzések készítése, amelyek támogatják a stratégiai döntéshozatalt és a pénzügyi teljesítmény optimalizálását. A munkakör magában foglalja a pénzügyi adatok elemzését, jelentések készítését és a trendek azonosítását.",
+    "kovetelmenyek": "Könyvvizsgálói végzettség, Excel haladó ismeret, 3+ év tapasztalat",
+    "mikor": "2023-08-10",
+    "ber": 750000,
+    "is_accepted": false,
+    "terulet_id": 2,
+    "ceg_adoazonosito": "55667788-9-31",
+    "kulcsszo_neve": "pénzügy elemzés könyvvizsgálat",
+    "kategoria_neve": "Pénzügy"
+  },
+  {
+    "cim": "HR Szakember",
+    "leiras": "Toborzási és kiválasztási folyamatok irányítása, valamint az alkalmazotti kapcsolatok fejlesztése a vállalati kultúra erősítése érdekében. A pozíció magában foglalja a tehetségek felkutatását, interjúk lebonyolítását és a munkavállalói elégedettség növelését célzó programok kidolgozását.",
+    "kovetelmenyek": "HR diploma, 2+ év tapasztalat, kiváló kommunikációs készség",
+    "mikor": "2023-09-05",
+    "ber": 650000,
+    "is_accepted": true,
+    "terulet_id": 1,
+    "ceg_adoazonosito": "99887766-4-21",
+    "kulcsszo_neve": "hr toborzás munkaerő",
+    "kategoria_neve": "HR"
+  }
+]

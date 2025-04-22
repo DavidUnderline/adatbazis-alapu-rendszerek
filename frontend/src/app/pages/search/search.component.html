@@ -1,0 +1,63 @@
+<div
+  class="bg-white-500 dark:bg-dark_blue-500 flex flex-col justify-between p-56 pt-32 w-full gap-32"
+>
+  <app-search-form (valid_filter)="filter_works($event)" />
+  <div
+    class="flex flex-col gap-5 bg-dark_blue-500 dark:bg-dark-gray-500 p-10 rounded-2xl"
+  >
+    @if (!is_searched) {
+    <h1 class="text-3xl mx-auto text-dark_blue-500 dark:text-white-500 peer">
+      Vajon hol szeretnél dolgozni? 🤔
+    </h1>
+    }@else if (is_searched && filtered_work_offers.length == 0) {
+    <h1 class="text-3xl mx-auto text-dark_blue-500 dark:text-white-500 peer">
+      Sajnos nem találtunk neked munkát. . . 😔
+    </h1>
+    } @else{ @for (work of filtered_work_offers; track $index) {
+    <div
+      class="bg-white-500 rounded-2xl p-5 grid grid-cols-12 gap-4 justify-center align-middle"
+    >
+      <img
+        src="assets/images/logos/asus_logo.svg"
+        alt="ide jon a kep"
+        class="float-left w-[7rem] col-span-1"
+      />
+      <div class="col-span-11 flex flex-col">
+        <div class="">
+          <h1 class="font-medium text-3xl text-dark_blue-500">
+            {{ work.cim }}
+            <span
+              class="font-medium outline-2 outline-dark_blue-500 p-1.5 text-xs rounded-2xl"
+              >{{ work.kulcsszo_neve }}</span
+            ><!--TODO Szét kell szedni-->
+          </h1>
+          <h2 class="text-dark_blue-500 font-medium text-2xl">
+            {{
+              work.terulet_id === 5
+                ? "Szeged"
+                : work.terulet_id === 3
+                ? "Budapest"
+                : "Ismeretlen"
+            }}
+            <!--TODO Pipeot írni ehez a szépséghez-->
+          </h2>
+          <h3 class="text-dark_red-500 font-medium">
+            {{ "Br. " + work.ber + " Ft" }}
+          </h3>
+        </div>
+      </div>
+      <p class="text-dark_blue-500 font-medium text-justify col-span-8">
+        {{ work.leiras }}
+      </p>
+      <div class="col-span-4 flex justify-end align-middle ">
+        <button
+          (click)="navigate(work)"
+          class="bg-dark_red-500 text-white-500 font-medium text-xl rounded-xl cursor-pointer p-5 pl-20 pr-20 "
+        >
+          Érdekel
+        </button>
+      </div>
+    </div>
+    } }
+  </div>
+</div>

@@ -1,0 +1,48 @@
+<form class="flex gap-14 w-full" [formGroup]="work_filter" (ngSubmit)="Submit()">
+  <fieldset
+    class="w-full text-white-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
+  >
+    <input
+      type="text"
+      placeholder="Kulcsszó vagy cég neve"
+      class="h-[1lh] outline-none pl-8 text-medium focus:outline-0 peer text-white-500 w-full"
+      minlength="2"
+      formControlName="form_keyword_company"
+    />
+    <mat-icon class="absolute left-1 top-[1lh] transform -translate-y-1/2">
+      work
+    </mat-icon>
+  </fieldset>
+
+  <fieldset
+    class="w-full text-white-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
+  >
+    <input
+      type="text"
+      placeholder="Város vagy település neve"
+      class="w-full h-[1lh] outline-none pl-8 text-medium focus:outline-0 peer text-white-500"
+      minlength="2"
+      formControlName="form_location"
+    />
+    <mat-icon class="absolute left-1 top-[1lh] transform -translate-y-1/2">
+      location_city
+    </mat-icon>
+  </fieldset>
+
+  <div class="flex justify-center align-middle gap-7 text-white-500">
+    <button
+      type="submit"
+      class="bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl cursor-pointer flex justify-center gap-1.5"
+      >
+      <mat-icon>search</mat-icon>
+      Keresés
+    </button>
+    <button
+      type="button"
+      class="bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl cursor-pointer flex justify-center gap-1.5"
+    >
+      <mat-icon class="">filter_list</mat-icon>
+      Szűrés
+    </button>
+  </div>
+</form>
