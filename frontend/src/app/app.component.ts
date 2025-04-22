@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavBarComponent } from "./shared/nav-bar/nav-bar.component";
 import { FooterComponent } from './shared/footer/footer.component';
+import { LoginService } from './services/login.service';
 
 @Component({
   selector: 'app-root',
@@ -11,5 +12,5 @@ import { FooterComponent } from './shared/footer/footer.component';
 })
 export class AppComponent {
   title = 'adatbazisalapu-allaskereso-project';
-  isLogged : boolean = false;
+
 }

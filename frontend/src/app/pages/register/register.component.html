@@ -4,6 +4,10 @@
   <div class="bg-white-500 p-5 rounded-2xl w-[40%] flex flex-col align-middle justify-center">
     <h1 class="text-dark_blue-500 font-medium m-auto text-2xl pb-10">Regisztráció</h1>
 
-    <app-register-form (valid_register)="register_user($event)"></app-register-form>
+    @if (isCompany.getIsCompany()) {
+      <app-ceg-form (valid_register)="register_user($event)"></app-ceg-form>
+    }@else {
+      <app-allaskereso-form (valid_register)="register_user($event)"></app-allaskereso-form>
+    }
   </div>
 </div>
