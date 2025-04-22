@@ -45,10 +45,10 @@ CREATE TABLE ceg(
     CONSTRAINT foreign_key_terulet FOREIGN KEY (terulet_id) REFERENCES terulet(id)
 );
 
--------------------- cegertekeles tabla
+-------------------- cv tabla
 
 BEGIN
-    EXECUTE IMMEDIATE 'DROP TABLE cegertekeles CASCADE CONSTRAINTS PURGE';
+    EXECUTE IMMEDIATE 'DROP TABLE cv CASCADE CONSTRAINTS PURGE';
 EXCEPTION
     WHEN OTHERS THEN
         -- Ha a tabla nem letezik semmi nincs
@@ -57,13 +57,8 @@ EXCEPTION
 END;
 /
 
-CREATE TABLE cegertekeles(
-    id  INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-    ertekeles   NUMBER(1,0) DEFAULT 0,
-    ceg_adoazonosito  NUMBER,
-    allaskereso_id  NUMBER,
-    CONSTRAINT foreign_key_ceg FOREIGN KEY (ceg_adoazonosito) REFERENCES ceg(adoazonosito) ON DELETE CASCADE-- ,
-    -- CONSTRAINT foreign_key_allaskereso FOREIGN KEY (allaskereso_id) REFERENCES allaskereso(id)
+CREATE TABLE cv(
+  cv_link VARCHAR2(255) PRIMARY KEY NOT NULL
 );
 
 -------------------- allaskereso tabla
@@ -85,14 +80,14 @@ CREATE TABLE allaskereso (
    utolso_bejelentkezes DATE,
    vegzettseg           VARCHAR(255),
    statusz              boolean,
-   cv_id                INT--,
-   --CONSTRAINT foreign_key_cv FOREIGN KEY ( cv_id ) REFERENCES cv ( cv_link )
+   cv_link                VARCHAR2(255),
+   CONSTRAINT foreign_key_cv FOREIGN KEY ( cv_link ) REFERENCES cv ( cv_link )
 );
 
--------------------- allaslehetoseg tabla
+-------------------- cegertekeles tabla
 
 BEGIN
-    EXECUTE IMMEDIATE 'DROP TABLE allaslehetoseg CASCADE CONSTRAINTS PURGE';
+    EXECUTE IMMEDIATE 'DROP TABLE cegertekeles CASCADE CONSTRAINTS PURGE';
 EXCEPTION
     WHEN OTHERS THEN
         -- Ha a tabla nem letezik semmi nincs
@@ -101,39 +96,15 @@ EXCEPTION
 END;
 /
 
-CREATE TABLE allaslehetoseg (
-   id            INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-   cim           VARCHAR(255),
-   leiras        VARCHAR2(255),
-   kovetelmenyek VARCHAR2(255),
-   mikor         DATE,
-   ber           NUMBER,
-   is_accepted   boolean,
-   terulet_id    NUMBER,
-   ceg_adoazonosito        NUMBER,
-   kulcsszo_neve   VARCHAR2(255),
-   kategoria_neve  VARCHAR2(255),
-   CONSTRAINT foreign_key_teruletek FOREIGN KEY ( terulet_id ) REFERENCES terulet ( id ),
-   CONSTRAINT foreign_key_ceg_allaslehetoseg FOREIGN KEY ( ceg_adoazonosito ) REFERENCES ceg ( adoazonosito )--,
-   --CONSTRAINT foreign_key_kulcsszo FOREIGN KEY ( kulcsszo_neve ) REFERENCES kulcsszo ( id ),
-   --CONSTRAINT foreign_key_kategoria FOREIGN KEY ( kategoria_neve ) REFERENCES kategoria ( id )
+CREATE TABLE cegertekeles(
+    id  INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
+    ertekeles   NUMBER(1,0) DEFAULT 0,
+    ceg_adoazonosito  NUMBER,
+    allaskereso_email  VARCHAR(255),
+    CONSTRAINT foreign_key_ceg FOREIGN KEY (ceg_adoazonosito) REFERENCES ceg(adoazonosito) ON DELETE CASCADE ,
+    CONSTRAINT foreign_key_allaskereso FOREIGN KEY (allaskereso_email) REFERENCES allaskereso(email)
 );
 
--------------------- cv tabla
-
-BEGIN
-    EXECUTE IMMEDIATE 'DROP TABLE cv CASCADE CONSTRAINTS PURGE';
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
-        NULL;
-END;
-/
-
-CREATE TABLE cv(
-  cv_link VARCHAR2(255) PRIMARY KEY NOT NULL
-);
 
 -------------------- kategoria tabla
 
@@ -165,6 +136,36 @@ END;
 
 CREATE TABLE kulcsszo(
   neve VARCHAR2(255) PRIMARY KEY NOT NULL
+);
+
+-------------------- allaslehetoseg tabla
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE allaslehetoseg CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE allaslehetoseg (
+   id            INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
+   cim           VARCHAR(255),
+   leiras        VARCHAR2(255),
+   kovetelmenyek VARCHAR2(255),
+   mikor         DATE,
+   ber           NUMBER,
+   is_accepted   boolean,
+   terulet_id    NUMBER,
+   ceg_adoazonosito        NUMBER,
+   kulcsszo_neve   VARCHAR2(255),
+   kategoria_neve  VARCHAR2(255),
+   CONSTRAINT foreign_key_teruletek FOREIGN KEY ( terulet_id ) REFERENCES terulet ( id ),
+   CONSTRAINT foreign_key_ceg_allaslehetoseg FOREIGN KEY ( ceg_adoazonosito ) REFERENCES ceg ( adoazonosito ),
+   CONSTRAINT foreign_key_kulcsszo FOREIGN KEY ( kulcsszo_neve ) REFERENCES kulcsszo ( neve ),
+   CONSTRAINT foreign_key_kategoria FOREIGN KEY ( kategoria_neve ) REFERENCES kategoria ( neve )
 );
 
 -------------------- moderator tabla
@@ -201,7 +202,7 @@ CREATE TABLE jelentkezo(
   allaskereso_email VARCHAR(255) NOT NULL,
   allaslehetoseg_id NUMBER NOT NULL,
 
-  CONSTRAINT foreign_key_allaskereso FOREIGN KEY ( allaskereso_email ) REFERENCES allaskereso(email),
+  CONSTRAINT foreign_key_allaskereso_jelentkezo FOREIGN KEY ( allaskereso_email ) REFERENCES allaskereso(email),
   CONSTRAINT foreign_key_allaslehetoseg FOREIGN KEY ( allaslehetoseg_id ) REFERENCES allaslehetoseg(id)
 );
 
@@ -232,241 +233,90 @@ END;
 
 ---------- Pelda rekordok terulet tabla
 
-INSERT INTO terulet (orszag, megye, varos) VALUES ('Magyarország', 'Pest', 'Budapest');
-INSERT INTO terulet (orszag, megye, varos) VALUES ('Magyarország', 'Fejér', 'Székesfehérvár');
-INSERT INTO terulet (orszag, megye, varos) VALUES ('Magyarország', 'Veszprém', 'Veszprém');
-INSERT INTO terulet (orszag, megye, varos) VALUES ('Magyarország', 'Somogy', 'Kaposvár');
-INSERT INTO terulet (orszag, megye, varos) VALUES ('Magyarország', 'Borsod-Abaúj-Zemplén', 'Miskolc');
+INSERT INTO terulet (orszag, megye, varos) VALUES 
+('Magyarország', 'Pest', 'Budapest'),
+('Magyarország', 'Fejér', 'Székesfehérvár'),
+('Magyarország', 'Veszprém', 'Veszprém'),
+('Magyarország', 'Somogy', 'Kaposvár'),
+('Magyarország', 'Borsod-Abaúj-Zemplén', 'Miskolc');
 
 ---------- Pelda rekordok ceg tabla
 
-INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles, terulet_id) 
-VALUES (35903957804, 'Cég A', 'cega@email.com', 'jelszo123', NULL, NULL);
-
-INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles, terulet_id) 
-VALUES (13907287593, 'Cég B', 'cegb@email.com', 'jelszo456', NULL, NULL);
-
-INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles, terulet_id) 
-VALUES (13478097449, 'Cég C', 'cegc@email.com', 'jelszo789', NULL, NULL);
-
-INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles, terulet_id) 
-VALUES (40560285869, 'Cég D', 'cegd@email.com', 'jelszo012', NULL, NULL);
-
-INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles, terulet_id) 
-VALUES (79613553671, 'Cég E', 'cege@email.com', 'jelszo345', NULL, NULL);
-
----------- Pelda rekordok cegertekeles tabla
-
-INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES (DEFAULT, 35903957804, NULL);
-INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES (DEFAULT, 13907287593, NULL);
-INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES (DEFAULT, 13478097449, NULL);
-INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES (DEFAULT, 40560285869, NULL);
-INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES ( DEFAULT, 79613553671, NULL);
-
----------- Pelda rekordok allaskereso tabla
-
-INSERT INTO allaskereso (
-  email,
-  neve,
-  jelszo,
-  utolso_bejelentkezes,
-  vegzettseg,
-  statusz,
-  cv_id
-)
-VALUES 
-  ( 'john.doe@example.com', 
-    'John Doe', 
-    'password123', 
-    TO_DATE('2023-01-01', 'YYYY-MM-DD'), 
-    'Bachelor', 
-    1, 
-    1 
-  ),
-  ( 'jane.smith@example.com', 
-    'Jane Smith', 
-    'securepass', 
-    TO_DATE('2023-02-15', 'YYYY-MM-DD'), 
-    'Master', 
-    0, 
-    2 
-  ),
-  ( 'alice.wonderland@example.com', 
-    'Alice Wonderland', 
-    'alice2023', 
-    TO_DATE('2023-03-10', 'YYYY-MM-DD'), 
-    'PhD', 
-    1, 
-    3 
-  ),
-  ( 'bob.builder@example.com', 
-    'Bob Builder', 
-    'buildit', 
-    TO_DATE('2023-04-20', 'YYYY-MM-DD'), 
-    'Diploma', 
-    0, 
-    4 
-  ),
-  ( 'charlie.brown@example.com', 
-    'Charlie Brown', 
-    'charlie123', 
-    TO_DATE('2023-05-05', 'YYYY-MM-DD'), 
-    'High School', 
-    1, 
-    5 
-  );
-
----------- Pelda rekordok allaslehetoseg tabla
-
-INSERT INTO allaslehetoseg (
-   cim,
-   leiras,
-   kovetelmenyek,
-   mikor,
-   ber,
-   is_accepted,
-   terulet_id,
-   ceg_adoazonosito,
-   kulcsszo_neve,
-   kategoria_neve
-) VALUES ( 'Heggesztés',
-           'Óriási Munkalehetőség Heggesztő úraknak és hölgyeknek egyaránt.',
-           'Tudjá heggeszeni.',
-           sysdate,
-           500000,
-           1,
-           1,
-           35903957804,
-           '1',
-           '1' );
-
-INSERT INTO allaslehetoseg (
-   cim,
-   leiras,
-   kovetelmenyek,
-   mikor,
-   ber,
-   is_accepted,
-   terulet_id,
-   ceg_adoazonosito,
-   kulcsszo_neve,
-   kategoria_neve
-) VALUES ( 'Villanyszerelés',
-           'Kiváló lehetőség tapasztalt villanyszerelők számára.',
-           'Villanyszerelői végzettség és tapasztalat.',
-           sysdate,
-           450000,
-           1,
-           2,
-           13907287593,
-           '2',
-           '2' );
-
-
-INSERT INTO allaslehetoseg (
-   cim,
-   leiras,
-   kovetelmenyek,
-   mikor,
-   ber,
-   is_accepted,
-   terulet_id,
-   ceg_adoazonosito,
-   kulcsszo_neve,
-   kategoria_neve
-) VALUES ( 'Programozás',
-           'Junior programozói pozíció kezdőknek.',
-           'Alapvető programozási ismeretek.',
-           sysdate,
-           600000,
-           0,
-           3,
-           13478097449,
-           '3',
-           '3' );
-
-
-INSERT INTO allaslehetoseg (
-   cim,
-   leiras,
-   kovetelmenyek,
-   mikor,
-   ber,
-   is_accepted,
-   terulet_id,
-   ceg_adoazonosito,
-   kulcsszo_neve,
-   kategoria_neve
-) VALUES ( 'Építésvezetés',
-           'Építkezési projektek vezetésére keresünk szakembert.',
-           'Építészmérnöki diploma és vezetői tapasztalat.',
-           sysdate,
-           700000,
-           1,
-           4,
-           40560285869,
-           '4',
-           '4' );
-
-
-INSERT INTO allaslehetoseg (
-   cim,
-   leiras,
-   kovetelmenyek,
-   mikor,
-   ber,
-   is_accepted,
-   terulet_id,
-   ceg_adoazonosito,
-   kulcsszo_neve,
-   kategoria_neve
-) VALUES ( 'Grafikai tervezés',
-           'Kreatív grafikusokat keresünk hosszú távra.',
-           'Grafikai szoftverek ismerete és kreativitás.',
-           sysdate,
-           550000,
-           0,
-           5,
-           79613553671,
-           '5',
-           '5' );
+INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles, terulet_id) VALUES
+(35903957804, 'Cég A', 'cega@email.com', 'jelszo123', NULL, NULL), 
+(13907287593, 'Cég B', 'cegb@email.com', 'jelszo456', NULL, NULL),
+(13478097449, 'Cég C', 'cegc@email.com', 'jelszo789', NULL, NULL),
+(40560285869, 'Cég D', 'cegd@email.com', 'jelszo012', NULL, NULL),
+(79613553671, 'Cég E', 'cege@email.com', 'jelszo345', NULL, NULL);
 
 ---------- Pelda cv allaslehetoseg tabla
 
-INSERT INTO cv (cv_link) VALUES ('http://example.com/cv1');
-INSERT INTO cv (cv_link) VALUES ('http://example.com/cv2');
-INSERT INTO cv (cv_link) VALUES ('http://example.com/cv3');
-INSERT INTO cv (cv_link) VALUES ('http://example.com/cv4');
-INSERT INTO cv (cv_link) VALUES ('http://example.com/cv5');
+INSERT INTO cv (cv_link) VALUES
+('http://example.com/cv1'),
+('http://example.com/cv2'),
+('http://example.com/cv3'),
+('http://example.com/cv4'),
+('http://example.com/cv5');
+
+---------- Pelda rekordok allaskereso tabla
+
+INSERT INTO allaskereso (email, neve, jelszo, utolso_bejelentkezes, vegzettseg, statusz, cv_link)VALUES 
+('john.doe@example.com', 'John Doe', 'password123', TO_DATE('2023-01-01', 'YYYY-MM-DD'), 'Bachelor', 1, 'http://example.com/cv1'),
+('jane.smith@example.com', 'Jane Smith', 'securepass', TO_DATE('2023-02-15', 'YYYY-MM-DD'), 'Master', 0, 'http://example.com/cv2'),
+('alice.wonderland@example.com', 'Alice Wonderland', 'alice2023', TO_DATE('2023-03-10', 'YYYY-MM-DD'), 'PhD', 1, 'http://example.com/cv3'),
+('bob.builder@example.com', 'Bob Builder', 'buildit', TO_DATE('2023-04-20', 'YYYY-MM-DD'), 'Diploma', 0, 'http://example.com/cv4'),
+('charlie.brown@example.com', 'Charlie Brown', 'charlie123', TO_DATE('2023-05-05', 'YYYY-MM-DD'), 'High School', 1, 'http://example.com/cv5');
+
+---------- Pelda rekordok cegertekeles tabla
+
+INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_email) VALUES
+(DEFAULT, 35903957804, 'john.doe@example.com'),
+(DEFAULT, 13907287593, 'jane.smith@example.com'),
+(DEFAULT, 13478097449, 'alice.wonderland@example.com'),
+(DEFAULT, 40560285869, 'bob.builder@example.com'),
+(DEFAULT, 79613553671, 'charlie.brown@example.com');
 
 ---------- Pelda kategoria allaslehetoseg tabla
 
-INSERT INTO kategoria (neve) VALUES ('Hegesztés kategoria');
-INSERT INTO kategoria (neve) VALUES ('Gépészet kategoria');
-INSERT INTO kategoria (neve) VALUES ('Informatika kategoria');
-INSERT INTO kategoria (neve) VALUES ('Művészet kategoria');
-INSERT INTO kategoria (neve) VALUES ('Üzlet kategoria');
+INSERT INTO kategoria (neve) VALUES
+('Hegesztés kategoria'),
+('Gépészet kategoria'),
+('Informatika kategoria'),
+('Művészet kategoria'),
+('Üzlet kategoria');
 
 ---------- Pelda kulcsszo allaslehetoseg tabla
 
-INSERT INTO kulcsszo (neve) VALUES ('Hegesztés kulcsszo');
-INSERT INTO kulcsszo (neve) VALUES ('Gépészet kulcsszo');
-INSERT INTO kulcsszo (neve) VALUES ('Programozás kulcsszo');
-INSERT INTO kulcsszo (neve) VALUES ('Művészet kulcsszo');
-INSERT INTO kulcsszo (neve) VALUES ('Üzlet kulcsszo');
+INSERT INTO kulcsszo (neve) VALUES
+('Hegesztés kulcsszo'),
+('Gépészet kulcsszo'),
+('Programozás kulcsszo'),
+('Művészet kulcsszo'),
+('Üzlet kulcsszo');
+
+---------- Pelda rekordok allaslehetoseg tabla
+
+INSERT INTO allaslehetoseg (cim, leiras, kovetelmenyek, mikor, ber, is_accepted, terulet_id, ceg_adoazonosito, kulcsszo_neve, kategoria_neve) VALUES
+('Heggesztés', 'Óriási Munkalehetőség Heggesztő úraknak és hölgyeknek egyaránt.', 'Tudjá heggeszeni.', sysdate, 500000, 1, 1, 35903957804, 'Hegesztés kulcsszo', 'Hegesztés kategoria'),
+('Villanyszerelés', 'Kiváló lehetőség tapasztalt villanyszerelők számára.', 'Villanyszerelői végzettség és tapasztalat.', sysdate, 450000, 1, 2, 13907287593, 'Gépészet kulcsszo', 'Gépészet kategoria'),
+('Programozás', 'Junior programozói pozíció kezdőknek.', 'Alapvető programozási ismeretek.', sysdate, 600000, 0, 3, 13478097449, 'Programozás kulcsszo', 'Informatika kategoria'),
+('Építésvezetés', 'Építkezési projektek vezetésére keresünk szakembert.', 'Építészmérnöki diploma és vezetői tapasztalat.', sysdate, 700000, 1, 4, 40560285869, 'Üzlet kulcsszo', 'Üzlet kategoria'),
+('Grafikai tervezés', 'Kreatív grafikusokat keresünk hosszú távra.', 'Grafikai szoftverek ismerete és kreativitás.', sysdate, 550000, 0, 5, 79613553671, 'Művészet kulcsszo', 'Művészet kategoria');
 
 ---------- Pelda moderator allaslehetoseg tabla
 
-INSERT INTO moderator VALUES ('examolemoderator1@moderator.com', 'mod_1', 'kiscica1');
-INSERT INTO moderator VALUES ('examolemoderator2@moderator.com', 'mod_2', 'kiscica2');
-INSERT INTO moderator VALUES ('examolemoderator3@moderator.com', 'mod_3', 'kiscica3');
-INSERT INTO moderator VALUES ('examolemoderator4@moderator.com', 'mod_4', 'kiscica4');
-INSERT INTO moderator VALUES ('examolemoderator5@moderator.com', 'mod_5', 'kiscica5');
+INSERT INTO moderator VALUES
+('examolemoderator1@moderator.com', 'mod_1', 'kiscica1'),
+('examolemoderator2@moderator.com', 'mod_2', 'kiscica2'),
+('examolemoderator3@moderator.com', 'mod_3', 'kiscica3'),
+('examolemoderator4@moderator.com', 'mod_4', 'kiscica4'),
+('examolemoderator5@moderator.com', 'mod_5', 'kiscica5');
 
 ---------- Pelda jelentkezo allaslehetoseg tabla
 
-INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( 'john.doe@example.com', 1);
-INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( 'jane.smith@example.com', 2);
-INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( 'alice.wonderland@example.com', 3);
-INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( 'bob.builder@example.com', 4);
-INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( 'charlie.brown@example.com', 5);
+INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES
+('john.doe@example.com', 1),
+('jane.smith@example.com', 2),
+('alice.wonderland@example.com', 3),
+('bob.builder@example.com', 4),
+('charlie.brown@example.com', 5);
