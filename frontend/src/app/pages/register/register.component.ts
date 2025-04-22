@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 export class RegisterComponent {
   isCompany = inject(IsCompanyService)
   router = inject(Router);
-  valid_register!: Allaskereso;
+  valid_register!: Allaskereso | Ceg;
 
   register_user(user: Allaskereso | Ceg) {
     if ('vegzettseg' in user) {

@@ -9,6 +9,8 @@ export const routes: Routes = [
   { path:'work-details', loadComponent: () => import("./pages/work-details/work-details.component").then(c => c.WorkDetailsComponent), title: title + "Információ"},
   { path:'register', loadComponent: () => import("./pages/register/register.component").then( c => c.RegisterComponent)},
   { path: 'login', loadComponent: ()=> import("./pages/login/login.component").then(c => c.LoginComponent), title: title + " | Login"},
+  { path: 'publish', loadComponent: () => import("./pages/publish/publish.component").then( c => c.PublishComponent), title: title + " | Hírdetés"},
+  { path: 'profile', loadComponent: () => import("./pages/profile/profile.component").then( c => c.ProfileComponent), title: title + " | Profil"},
 
   { path: '**', component: HeroComponent, title: title + ' | Welcome'}
 ];
