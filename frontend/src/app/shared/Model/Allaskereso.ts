@@ -4,5 +4,5 @@ export type Allaskereso = {
   nev: string,
   utolso_bejelentkezes: Date,
   vegzettseg: string,
-  statusz: "online" | "passzív" | "inaktív",
+  statusz: "online" | "passziv" | "inaktiv",
 }

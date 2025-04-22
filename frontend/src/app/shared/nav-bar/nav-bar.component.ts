@@ -1,5 +1,7 @@
 import { NgIf } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { LoginService } from '../../services/login.service';
+import { IsCompanyService } from '../../services/is-company.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -8,5 +10,12 @@ import { Component, Input } from '@angular/core';
   styleUrl: './nav-bar.component.css',
 })
 export class NavBarComponent {
-  @Input() isLogged: boolean = false;
+  isLogged = inject(LoginService);
+  isCompany = inject( IsCompanyService)
+
+  flip_isCompany(){
+    console.log(this.isCompany.getIsCompany());
+    this.isCompany.setIsCompany(!this.isCompany.getIsCompany())
+    console.log(this.isCompany.getIsCompany());
+  }
 }

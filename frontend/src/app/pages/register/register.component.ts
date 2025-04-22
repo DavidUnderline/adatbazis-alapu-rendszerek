@@ -1,27 +1,36 @@
-import { Component } from '@angular/core';
-import { RegisterFormComponent } from './register-form/register-form.component';
+import { Component, inject } from '@angular/core';
 import { Allaskereso } from '../../shared/Model/Allaskereso';
 import users from '../../shared/dummy_data/users.json';
+import { Ceg } from '../../shared/Model/Ceg';
+import { AllaskeresoFormComponent } from './allaskereso-form/allaskereso-form.component';
+import { CegFormComponent } from './ceg-form/ceg-form.component';
+import { IsCompanyService } from '../../services/is-company.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
-  imports: [RegisterFormComponent],
+  imports: [AllaskeresoFormComponent, CegFormComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
 export class RegisterComponent {
+  isCompany = inject(IsCompanyService)
+  router = inject(Router);
   valid_register!: Allaskereso;
 
-  register_user(user: Allaskereso) {
+  register_user(user: Allaskereso | Ceg) {
+    if ('vegzettseg' in user) {
+      console.log('[LOG]: User is of type Allaskereso');
+    } else if ('adoazonosito' in user) {
+      console.log('[LOG]: User is of type Ceg');
+    } else {
+      console.log('[LOG]: Unknown user type');
+    }
+
+    console.table(user)
+
     let temp = users;
 
-    temp.forEach((_user) => {
-      if (
-        (<Allaskereso>_user).nev !== user.nev &&
-        (<Allaskereso>_user).email !== user.email
-      ) {
-        users.push(user);
-      }
-    });
+    this.router.navigateByUrl("/login");
   }
 }
