@@ -1,26 +1,69 @@
-/*
-A fő szerver fájl, amely inicializálja az Express szervert,
-betölti a middleware-eket, route-okat,
-és a 8080-as porton indítja a szervert (az RF1 jegyzet alapján).
-*/
 const express = require('express');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const jobRoutes = require('./routes/route-jobs');
-
 const app = express();
+const port = 3000;
 
-// Middleware
-app.use(cors({ origin: 'http://localhost:4200' })); // Angular front-end támogatása
-app.use(express.json()); // JSON kérések kezelése
-app.use(cookieParser()); // Cookie-k kezelése JWT-hez
-app.use(express.urlencoded({ extended: true })); // URL-encoded form adatok kezelése
+app.use(cors());
+app.use(express.json());
+// app.use(cookieParser()); // Cookie-k kezelése JWT-hez
+// app.use(express.urlencoded({ extended: true })); // URL-encoded form adatok kezelése
+
+app.listen(port, () => {
+    console.log(`Server listening on port ${port} - asd`);
+});
+
+const oracledb = require('oracledb');
+const dbConfig = {
+    user: "pepssoo",
+    password: "123",
+    connectString: "localhost/FREEPDB1",
+};
+
+async function executeQuery(sql, params = []) {
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        const result = await connection.execute(sql, params, {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+            autoCommit: true
+        });
+        return result.rows;
+
+    } catch (err) {
+        console.error(err);
+        throw err;
+        
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+}
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const sql = "SELECT * FROM allaskereso WHERE email = :email AND jelszo = :password";
+        const params = [email, password];
+        const user = await executeQuery(sql, params);
+         if (user && user.length > 0) {
+              res.json({ success: true, email: user[0].USERNAME });
+         } else {
+               res.status(401).json({ success: false, message: 'Invalid credentials' });
+         }
+
+    } catch (error) {
+          res.status(500).json({ success: false, message: 'Login failed', error: error.message });
+    }
+});
+
+// module.exports = { getConnection };
 
 // Routes
-app.use('/api/jobs', jobRoutes);
-
-// Szerver indítása
-const PORT = 8080;
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+// app.use('/api/jobs', jobRoutes);')
