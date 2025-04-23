@@ -11,7 +11,7 @@ import { Allas } from '../../../shared/Model/Allas';
 })
 export class SearchFormComponent {
   @Output() valid_filter = new EventEmitter<Allas>();
-
+  @Output() show = new EventEmitter<boolean>();
   work_filter = new FormGroup({
     form_keyword_company: new FormControl<string | null>(''),
     form_location: new FormControl<string | null>(''),
@@ -56,5 +56,9 @@ export class SearchFormComponent {
       kulcsszo_neve: '',
       kategoria_neve: kulcsszo,
     });
+  }
+
+  showDialog(){
+    this.show.emit(true);
   }
 }

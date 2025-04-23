@@ -1,4 +1,4 @@
-<form class="flex gap-14 w-full" [formGroup]="work_filter" (ngSubmit)="Submit()">
+<form class="flex gap-14 w-full z-1" [formGroup]="work_filter" (ngSubmit)="Submit()">
   <fieldset
     class="w-full text-white-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
   >
@@ -40,6 +40,7 @@
     <button
       type="button"
       class="bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl cursor-pointer flex justify-center gap-1.5"
+      (click)="showDialog()"
     >
       <mat-icon class="">filter_list</mat-icon>
       Szűrés

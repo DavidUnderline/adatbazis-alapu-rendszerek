@@ -7,6 +7,12 @@ export class LoginService {
   private key = "is_logged";
 
   constructor() {
+    if (localStorage.getItem(this.key) === null) {
+      localStorage.setItem(this.key, JSON.stringify(false));
+    }
+  }
+
+  logOut(){
     localStorage.setItem(this.key, JSON.stringify(false));
   }
 
