@@ -24,18 +24,24 @@ import { inject } from '@angular/core';
 export class LoginComponent {
   constructor(private http: HttpClient, private router: Router){}
   
-  valid_login: { email: string; password: string } | null = null;
+  valid_login: { email: string; password: string;} | null = null;
 
   loginservice = inject(LoginService);
   companyservice = inject(IsCompanyService);
 
-  handle_login(login: { email: string; password: string }){
+  handle_login(login: { email: string; password: string; }) {
+    const log = {
+      email: login.email,
+      password: login.password,
+      tipo: this.companyservice.getIsCompany()
+    }
+    // login: { tipo: this.companyservice.getIsCompany() };
     // console.table(login);
     console.log("emittelt");
     // console.log(this.companyservice.getIsCompany());
 
     // const loginData = { email: login.email, password: login.password };
-    this.http.post<any>('http://localhost:3000/auth/api/login', login).subscribe(
+    this.http.post<any>('http://localhost:3000/auth/api/login', log).subscribe(
       response => {
           if (response.success) {
             this.loginservice.setLoginStatus(true);

@@ -13,14 +13,14 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 // Bejelentkezés
 router.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, tipo } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ error: 'Email és jelszó kötelező' });
     }
 
     try {
-        const allaskereso = await allaskeresoDao.getAllaskeresoByEmailWithPassword(email);
+        const allaskereso = await allaskeresoDao.user(email, tipo);
 
         if (!allaskereso) {
             return res.status(401).json({ error: 'Érvénytelen email vagy jelszó' });
