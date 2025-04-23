@@ -1,11 +1,51 @@
-const { getConnection } = require('../config/db');
+// const { executeQuery } = require('../config/index');
+
+const oracledb = require('oracledb');
+const dbConfig = {
+    user: "pepssoo",
+    password: "123",
+    connectString: "localhost/FREEPDB1",
+};
+
+async function executeQuery(sql, params = []) {
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        const result = await connection.execute(sql, params, {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+            autoCommit: true
+        });
+        return result.rows;
+        
+    } catch (err) {
+        console.error(err);
+        throw err;
+        
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+                
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+}
 
 class AllaskeresoDao {
+    // Álláskereső lekérdezése email alapján jelszóval (bejelentkezéshez)
+    async getAllaskeresoByEmailWithPassword(email) {
+        const query = `SELECT email, jelszo FROM allaskereso WHERE email = :email`;
+        const result = await executeQuery(query,[email]);
+        return result.length > 0 ? result[0] : null;
+    }
+
     // Új álláskereső regisztrálása
     async insertAllaskereso(allaskereso) {
         let connection;
         try {
-            connection = await getConnection();
+            // connection = await getConnection();
             const result = await connection.execute(
                 `INSERT INTO allaskereso (email, neve, jelszo, utolso_bejelentkezes, vegzettseg, statusz)
                  VALUES (:email, :neve, :jelszo, :utolsoBejelentkezes, :vegzettseg, :statusz)`,
@@ -32,7 +72,7 @@ class AllaskeresoDao {
     async addCvToAllaskereso(email, cvLink) {
         let connection;
         try {
-            connection = await getConnection();
+            // connection = await getConnection();
             const result = await connection.execute(
                 `INSERT INTO allaskereso_cv_kapcsolat (email, cv_link) VALUES (:email, :cvLink)`,
                 { email, cvLink },
@@ -51,7 +91,7 @@ class AllaskeresoDao {
     async getAllaskeresoByEmail(email, includePassword = false) {
         let connection;
         try {
-            connection = await getConnection();
+            // connection = await getConnection();
             const query = includePassword
                 ? `SELECT a.email, a.neve, a.jelszo, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
                           (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
@@ -69,29 +109,11 @@ class AllaskeresoDao {
         }
     }
 
-    // Álláskereső lekérdezése email alapján jelszóval (bejelentkezéshez)
-    async getAllaskeresoByEmailWithPassword(email) {
-        let connection;
-        try {
-            connection = await getConnection();
-            const result = await connection.execute(
-                `SELECT email, jelszo FROM allaskereso WHERE email = :email`,
-                { email }
-            );
-            return result.rows.length > 0 ? result.rows[0] : null;
-        } catch (err) {
-            console.error('Error fetching allaskereso with password:', err);
-            throw err;
-        } finally {
-            if (connection) await connection.close();
-        }
-    }
-
     // Összes álláskereső lekérdezése, CV-kkel együtt (jelszóval admin esetén)
     async getAllAllaskeresok() {
         let connection;
         try {
-            connection = await getConnection();
+            // connection = await getConnection();
             const result = await connection.execute(
                 `SELECT a.email, a.neve, a.jelszo, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
                         (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
@@ -110,7 +132,7 @@ class AllaskeresoDao {
     async updateLastLogin(email) {
         let connection;
         try {
-            connection = await getConnection();
+            // connection = await getConnection();
             const result = await connection.execute(
                 `UPDATE allaskereso SET utolso_bejelentkezes = SYSDATE WHERE email = :email`,
                 { email },
@@ -129,7 +151,7 @@ class AllaskeresoDao {
     async updatePassword(email, hashedPassword) {
         let connection;
         try {
-            connection = await getConnection();
+            // connection = await getConnection();
             const result = await connection.execute(
                 `UPDATE allaskereso SET jelszo = :hashedPassword WHERE email = :email`,
                 { hashedPassword, email },
@@ -148,7 +170,7 @@ class AllaskeresoDao {
     async deleteAllaskereso(email) {
         let connection;
         try {
-            connection = await getConnection();
+            // connection = await getConnection();
             const result = await connection.execute(
                 `DELETE FROM allaskereso WHERE email = :email`,
                 { email },
@@ -168,7 +190,7 @@ class AllaskeresoDao {
     async deleteCvFromAllaskereso(email, cvLink) {
         let connection;
         try {
-            connection = await getConnection();
+            // connection = await getConnection();
             const result = await connection.execute(
                 `DELETE FROM allaskereso_cv_kapcsolat WHERE email = :email AND cv_link = :cvLink`,
                 { email, cvLink },

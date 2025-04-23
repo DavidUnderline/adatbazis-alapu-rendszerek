@@ -10,6 +10,9 @@ import { sha256 } from 'js-sha256';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { LoginService } from '../../services/login.service';
+import { inject } from '@angular/core';
+
 
 @Component({
   selector: 'app-login',
@@ -22,19 +25,22 @@ export class LoginComponent {
   
   valid_login: { email: string; password: string } | null = null;
 
+  loginservice = inject(LoginService);
+
   handle_login(login: { email: string; password: string }){
+    // console.table(login);
     console.log("emittelt");
 
-    console.table(login);
     const loginData = { email: login.email, password: login.password };
-    this.http.post<any>('http://localhost:3000/login', loginData).subscribe(
+    this.http.post<any>('http://localhost:3000/auth/api/login', loginData).subscribe(
       response => {
           if (response.success) {
-            console.log("success");
-              // localStorage.setItem('username', response.username);
-              // this.router.navigate(['/app']);
+            this.loginservice.setLoginStatus(true);
+            localStorage.setItem('username', response.EMAIL);
+            this.router.navigate(['/app']);
+            
           } else {
-              console.log(response.message);
+              console.log("fail");
           }
       },
       error => {
