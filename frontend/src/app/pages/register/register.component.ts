@@ -54,7 +54,29 @@ export class RegisterComponent {
       );
 
     } else if ('adoazonosito' in user) {
-      console.log('[LOG]: User is of type Ceg');
+        const registerData = { 
+          id: user.adoazonosito, 
+          name: user.neve,
+          email: user.email,
+          password: user.jelszo
+        };
+
+        this.http.post<any>('http://localhost:3000/ceg/api/register', registerData).subscribe(
+          response => {
+              if (response.success) {
+                console.table(response);
+                // this.loginservice.setLoginStatus(true);
+                // localStorage.setItem('username', response.EMAIL);
+                // this.router.navigate(['/app']);
+                
+              } else {
+                  console.log("fail");
+              }
+          },
+          error => {
+              console.error(error);
+          }
+        );
     } else {
       console.log('[LOG]: Unknown user type');
     }
