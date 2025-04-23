@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Allaskereso } from '../../shared/Model/Allaskereso';
+import { Ceg } from '../../shared/Model/Ceg';
 
 @Component({
   selector: 'app-profile',
@@ -7,5 +9,12 @@ import { Component } from '@angular/core';
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent {
+  
+  user!: Allaskereso | Ceg
+
+  constructor(){
+     
+
+  }
 
 }

@@ -12,41 +12,44 @@ import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginService } from '../../services/login.service';
 import { inject } from '@angular/core';
-
+import { IsCompanyService } from '../../services/is-company.service';
 
 @Component({
   selector: 'app-login',
-  imports: [LoginFormComponent,HttpClientModule],
+  imports: [LoginFormComponent, HttpClientModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
-  constructor(private http: HttpClient, private router: Router){}
-  
+  constructor(private http: HttpClient, private router: Router) {}
+
   valid_login: { email: string; password: string } | null = null;
 
   loginservice = inject(LoginService);
+  companyService = inject(IsCompanyService);
 
-  handle_login(login: { email: string; password: string }){
+  handle_login(login: { email: string; password: string }) {
     // console.table(login);
-    console.log("emittelt");
+    console.log('emittelt');
 
     // const loginData = { email: login.email, password: login.password };
-    this.http.post<any>('http://localhost:3000/auth/api/login', login).subscribe(
-      response => {
+    this.http
+      .post<any>('http://localhost:3000/auth/api/login', login)
+      .subscribe(
+        (response) => {
           if (response.success) {
             this.loginservice.setLoginStatus(true);
+            this.companyService.setIsCompany(false);
             localStorage.setItem('username', response.EMAIL);
             this.router.navigate(['/app']);
-            
           } else {
-              console.log("fail");
+            console.log('fail');
           }
-      },
-      error => {
+        },
+        (error) => {
           console.error(error);
-      }
-    );
+        }
+      );
+
   }
 }
-
