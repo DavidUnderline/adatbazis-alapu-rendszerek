@@ -81,7 +81,7 @@ export class RegisterComponent {
       console.log('[LOG]: Unknown user type');
     }
 
-    console.table(user)
+    // console.table(user)
 
     let temp = users;
 

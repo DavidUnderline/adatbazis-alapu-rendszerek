@@ -11,7 +11,7 @@ router.post('/api/register', async (req, res) => {
             id: id,
             name: name,
             email: email,
-            password: password, // Jelszó hash-elése később szükséges (pl. bcrypt)
+            password: password,
         };
 
         const success = await cegDao.insertCeg(ceg);
