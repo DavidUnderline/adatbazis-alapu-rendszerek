@@ -1,1 +1,1 @@
-SELECT * FROM TERULET;
+SELECT * FROM allaskereso;

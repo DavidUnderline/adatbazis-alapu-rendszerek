@@ -39,7 +39,7 @@ export class AllaskeresoFormComponent {
 
       this.valid_register.emit(<Allaskereso>{
         email: form.email,
-        jelszo: sha256(form.jelszo1),
+        jelszo: sha256(sha256(form.jelszo1)),
         nev: `${form.kereszt_nev} ${form.vezetek_nev}`,
         utolso_bejelentkezes: new Date(),
         vegzettseg: form.vegzettseg,
