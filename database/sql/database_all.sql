@@ -42,7 +42,7 @@ CREATE TABLE ceg(
     jelszo  VARCHAR(255),
     ertekeles   FLOAT, -- Az itt megjeleno szam egy atlag lesz a ceg ertekeleseibol
     terulet_id  NUMBER,
-    CONSTRAINT foreign_key_terulet FOREIGN KEY (terulet_id) REFERENCES terulet(id)
+    CONSTRAINT foreign_key_terulet FOREIGN KEY (terulet_id) REFERENCES terulet(id) ON DELETE SET NULL--mert a cég létezhet terület nélkül
 );
 
 -------------------- cv tabla
@@ -79,9 +79,28 @@ CREATE TABLE allaskereso (
    jelszo               VARCHAR(255),
    utolso_bejelentkezes DATE,
    vegzettseg           VARCHAR(255),
-   statusz              boolean,
-   cv_link                VARCHAR2(255),
-   CONSTRAINT foreign_key_cv FOREIGN KEY ( cv_link ) REFERENCES cv ( cv_link )
+   statusz              boolean
+);
+
+-------------------- Allaskereso es CV kapcsolat tabla
+--Hogy egy allaskeresohoz tobb CV is tartozhasson. Ez a legkevesbe redundans megoldas
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE allaskereso_cv_kapcsolat CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE allaskereso_cv_kapcsolat (
+    email VARCHAR2(255),
+    cv_link VARCHAR2(255),
+    PRIMARY KEY (email, cv_link),
+    FOREIGN KEY (email) REFERENCES allaskereso(email) ON DELETE CASCADE,--Álláskereső törlésekor a CV-kapcsolatai is törlődjenek
+    FOREIGN KEY (cv_link) REFERENCES cv(cv_link) ON DELETE CASCADE --CV törlésekor a kapcsolatai is törlődjenek
 );
 
 -------------------- cegertekeles tabla
@@ -101,8 +120,8 @@ CREATE TABLE cegertekeles(
     ertekeles   NUMBER(1,0) DEFAULT 0,
     ceg_adoazonosito  NUMBER,
     allaskereso_email  VARCHAR(255),
-    CONSTRAINT foreign_key_ceg FOREIGN KEY (ceg_adoazonosito) REFERENCES ceg(adoazonosito) ON DELETE CASCADE ,
-    CONSTRAINT foreign_key_allaskereso FOREIGN KEY (allaskereso_email) REFERENCES allaskereso(email)
+    CONSTRAINT foreign_key_ceg FOREIGN KEY (ceg_adoazonosito) REFERENCES ceg(adoazonosito) ON DELETE CASCADE,--Cég törlésekor az értékelései is törlődjenek
+    CONSTRAINT foreign_key_allaskereso FOREIGN KEY (allaskereso_email) REFERENCES allaskereso(email) ON DELETE CASCADE --Álláskereső törlésekor az általa adott értékelések is törlődjenek
 );
 
 
@@ -159,13 +178,50 @@ CREATE TABLE allaslehetoseg (
    ber           NUMBER,
    is_accepted   boolean,
    terulet_id    NUMBER,
-   ceg_adoazonosito        NUMBER,
-   kulcsszo_neve   VARCHAR2(255),
-   kategoria_neve  VARCHAR2(255),
-   CONSTRAINT foreign_key_teruletek FOREIGN KEY ( terulet_id ) REFERENCES terulet ( id ),
-   CONSTRAINT foreign_key_ceg_allaslehetoseg FOREIGN KEY ( ceg_adoazonosito ) REFERENCES ceg ( adoazonosito ),
-   CONSTRAINT foreign_key_kulcsszo FOREIGN KEY ( kulcsszo_neve ) REFERENCES kulcsszo ( neve ),
-   CONSTRAINT foreign_key_kategoria FOREIGN KEY ( kategoria_neve ) REFERENCES kategoria ( neve )
+   ceg_adoazonosito NUMBER,
+   CONSTRAINT foreign_key_teruletek FOREIGN KEY (terulet_id) REFERENCES terulet(id) ON DELETE SET NULL,--mert az álláslehetőség létezhet terület nélkül
+   CONSTRAINT foreign_key_ceg_allaslehetoseg FOREIGN KEY (ceg_adoazonosito) REFERENCES ceg(adoazonosito) ON DELETE CASCADE -- Cég törlésekor az álláslehetőségei is törlődjenek
+);
+
+-------------------- allaslehetoseg es kulcsszo kapcsolat tabla
+--Hogy egy allaslehetoseghez tobb kulcsszo is tartozhasson. Ez a legkevesbe redundans megoldas
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE allaslehetoseg_kulcsszo_kapcsolat CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE allaslehetoseg_kulcsszo_kapcsolat (
+    allaslehetoseg_id INT,
+    kulcsszo_neve VARCHAR2(255),
+    PRIMARY KEY (allaslehetoseg_id, kulcsszo_neve),
+    FOREIGN KEY (allaslehetoseg_id) REFERENCES allaslehetoseg(id) ON DELETE CASCADE, -- Álláslehetőség törlésekor a kulcsszó-kapcsolatai is törlődjenek
+    FOREIGN KEY (kulcsszo_neve) REFERENCES kulcsszo(neve)
+);
+
+-------------------- allaslehetoseg es kategoria kapcsolat tabla
+--Hogy egy allaslehetoseg tobb kategoria is tartozhasson. Ez a legkevesbe redundans megoldas
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE allaslehetoseg_kategoria_kapcsolat CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE allaslehetoseg_kategoria_kapcsolat (
+    allaslehetoseg_id INT,
+    kategoria_neve VARCHAR2(255),
+    PRIMARY KEY (allaslehetoseg_id, kategoria_neve),
+    FOREIGN KEY (allaslehetoseg_id) REFERENCES allaslehetoseg(id)ON DELETE CASCADE, -- Álláslehetőség törlésekor a kulcsszó-kapcsolatai is törlődjenek
+    FOREIGN KEY (kategoria_neve) REFERENCES kategoria(neve)
 );
 
 -------------------- moderator tabla
@@ -202,8 +258,8 @@ CREATE TABLE jelentkezo(
   allaskereso_email VARCHAR(255) NOT NULL,
   allaslehetoseg_id NUMBER NOT NULL,
 
-  CONSTRAINT foreign_key_allaskereso_jelentkezo FOREIGN KEY ( allaskereso_email ) REFERENCES allaskereso(email),
-  CONSTRAINT foreign_key_allaslehetoseg FOREIGN KEY ( allaslehetoseg_id ) REFERENCES allaslehetoseg(id)
+  CONSTRAINT foreign_key_allaskereso_jelentkezo FOREIGN KEY ( allaskereso_email ) REFERENCES allaskereso(email) ON DELETE CASCADE, -- Álláskereső törlésekor a jelentkezései is törlődjenek
+  CONSTRAINT foreign_key_allaslehetoseg FOREIGN KEY ( allaslehetoseg_id ) REFERENCES allaslehetoseg(id) ON DELETE CASCADE -- Álláslehetőség törlésekor a jelentkezések is törlődjenek
 );
 
 ---------------------------------------- TRIGGEREK ----------------------------------------
@@ -229,6 +285,48 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE TRIGGER allaskereso_inactive_trigger
+    BEFORE UPDATE OF utolso_bejelentkezes ON allaskereso
+    FOR EACH ROW
+    WHEN (NEW.utolso_bejelentkezes IS NOT NULL)
+    BEGIN
+        IF :OLD.utolso_bejelentkezes IS NOT NULL AND :OLD.utolso_bejelentkezes < SYSDATE - 90 THEN
+            :NEW.statusz := 0; -- Passzív státusz
+        END IF;
+    END;
+/
+
+---------------------------------------- Oracle Scheduler ----------------------------------------
+-- Csak mert megtehetem es ilyet is tudok, de azert triggerrel is megcsinalom, hogy a kovetelmeny ki legyen elegitve
+BEGIN
+    -- Job letrehozasa
+    EXECUTE IMMEDIATE '
+    CREATE OR REPLACE PROCEDURE update_inactive_users
+    AS
+    BEGIN
+        UPDATE allaskereso
+        SET statusz = 0 -- Passzív státusz (false)
+        WHERE utolso_bejelentkezes IS NOT NULL
+          AND utolso_bejelentkezes < SYSDATE - 90;
+        COMMIT;
+    END;';
+END;
+/
+
+BEGIN
+    -- Ütemezett job létrehozása
+    DBMS_SCHEDULER.CREATE_JOB (
+        job_name        => 'UPDATE_INACTIVE_USERS_JOB',
+        job_type        => 'PLSQL_BLOCK',
+        job_action      => 'BEGIN update_inactive_users; END;',
+        start_date      => SYSTIMESTAMP,
+        repeat_interval => 'FREQ=DAILY;BYHOUR=0;BYMINUTE=0;BYSECOND=0', -- Minden éjfélkor
+        enabled         => TRUE,
+        comments        => 'Napi álláskereső státusz frissítés 90 nap inaktivitás után'
+    );
+END;
+/
+
 ---------------------------------------- ADATOK ----------------------------------------
 
 ---------- Pelda rekordok terulet tabla
@@ -242,16 +340,16 @@ INSERT INTO terulet (orszag, megye, varos) VALUES
 
 ---------- Pelda rekordok ceg tabla
 
-INSERT INTO CEG (adoazonosito, neve, email, jelszo, ertekeles, terulet_id) VALUES
-(35903957804, 'Ceg A', 'cega@email.com', 'jelszo123', NULL, NULL), 
-(13907287593, 'Ceg B', 'cegb@email.com', 'jelszo456', NULL, NULL),
-(13478097449, 'Ceg C', 'cegc@email.com', 'jelszo789', NULL, NULL),
-(40560285869, 'Ceg D', 'cegd@email.com', 'jelszo012', NULL, NULL),
-(79613553671, 'Ceg E', 'cege@email.com', 'jelszo345', NULL, NULL);
+INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles, terulet_id) VALUES
+(35903957804, 'Cég A', 'cega@email.com', 'jelszo123', NULL, NULL), 
+(13907287593, 'Cég B', 'cegb@email.com', 'jelszo456', NULL, NULL),
+(13478097449, 'Cég C', 'cegc@email.com', 'jelszo789', NULL, NULL),
+(40560285869, 'Cég D', 'cegd@email.com', 'jelszo012', NULL, NULL),
+(79613553671, 'Cég E', 'cege@email.com', 'jelszo345', NULL, NULL);
 
----------- Pelda cv allaslehetoseg tabla
+---------- Pelda rekordok cv tabla
 
-INSERT INTO CV (cv_link) VALUES
+INSERT INTO cv (cv_link) VALUES
 ('http://example.com/cv1'),
 ('http://example.com/cv2'),
 ('http://example.com/cv3'),
@@ -260,11 +358,21 @@ INSERT INTO CV (cv_link) VALUES
 
 ---------- Pelda rekordok allaskereso tabla
 
-INSERT INTO allaskereso (email, neve, jelszo, utolso_bejelentkezes, vegzettseg, statusz, cv_link) VALUES ('john.doe@example.com', 'John Doe', 'password123', TO_DATE('2023-01-01', 'YYYY-MM-DD'), 'Bachelor', 1, 'http://example.com/cv1'),
-('jane.smith@example.com', 'Jane Smith', 'securepass', TO_DATE('2023-02-15', 'YYYY-MM-DD'), 'Master', 0, 'http://example.com/cv2'),
-('alice.wonderland@example.com', 'Alice Wonderland', 'alice2023', TO_DATE('2023-03-10', 'YYYY-MM-DD'), 'PhD', 1, 'http://example.com/cv3'),
-('bob.builder@example.com', 'Bob Builder', 'buildit', TO_DATE('2023-04-20', 'YYYY-MM-DD'), 'Diploma', 0, 'http://example.com/cv4'),
-('charlie.brown@example.com', 'Charlie Brown', 'charlie123', TO_DATE('2023-05-05', 'YYYY-MM-DD'), 'High School', 1, 'http://example.com/cv5');
+INSERT INTO allaskereso (email, neve, jelszo, utolso_bejelentkezes, vegzettseg, statusz)VALUES 
+('john.doe@example.com', 'John Doe', 'password123', TO_DATE('2023-01-01', 'YYYY-MM-DD'), 'Bachelor', 1),
+('jane.smith@example.com', 'Jane Smith', 'securepass', TO_DATE('2023-02-15', 'YYYY-MM-DD'), 'Master', 0),
+('alice.wonderland@example.com', 'Alice Wonderland', 'alice2023', TO_DATE('2023-03-10', 'YYYY-MM-DD'), 'PhD', 1),
+('bob.builder@example.com', 'Bob Builder', 'buildit', TO_DATE('2023-04-20', 'YYYY-MM-DD'), 'Diploma', 0),
+('charlie.brown@example.com', 'Charlie Brown', 'charlie123', TO_DATE('2023-05-05', 'YYYY-MM-DD'), 'High School', 1);
+
+---------- Pelda rekordok allaskereso_cv_kapcsolat tabla
+INSERT INTO allaskereso_cv_kapcsolat (email, cv_link) VALUES
+('john.doe@example.com', 'http://example.com/cv1'),
+('john.doe@example.com', 'http://example.com/cv2'), -- John Doe-nak ket CV-je van
+('jane.smith@example.com', 'http://example.com/cv2'),
+('alice.wonderland@example.com', 'http://example.com/cv3'),
+('bob.builder@example.com', 'http://example.com/cv4'),
+('charlie.brown@example.com', 'http://example.com/cv5');
 
 ---------- Pelda rekordok cegertekeles tabla
 
@@ -275,7 +383,7 @@ INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_email) VALUES
 (DEFAULT, 40560285869, 'bob.builder@example.com'),
 (DEFAULT, 79613553671, 'charlie.brown@example.com');
 
----------- Pelda kategoria allaslehetoseg tabla
+---------- Pelda rekordok kategoria tabla
 
 INSERT INTO kategoria (neve) VALUES
 ('Hegesztés kategoria'),
@@ -284,7 +392,7 @@ INSERT INTO kategoria (neve) VALUES
 ('Művészet kategoria'),
 ('Üzlet kategoria');
 
----------- Pelda kulcsszo allaslehetoseg tabla
+---------- Pelda rekordok kulcsszo tabla
 
 INSERT INTO kulcsszo (neve) VALUES
 ('Hegesztés kulcsszo'),
@@ -295,14 +403,33 @@ INSERT INTO kulcsszo (neve) VALUES
 
 ---------- Pelda rekordok allaslehetoseg tabla
 
-INSERT INTO allaslehetoseg (cim, leiras, kovetelmenyek, mikor, ber, is_accepted, terulet_id, ceg_adoazonosito, kulcsszo_neve, kategoria_neve) VALUES
-('Heggesztés', 'Óriási Munkalehetőség Heggesztő úraknak és hölgyeknek egyaránt.', 'Tudjá heggeszeni.', sysdate, 500000, 1, 1, 35903957804, 'Hegesztés kulcsszo', 'Hegesztés kategoria'),
-('Villanyszerelés', 'Kiváló lehetőség tapasztalt villanyszerelők számára.', 'Villanyszerelői végzettség és tapasztalat.', sysdate, 450000, 1, 2, 13907287593, 'Gépészet kulcsszo', 'Gépészet kategoria'),
-('Programozás', 'Junior programozói pozíció kezdőknek.', 'Alapvető programozási ismeretek.', sysdate, 600000, 0, 3, 13478097449, 'Programozás kulcsszo', 'Informatika kategoria'),
-('Építésvezetés', 'Építkezési projektek vezetésére keresünk szakembert.', 'Építészmérnöki diploma és vezetői tapasztalat.', sysdate, 700000, 1, 4, 40560285869, 'Üzlet kulcsszo', 'Üzlet kategoria'),
-('Grafikai tervezés', 'Kreatív grafikusokat keresünk hosszú távra.', 'Grafikai szoftverek ismerete és kreativitás.', sysdate, 550000, 0, 5, 79613553671, 'Művészet kulcsszo', 'Művészet kategoria');
+INSERT INTO allaslehetoseg (cim, leiras, kovetelmenyek, mikor, ber, is_accepted, terulet_id, ceg_adoazonosito) VALUES
+('Heggesztés', 'Óriási Munkalehetőség Heggesztő úraknak és hölgyeknek egyaránt.', 'Tudjá heggeszeni.', sysdate, 500000, 1, 1, 35903957804),
+('Villanyszerelés', 'Kiváló lehetőség tapasztalt villanyszerelők számára.', 'Villanyszerelői végzettség és tapasztalat.', sysdate, 450000, 1, 2, 13907287593),
+('Programozás', 'Junior programozói pozíció kezdőknek.', 'Alapvető programozási ismeretek.', sysdate, 600000, 0, 3, 13478097449),
+('Építésvezetés', 'Építkezési projektek vezetésére keresünk szakembert.', 'Építészmérnöki diploma és vezetői tapasztalat.', sysdate, 700000, 1, 4, 40560285869),
+('Grafikai tervezés', 'Kreatív grafikusokat keresünk hosszú távra.', 'Grafikai szoftverek ismerete és kreativitás.', sysdate, 550000, 0, 5, 79613553671);
 
----------- Pelda moderator allaslehetoseg tabla
+---------- Pelda rekordok allaslehetoseg_kulcsszo_kapcsolat tabla
+
+INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve) VALUES
+(1, 'Hegesztés kulcsszo'),
+(2, 'Gépészet kulcsszo'),
+(3, 'Programozás kulcsszo'),
+(4, 'Üzlet kulcsszo'),
+(5, 'Programozás kulcsszo'), -- Grafikai allashoz ket kulcsszo
+(5, 'Művészet kulcsszo');
+
+---------- Pelda rekordok allaslehetoseg_kategoria_kapcsolat tabla
+INSERT INTO allaslehetoseg_kategoria_kapcsolat (allaslehetoseg_id, kategoria_neve) VALUES
+(1, 'Hegesztés kategoria'),
+(2, 'Gépészet kategoria'),
+(3, 'Informatika kategoria'),
+(3, 'Üzlet kategoria'), -- Programozas allashoz ket kategoria
+(4, 'Üzlet kategoria'),
+(5, 'Művészet kategoria');
+
+---------- Pelda rekordok moderator tabla
 
 INSERT INTO moderator VALUES
 ('examolemoderator1@moderator.com', 'mod_1', 'kiscica1'),
@@ -311,7 +438,8 @@ INSERT INTO moderator VALUES
 ('examolemoderator4@moderator.com', 'mod_4', 'kiscica4'),
 ('examolemoderator5@moderator.com', 'mod_5', 'kiscica5');
 
----------- Pelda jelentkezo allaslehetoseg tabla
+---------- Pelda rekordok jelentkezo tabla
+--Tulajdonképpen ez is egy kapcsolattabla
 
 INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES
 ('john.doe@example.com', 1),
