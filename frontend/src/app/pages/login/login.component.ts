@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginService } from '../../services/login.service';
+import { IsCompanyService } from '../../services/is-company.service';
 import { inject } from '@angular/core';
 
 
@@ -26,10 +27,12 @@ export class LoginComponent {
   valid_login: { email: string; password: string } | null = null;
 
   loginservice = inject(LoginService);
+  companyservice = inject(IsCompanyService);
 
   handle_login(login: { email: string; password: string }){
     // console.table(login);
     console.log("emittelt");
+    // console.log(this.companyservice.getIsCompany());
 
     const loginData = { email: login.email, password: login.password };
     this.http.post<any>('http://localhost:3000/auth/api/login', loginData).subscribe(
@@ -38,7 +41,7 @@ export class LoginComponent {
             this.loginservice.setLoginStatus(true);
             localStorage.setItem('username', response.EMAIL);
             this.router.navigate(['/app']);
-            
+
           } else {
               console.log("fail");
           }

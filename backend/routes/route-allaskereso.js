@@ -15,7 +15,7 @@ router.post('/api/register', async (req, res) => {
         const allaskereso = {
             email,
             name,
-            password: password, // Jelszó hash-elése később szükséges (pl. bcrypt)
+            password: password,
             last_signed_in,
             education,
             status: status
