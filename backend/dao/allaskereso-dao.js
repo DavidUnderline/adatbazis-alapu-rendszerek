@@ -68,14 +68,16 @@ class AllaskeresoDao {
     async getAllaskeresoByEmail(email, includePassword = false) {
         let connection;
         try {
-            // connection = await getConnection();
-            const query = includePassword
-                ? `SELECT a.email, a.neve, a.jelszo, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
-                          (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
-                   FROM allaskereso a WHERE a.email = :email`
-                : `SELECT a.email, a.neve, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
-                          (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
-                   FROM allaskereso a WHERE a.email = :email`;
+            connection = await getConnection();
+            // const query = includePassword
+            //     ? `SELECT a.email, a.neve, a.jelszo, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
+            //               (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
+            //        FROM allaskereso a WHERE a.email = :email`
+            //     : `SELECT a.email, a.neve, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
+            //               (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
+            //        FROM allaskereso a WHERE a.email = :email`;
+            const query = `SELECT email, neve, utolso_bejelentkezes, vegzettseg, statusz, cv_link FROM ALLASKERESO
+               WHERE email = :email`;
             const result = await connection.execute(query, { email });
             return result.rows.length > 0 ? result.rows[0] : null;
         } catch (err) {

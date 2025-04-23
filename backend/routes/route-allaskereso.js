@@ -57,24 +57,20 @@ router.post('/api/register', async (req, res) => {
 
 
 // Álláskereső adatainak lekérdezése email alapján (saját adatokhoz vagy admin)
-// router.get('/:email', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res) => {
-//     const email = req.params.email;
-//     const isAdmin = req.user.roles.includes('ROLE_ADMIN');
-//     if (!isAdmin && req.user.email !== email) {
-//         return res.status(403).json({ error: 'Nincs jogosultság' });
-//     }
-
-//     try {
-//         const allaskereso = await allaskeresoDao.getAllaskeresoByEmail(email, isAdmin);
-//         if (allaskereso) {
-//             res.json(allaskereso);
-//         } else {
-//             res.status(404).json({ error: 'Álláskereső nem található' });
-//         }
-//     } catch (err) {
-//         res.status(500).json({ error: 'Hiba az álláskereső lekérdezésekor' });
-//     }
-// });
+router.post('/api/get', async (req, res) => {
+    const email = req.body.email;
+  
+    try {
+      const allaskereso = await allaskeresoDao.getAllaskeresoByEmail(email);
+      if (allaskereso) {
+        res.json(allaskereso);
+      } else {
+        res.status(404).json({ error: 'Álláskereső nem található' });
+      }
+    } catch (err) {
+      res.status(500).json({ error: 'Hiba az álláskereső lekérdezésekor' });
+    }
+  });
 
 // // Új CV hozzáadása egy álláskeresőhöz
 // router.post('/:email/cv', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res) => {

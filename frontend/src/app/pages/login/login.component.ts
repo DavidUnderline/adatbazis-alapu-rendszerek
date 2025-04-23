@@ -13,7 +13,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoginService } from '../../services/login.service';
 import { IsCompanyService } from '../../services/is-company.service';
 import { inject } from '@angular/core';
-import { IsCompanyService } from '../../services/is-company.service';
 
 @Component({
   selector: 'app-login',
@@ -45,8 +44,8 @@ export class LoginComponent {
       response => {
           if (response.success) {
             this.loginservice.setLoginStatus(true);
-            this.companyService.setIsCompany(false);
-            localStorage.setItem('username', response.EMAIL);
+            this.companyservice.setIsCompany(false);
+            localStorage.setItem('username', response.email); //! kisbetű, allCapssel nem működik gyerekik
             this.router.navigate(['/app']);
 
           } else {
