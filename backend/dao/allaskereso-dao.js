@@ -2,9 +2,9 @@
 
 const oracledb = require('oracledb');
 const dbConfig = {
-    user: "pepssoo",
+    user: "system",
     password: "123",
-    connectString: "localhost/FREEPDB1",
+    connectString: "localhost/FREE",
 };
 
 async function executeQuery(sql, params = []) {
