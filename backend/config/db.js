@@ -1,38 +1,34 @@
-/*
-Az Oracle Database kapcsolódási beállításokat tartalmazza
-(pl. felhasználónév, jelszó, connect string).
-Az RF1 jegyzet config/db.js fájlja alapján konfigurálja az adatbázis kapcsolatot.
-*/
-const express = require('express');
-const cors = require('cors');
-const app = express();
-const port = 3000;
-app.use(cors());
-app.use(express.json());
-
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-});
-
 const oracledb = require('oracledb');
 const dbConfig = {
     user: "pepssoo",
     password: "123",
     connectString: "localhost/FREEPDB1",
 };
-// YOUR_USER, YOUR_PASSWORD, YOUR_HOST:PORT/YOUR_SERVICE_NAME Saját bejelentkezési adatok a database-be
 
-async function getConnection() {
+async function executeQuery(sql, params = []) {
+    let connection;
     try {
-        return await oracledb.getConnection(dbConfig);
+        connection = await oracledb.getConnection(dbConfig);
+        const result = await connection.execute(sql, params, {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+            autoCommit: true
+        });
+        return result.rows;
+        
     } catch (err) {
-        console.error('Database connection error:', err);
+        console.error(err);
         throw err;
+        
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+                
+            } catch (err) {
+                console.error(err);
+            }
+        }
     }
 }
 
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
-
-module.exports = { getConnection };
+module.exports = { executeQuery };
