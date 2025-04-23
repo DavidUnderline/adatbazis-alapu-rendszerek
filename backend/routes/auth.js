@@ -26,7 +26,6 @@ router.post('/api/login', async (req, res) => {
             return res.status(401).json({ error: 'Érvénytelen email vagy jelszó' });
         }
         
-        console.table(allaskereso);
         res.json({ success : true, email: allaskereso.EMAIL });
 
         // const isPasswordValid = await bcrypt.compare(password, allaskereso.JELSZO);
