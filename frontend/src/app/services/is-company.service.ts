@@ -1,17 +1,21 @@
 import { Injectable } from '@angular/core';
+import { LoginService } from './login.service';
+import { inject } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IsCompanyService {
   private key = 'is_company';
-
+  isLogged = inject(LoginService);
   // constructor(){
   //   localStorage.setItem(this.key, JSON.stringify(false))
   // }
   
   setIsCompany(isCompany : boolean): void{
-    localStorage.setItem(this.key, JSON.stringify(isCompany));
+    if( !this.isLogged.getLoginStatus()){
+      localStorage.setItem(this.key, JSON.stringify(isCompany));
+    }
   }
 
   getIsCompany(): boolean {

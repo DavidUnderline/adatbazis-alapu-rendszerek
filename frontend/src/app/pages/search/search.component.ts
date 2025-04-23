@@ -1,13 +1,16 @@
 import { Component, inject } from '@angular/core';
 import { SearchFormComponent } from './search-form/search-form.component';
+import { SearchFilterDialogComponent } from './search-filter-dialog/search-filter-dialog.component';
 import { Allas } from '../../shared/Model/Allas';
 import jobs from '../../shared/dummy_data/jobs.json';
 import { WorkService } from '../../services/work.service';
 import { Router } from '@angular/router';
+import { DisplayDirective } from './display.directive';
+
 
 @Component({
   selector: 'app-search',
-  imports: [SearchFormComponent],
+  imports: [SearchFormComponent, SearchFilterDialogComponent, DisplayDirective],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css',
 })
@@ -15,8 +18,10 @@ export class SearchComponent {
   private work_offers: Allas[] = [];
   filtered_work_offers: Allas[] = [];
   is_searched = false;
+  addittional_filter!: {kovetelmeny: string, min: number, max: number}
   private work_service = inject(WorkService);
   private router = inject(Router);
+  show: boolean = false;
 
   constructor() {
     let temp = jobs;
@@ -49,4 +54,11 @@ export class SearchComponent {
     this.work_service.setWork(work);
     this.router.navigateByUrl("/work-details");
   }
+
+  showDialog(){
+    this.show = !this.show;
+  }
+
+
+
 }

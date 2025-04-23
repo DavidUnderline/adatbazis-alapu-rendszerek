@@ -31,8 +31,8 @@ export class LoginComponent {
     // console.table(login);
     console.log("emittelt");
 
-    const loginData = { email: login.email, password: login.password };
-    this.http.post<any>('http://localhost:3000/auth/api/login', loginData).subscribe(
+    // const loginData = { email: login.email, password: login.password };
+    this.http.post<any>('http://localhost:3000/auth/api/login', login).subscribe(
       response => {
           if (response.success) {
             this.loginservice.setLoginStatus(true);
