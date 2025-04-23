@@ -13,4 +13,6 @@ app.listen(port, () => {
 });
 
 const authRoute = require('../routes/auth');
+const allaskereso = require('../routes/route-allaskereso')
 app.use('/auth', authRoute);
+app.use('/allaskereso', allaskereso);

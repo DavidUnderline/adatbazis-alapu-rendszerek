@@ -1,4 +1,4 @@
-const { executeQuery } = require('../config/db');
+const { executeQuery, getConnection } = require('../config/db');
 
 class AllaskeresoDao {
     // Álláskereső lekérdezése email alapján jelszóval (bejelentkezéshez)
@@ -12,24 +12,27 @@ class AllaskeresoDao {
     async insertAllaskereso(allaskereso) {
         let connection;
         try {
-            // connection = await getConnection();
+            connection = await getConnection();
             const result = await connection.execute(
                 `INSERT INTO allaskereso (email, neve, jelszo, utolso_bejelentkezes, vegzettseg, statusz)
-                 VALUES (:email, :neve, :jelszo, :utolsoBejelentkezes, :vegzettseg, :statusz)`,
+                 VALUES (:email, :name, :password, TO_TIMESTAMP(:last_signed_in, 'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"'), :education, :status)`,
                 {
                     email: allaskereso.email,
-                    neve: allaskereso.neve,
-                    jelszo: allaskereso.jelszo, //Hash-elt jelszo
-                    utolsoBejelentkezes: allaskereso.utolso_bejelentkezes || null,
-                    vegzettseg: allaskereso.vegzettseg || null,
-                    statusz: allaskereso.statusz || 0
+                    name: allaskereso.name,
+                    password: allaskereso.password, //jelszot hashelni
+                    last_signed_in: allaskereso.last_signed_in || null,
+                    education: allaskereso.education || null,
+                    status: allaskereso.status === 'online' ? true : false
                 },
                 { autoCommit: true }
             );
+
             return result.rowsAffected === 1;
+            
         } catch (err) {
             console.error('Error inserting allaskereso:', err);
             throw err;
+
         } finally {
             if (connection) await connection.close();
         }

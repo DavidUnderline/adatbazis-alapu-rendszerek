@@ -31,4 +31,13 @@ async function executeQuery(sql, params = []) {
     }
 }
 
-module.exports = { executeQuery };
+async function getConnection() {
+    try {
+        return await oracledb.getConnection(dbConfig);
+    } catch (err) {
+        console.error('Database connection error:', err);
+        throw err;
+    }
+}
+
+module.exports = { executeQuery, getConnection };
