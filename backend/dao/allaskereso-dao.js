@@ -49,18 +49,32 @@ class AllaskeresoDao {
         let connection;
         try {
             connection = await getConnection();
-            const result = await connection.execute(
-                `UPDATE allaskereso 
-                 SET neve = :name, jelszo= :password, vegzettseg = :education
-                 WHERE email = :email`,
-                {
-                    email: allaskereso.email,
-                    name: allaskereso.name,
-                    education: allaskereso.education || null,
-                    password: allaskereso.password
-                },
-                { autoCommit: true }
-            );
+
+            const fields = [];
+            const binds = { email: allaskereso.email };
+
+            if (allaskereso.neve) {
+                fields.push('neve = :neve');
+                binds.neve = allaskereso.neve;
+            }
+
+            if (allaskereso.vegzettseg) {
+                fields.push('vegzettseg = :vegzettseg');
+                binds.neve = allaskereso.vegzettseg;
+            }
+
+            if (allaskereso.jelszo) {
+                fields.push('jelszo = :jelszo');
+                binds.jelszo = allaskereso.jelszo;
+            }
+            if (fields.length === 0) {
+                throw new Error('Nincs frissítendő mező');
+            }
+
+            const query = `UPDATE allaskereso SET ${fields.join(', ')} WHERE email = :email`;
+            
+            const result = await connection.execute(query, binds, { autoCommit: true });
+
             return result.rowsAffected === 1;
         } catch (err) {
             console.error('Error updating allaskereso:', err);
