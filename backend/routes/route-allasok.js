@@ -11,6 +11,8 @@ router.post('/api/searchjob', async (req, res) => {
         
         if(!allasok){
             res.json({ error: 'Nem található allás' });
+            return;
+        }
         else
             res.json(allasok);
         
