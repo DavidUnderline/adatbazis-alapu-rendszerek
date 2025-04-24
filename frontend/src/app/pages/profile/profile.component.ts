@@ -12,6 +12,7 @@ import { CvFormComponent } from './cv-form/cv-form.component';
 import { CV } from '../../shared/Model/CV';
 import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
+import { WorkListComponent } from "./work-list/work-list.component";
 @Component({
   selector: 'app-profile',
   imports: [
@@ -21,8 +22,9 @@ import { DisplayDirective } from '../../shared/directives/display.directive';
     MatIcon,
     CvFormComponent,
     ErrorMsgComponent,
-    DisplayDirective
-  ],
+    DisplayDirective,
+    WorkListComponent
+],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
@@ -95,9 +97,12 @@ export class ProfileComponent {
       }
   ) {
     this.http.post("http://localhost:3000/allaskereso/api/update", {user_data}).subscribe(
-      (response) => {
-        console.log("[---modifyAllaskereso---]");
-        console.table(response);
+      (response:any) => {
+        if(response.success){
+
+        }else{
+          this.errorHandler(response.message);
+        }
       },
       (err)=> {
         this.errorHandler(err.error.error)
