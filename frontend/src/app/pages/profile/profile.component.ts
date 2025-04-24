@@ -1,0 +1,93 @@
+import { Component, inject } from '@angular/core';
+import { Allaskereso } from '../../shared/Model/Allaskereso';
+import { Ceg } from '../../shared/Model/Ceg';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { response } from 'express';
+import { IsCompanyService } from '../../services/is-company.service';
+import { Allas } from '../../shared/Model/Allas';
+import { CegFormComponent } from './ceg-form/ceg-form.component';
+import { AllaskeresoFormComponent } from './allaskereso-form/allaskereso-form.component';
+import { MatIcon } from '@angular/material/icon';
+@Component({
+  selector: 'app-profile',
+  imports: [
+    HttpClientModule,
+    CegFormComponent,
+    AllaskeresoFormComponent,
+    MatIcon,
+  ],
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css',
+})
+export class ProfileComponent {
+  user_allas: Allaskereso | null = null;
+  user_ceg: Ceg | null = null;
+  user_email = localStorage.getItem('username');
+  is_company = inject(IsCompanyService);
+
+  constructor(private http: HttpClient) {
+    this.is_company.getIsCompany() ? this.loadCeg() : this.loadAllaskereso();
+  }
+
+  loadCeg() {
+    this.http
+      .post<any>('http://localhost:3000/ceg/api/get', {
+        email: this.user_email,
+      })
+      .subscribe(
+        (response) => {
+          const ceg_adat = response.ceg;
+          this.user_ceg = {
+            adoazonosito: ceg_adat[0] as string,
+            email: this.user_email as string,
+            neve: ceg_adat[1] as string,
+            jelszo: '',
+            ertekeles: ceg_adat[2],
+            terulet: ceg_adat[3],
+          };
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+  }
+
+  loadAllaskereso() {
+    this.http
+      .post<any>('http://localhost:3000/allaskereso/api/get', {
+        email: this.user_email,
+      })
+      .subscribe(
+        (response) => {
+          this.user_allas = {
+            email: response[0] as string,
+            nev: response[1] as string,
+            jelszo: '',
+            utolso_bejelentkezes: response[2] as Date,
+            vegzettseg: response[3] as string,
+            statusz: (response[4] as boolean) ? 'online' : 'inaktiv',
+          };
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+  }
+
+  modifyAllaskereso(datas: {
+    nev: string | null;
+    email: string | null;
+    vegzettseg: string | null;
+  }) {
+    console.table(datas);
+    // Todo
+  }
+
+  modifyCeg(datas: {
+    adoazonosito: string | null;
+    nev: string | null;
+    email: string | null;
+  }) {
+    // Todo
+  }
+}

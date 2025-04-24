@@ -1,7 +1,8 @@
+<app-search-filter-dialog [appDisplay]="show" (show)="showDialog()" (plus_filter)="this.addittional_filter = $event"></app-search-filter-dialog>
 <div
   class="bg-white-500 dark:bg-dark_blue-500 flex flex-col justify-between p-56 pt-32 w-full gap-32"
 >
-  <app-search-form (valid_filter)="filter_works($event)" />
+  <app-search-form (valid_filter)="filter_works($event)" (show)="showDialog()"/>
   <div
     class="flex flex-col gap-5 bg-dark_blue-500 dark:bg-dark-gray-500 p-10 rounded-2xl"
   >

@@ -1,27 +1,90 @@
-import { Component } from '@angular/core';
-import { RegisterFormComponent } from './register-form/register-form.component';
+import { Component, inject } from '@angular/core';
 import { Allaskereso } from '../../shared/Model/Allaskereso';
 import users from '../../shared/dummy_data/users.json';
+import { Ceg } from '../../shared/Model/Ceg';
+import { AllaskeresoFormComponent } from './allaskereso-form/allaskereso-form.component';
+import { CegFormComponent } from './ceg-form/ceg-form.component';
+import { IsCompanyService } from '../../services/is-company.service';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { last } from 'rxjs';
 
 @Component({
   selector: 'app-register',
-  imports: [RegisterFormComponent],
+  imports: [AllaskeresoFormComponent, CegFormComponent, HttpClientModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
 export class RegisterComponent {
-  valid_register!: Allaskereso;
+  isCompany = inject(IsCompanyService)
+  router = inject(Router);
+  valid_register!: Allaskereso | Ceg;
 
-  register_user(user: Allaskereso) {
+  constructor(private http: HttpClient){}
+
+  register_user(user: Allaskereso | Ceg) {
+    if ('vegzettseg' in user) {
+      // console.log('[LOG]: User is of type Allaskereso');
+      // console.log(user);
+      const registerData = { 
+        email: user.email, 
+        name: user.nev,
+        password: user.jelszo,
+        last_signed_in: new Date(),
+        education: user.vegzettseg,
+        status: user.statusz
+      };
+
+      this.http.post<any>('http://localhost:3000/allaskereso/api/register', registerData).subscribe(
+        response => {
+            if (response.success) {
+              console.table(response);
+              // this.loginservice.setLoginStatus(true);
+              // localStorage.setItem('username', response.EMAIL);
+              // this.router.navigate(['/app']);
+              
+            } else {
+                console.log("fail");
+            }
+        },
+        error => {
+            console.error(error);
+        }
+      );
+
+    } else if ('adoazonosito' in user) {
+        const registerData = { 
+          id: user.adoazonosito, 
+          name: user.neve,
+          email: user.email,
+          password: user.jelszo
+        };
+
+        this.http.post<any>('http://localhost:3000/ceg/api/register', registerData).subscribe(
+          response => {
+              if (response.success) {
+                console.table(response);
+                // this.loginservice.setLoginStatus(true);
+                // localStorage.setItem('username', response.EMAIL);
+                // this.router.navigate(['/app']);
+                
+              } else {
+                  console.log("fail");
+              }
+          },
+          error => {
+              console.error(error);
+          }
+        );
+    } else {
+      console.log('[LOG]: Unknown user type');
+    }
+
+    // console.table(user)
+
     let temp = users;
 
-    temp.forEach((_user) => {
-      if (
-        (<Allaskereso>_user).nev !== user.nev &&
-        (<Allaskereso>_user).email !== user.email
-      ) {
-        users.push(user);
-      }
-    });
+    // this.router.navigateByUrl("/login");
   }
 }

@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { WorkService } from '../../services/work.service';
 import { Router } from '@angular/router';
 import { Allas } from '../../shared/Model/Allas';
+import { LoginService } from '../../services/login.service';
 
 @Component({
   selector: 'app-work-details',
@@ -11,6 +12,7 @@ import { Allas } from '../../shared/Model/Allas';
 })
 export class WorkDetailsComponent implements OnInit {
   work = inject(WorkService);
+  isLogged = inject(LoginService);
   private router = inject(Router);
 
   ngOnInit(): void {

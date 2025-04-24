@@ -1,0 +1,85 @@
+<div
+  class="bg-white-50 bg-white-500 dark:bg-dark_blue-500 flex justify-center p-56 pt-32"
+>
+
+  <div class="bg-white-500 p-4 rounded-2xl flex flex-col w-[80%] h-96">
+    <h1 class="text-dark_blue-500 font-medium text-2xl pb-10">
+      Hírdesse meg álláslehetőségét!
+    </h1>
+    <form
+      class="w-full grid grid-cols-2 gap-4"
+      [formGroup]="ad_form"
+      (ngSubmit)="submit()"
+    >
+      <fieldset
+        class="w-full text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
+      >
+        <input
+          type="text"
+          placeholder="Hírdetés Címe"
+          class="h-[1lh] outline-none text-medium focus:outline-0 peer text-dark_blue-500 w-full"
+          minlength="2"
+          formControlName="cim"
+        />
+      </fieldset>
+      
+      <fieldset
+        class="w-full text-dark_blue-500 p-1 relative group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end row-span-4 outline-dark_blue-500 outline-2 rounded-2xl"
+      >
+        <textarea 
+          placeholder="Leírás"
+          class="p-0.5 h-full resize-none w-full hover:group:cursor-pointer active:outline-0 focus:outline-0"
+          formControlName="leiras"
+        ></textarea>
+      </fieldset>
+
+      <fieldset
+        class="w-full text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
+      >
+        <input
+          type="text"
+          placeholder="Követelmények"
+          class="h-[1lh] outline-none text-medium focus:outline-0 peer text-dark_blue-500 w-full"
+          minlength="2"
+          formControlName="kovetelmenyek"
+        />
+      </fieldset>
+
+      <fieldset
+        class="w-full text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
+      >
+        <input
+          type="number"
+          placeholder="Bérezés"
+          class="h-[1lh] outline-none text-medium focus:outline-0 peer text-dark_blue-500 w-full"
+          min="100000"
+          formControlName="ber"
+        />
+      </fieldset>
+
+      <fieldset
+        class="w-full text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
+      >
+        <input
+          type="text"
+          placeholder="Kategória"
+          class="h-[1lh] outline-none text-medium focus:outline-0 peer text-dark_blue-500 w-full"
+          minlength="2"
+          formControlName="kategoria"
+        />
+      </fieldset>
+
+      <div class="pt-10 col-span-2 flex justify-end">
+        <button
+          type="submit"
+          class="bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl cursor-pointer flex justify-center gap-1.5"
+        >
+          <mat-icon>done_all</mat-icon>
+          Tedd közzé!
+        </button>
+      
+      </div>
+    </form>
+  </div>
+
+</div>

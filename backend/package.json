@@ -1,11 +1,4 @@
 {
-  "name": "allaskereso",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node ./index.js",
-    "dev": "nodemon ./index.js"
-  },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",

@@ -1,0 +1,28 @@
+<div class="fixed inset-0 bg-dark_blue-500/80 bg-opacity-50 z-[1000] ">
+  <div class="absolute p-10 bg-white-500 top-[50%] left-[50%] -translate-[50%] z-100 opacity-100 rounded-2xl">
+    <button class="absolute top-3 right-3 text-dark_blue-500 hover:text-dark_red-500 hover:cursor-pointer"
+    (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+    <h1 class="text-center text-dark_blue-500 font-medium text-2xl pb-4">Filter</h1>
+    <form class="grid grid-cols-2 gap-8" [formGroup]="additional_filter_form">
+      <fieldset class="col-span-2 p-1 border-b-dark_blue-500 border-b-2">
+        <input type="text" formControlName="kovetelmeny"
+        min="2"
+        placeholder="kovetelmeny"
+        class="text-dark_blue-500 font-medium focus:outline-0">
+        
+      </fieldset>
+
+      <fieldset class="border-b-dark_blue-500 border-b-2">
+        <input type="number" formControlName="min" name="min" id="min" placeholder="min" min="0" max="3000000" step="10000" class="focus:outline-0">
+      </fieldset>
+
+      <fieldset class="border-b-dark_blue-500 border-b-2">
+        <input type="number" formControlName="max" name="max" id="max" placeholder="max" min="0" max="3000000" step="10000" class="focus:outline-0">
+      </fieldset>
+
+      <input type="submit" (click)="apply()" value="Alkalmaz" class="col-span-2 focus:outline-0 hover:cursor-pointer w-fit ml-auto mr-auto bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl">
+    </form>
+  </div>
+</div>

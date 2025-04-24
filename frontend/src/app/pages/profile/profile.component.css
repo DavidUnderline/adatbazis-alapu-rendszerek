@@ -1,0 +1,10 @@
+mat-icon.big-icon {
+  font-size: 6rem !important;
+  width: 6rem !important;
+  height: 6rem !important;
+  display: inline-block !important;
+  line-height: 1 !important;
+  overflow: visible !important;
+  vertical-align: middle;
+  color: #2b2d42;
+}

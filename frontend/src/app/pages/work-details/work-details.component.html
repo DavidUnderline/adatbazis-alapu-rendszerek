@@ -29,7 +29,7 @@
   </h2>
   <h2 class="text-dark_blue-500 font-medium text-3xl">
     {{
-      work.getWork()?.ceg_adoazonosito
+      work.getWork()?.ceg_adoazonosito  
     }}
     <!--TODO Pipeot írni ehez a szépséghez-->
   </h2>
@@ -50,8 +50,8 @@
     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium ea repudiandae autem, quos illo facilis accusantium. Fugit quaerat magni mollitia, repudiandae beatae officia tenetur impedit, quo repellendus, repellat porro quisquam?</p>
 
     <button
-    
-    class="bg-dark_red-500 text-white-500 font-medium text-xl rounded-xl cursor-pointer p-5 pl-20 pr-20 "
+    [disabled]="!isLogged.isLoggedIn()"
+    class="bg-dark_red-500 text-white-500 font-medium text-xl rounded-xl cursor-pointer p-5 pl-20 pr-20 disabled:bg-dark_blue-500 disabled:cursor-not-allowed"
   >
     Érdekel
   </button>
