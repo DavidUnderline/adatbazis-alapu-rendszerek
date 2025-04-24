@@ -60,11 +60,7 @@ export class SearchComponent {
       response => {
           if (response.success) {
             console.table(response);
-            // this.filtered_work_offers = [];
-            
-            // this.work_offers.forEach((work) => {
-            //     this.filtered_work_offers.push(work);
-            // });
+            this.filtered_work_offers = response.allasok;
           } else {
             console.table(response);
           }
