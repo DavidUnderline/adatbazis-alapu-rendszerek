@@ -27,6 +27,38 @@ router.post('/api/register', async (req, res) => {
     }
 });
 
+//ceg modositasa
+router.post('/api/update', async (req, res) => {
+  const { taxid, name, email, password, tipo } = req.body;
+  // const allaskereso = req.body;
+  // console.table(allaskereso);
+  
+  try {
+      if(!tipo){
+        res.json({ success : false, message: 'Ez nem allaskereso' });
+      }
+      
+      const ceg = {
+        taxid,
+        name,
+        email,
+        password
+      }
+
+      const success = await cegDao.updateCeg(ceg);
+
+      if (!success) {
+          res.json({ success : false, message: 'Adatok frissítése sikertelen' });
+          return;
+      }
+
+      res.json({ success : true });
+  } catch (err) {
+      res.status(500).json({ error: 'Hiba az adatok frissítése során' });
+  }
+});
+
+// ceg lekerdezese email alapjan
 router.post('/api/get', async (req, res) => {
     const email = req.body.email;
 

@@ -51,13 +51,13 @@ class AllaskeresoDao {
             connection = await getConnection();
             const result = await connection.execute(
                 `UPDATE allaskereso 
-                 SET neve = :name, jelszo= :jelszo, vegzettseg = :education
+                 SET neve = :name, jelszo= :password, vegzettseg = :education
                  WHERE email = :email`,
                 {
                     email: allaskereso.email,
                     name: allaskereso.name,
                     education: allaskereso.education || null,
-                    status: allaskereso.status === 'online' ? true : false
+                    password: allaskereso.password
                 },
                 { autoCommit: true }
             );
@@ -90,28 +90,28 @@ class AllaskeresoDao {
     // }
 
     // Álláskereső lekérdezése email alapján, CV-kkel együtt (jelszóval admin esetén)
-    // async getAllaskeresoByEmail(email, includePassword = false) {
-    //     let connection;
-    //     try {
-    //         connection = await getConnection();
-    //         // const query = includePassword
-    //         //     ? `SELECT a.email, a.neve, a.jelszo, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
-    //         //               (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
-    //         //        FROM allaskereso a WHERE a.email = :email`
-    //         //     : `SELECT a.email, a.neve, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
-    //         //               (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
-    //         //        FROM allaskereso a WHERE a.email = :email`;
-    //         const query = `SELECT email, neve, utolso_bejelentkezes, vegzettseg, statusz, cv_link FROM ALLASKERESO
-    //            WHERE email = :email`;
-    //         const result = await connection.execute(query, { email });
-    //         return result.rows.length > 0 ? result.rows[0] : null;
-    //     } catch (err) {
-    //         console.error('Error fetching allaskereso by email:', err);
-    //         throw err;
-    //     } finally {
-    //         if (connection) await connection.close();
-    //     }
-    // }
+    async getAllaskeresoByEmail(email, includePassword = false) {
+        let connection;
+        try {
+            connection = await getConnection();
+            // const query = includePassword
+            //     ? `SELECT a.email, a.neve, a.jelszo, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
+            //               (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
+            //        FROM allaskereso a WHERE a.email = :email`
+            //     : `SELECT a.email, a.neve, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
+            //               (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
+            //        FROM allaskereso a WHERE a.email = :email`;
+            const query = `SELECT email, neve, utolso_bejelentkezes, vegzettseg, statusz, cv_link FROM ALLASKERESO
+               WHERE email = :email`;
+            const result = await connection.execute(query, { email });
+            return result.rows.length > 0 ? result.rows[0] : null;
+        } catch (err) {
+            console.error('Error fetching allaskereso by email:', err);
+            throw err;
+        } finally {
+            if (connection) await connection.close();
+        }
+    }
 
     // Összes álláskereső lekérdezése, CV-kkel együtt (jelszóval admin esetén)
     // async getAllAllaskeresok() {

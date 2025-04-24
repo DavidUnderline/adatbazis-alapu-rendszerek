@@ -37,18 +37,22 @@ router.post('/api/register', async (req, res) => {
 
 // Álláskereső módosítása
 router.post('/api/update', async (req, res) => {
-  // const { email, password, name, education } = req.body;
-  const allaskereso = req.body;
+  const { name, email, education, password, tipo } = req.body;
+  // const allaskereso = req.body;
   // console.table(allaskereso);
   
   try {
-      const allaskereso = {
-          nev,
-          email,
-          vegzettseg,
-          jelszo
-      };
+      if(tipo){
+        res.json({ success : false, message: 'Ez nem ceg' });
+      }
 
+      const allaskereso = {
+        name,
+        email,
+        education,
+        password
+      };
+    
       const success = await allaskeresoDao.updateAllaskereso(allaskereso);
 
       if (!success) {
@@ -88,20 +92,6 @@ router.post('/api/get', async (req, res) => {
     }
   });
 
-
-router.post('/api/get', async (req, res) => {
-  const email = req.body.email;
-  try {
-    const allaskereso = await allaskeresoDao.getAllaskeresoByEmail(email);
-    if (allaskereso) {
-      res.json(allaskereso);
-    } else {
-      res.status(404).json({ error: 'Álláskereső nem található' });
-    }
-  } catch (err) {
-    res.status(500).json({ error: 'Hiba az álláskereső lekérdezésekor' });
-  }
-});
 
 // // Új CV hozzáadása egy álláskeresőhöz
 // router.post('/:email/cv', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res) => {
