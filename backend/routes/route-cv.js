@@ -1,83 +1,66 @@
 const express = require('express');
 const router = express.Router();
 const cvDao = require('../dao/cv-dao');
-const { getConnection } = require('../config/db');
-const { userAuth } = require('../config/auth');
+// const { userAuth } = require('../config/auth');
+const { body, validationResult } = require('express-validator');
 
-// Összes CV link lekérdezése (admin jogosultság szükséges)
-router.get('/', userAuth(['ROLE_ADMIN']), async (req, res) => {
-    try {
-        const cvs = await cvDao.getAllCvs();
-        res.json(cvs);
-    } catch (err) {
-        res.status(500).json({ error: 'Hiba a CV-k lekérdezésekor' });
-    }
-});
-
-// Egy adott CV link lekérdezése
-router.get('/:cvLink', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res) => {
-    const cvLink = req.params.cvLink;
-    try {
-        const cv = await cvDao.getCv(cvLink);
-        if (cv) {
-            res.json(cv);
-        } else {
-            res.status(404).json({ error: 'CV nem található' });
-        }
-    } catch (err) {
-        res.status(500).json({ error: 'Hiba a CV lekérdezésekor' });
-    }
-});
 
 // Új CV link hozzáadása
-router.post('/', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res) => {
-    const { cv_link } = req.body;
-    if (!cv_link) {
-        return res.status(400).json({ error: 'CV link kötelező' });
+router.post('/api/CVinsert',[
+    body('cv_link').notEmpty().withMessage('CV link kötelező'),
+    body('email').isEmail().withMessage('Érvénytelen email')
+], async (req, res) => {
+    
+    //Ez itt csak ellenőrzi a beírt adatokat. Ha gondot okoz kikommentezhető
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
     }
 
     try {
-        const cvExists = await cvDao.getCv(cv_link);
-        if (cvExists) {
-            return res.status(409).json({ error: 'Ez a CV link már létezik' });
+        const cv = {cv_link, email } = req.body;
+
+        const success = await cvDao.insertCv(cv);
+
+        if (!success) {
+            res.json({ success : false, message: 'CV feltöltés sikertelen' });
+            return;
         }
 
-        const success = await cvDao.insertCv(cv_link);
-        if (success) {
-            res.status(201).json({ message: 'CV sikeresen hozzáadva' });
-        } else {
-            res.status(500).json({ error: 'CV hozzáadása sikertelen' });
-        }
+        res.json({ success : true, message: 'CV sikeresen feltöltve' });
     } catch (err) {
-        res.status(500).json({ error: 'Hiba a CV hozzáadása során' });
+        res.status(500).json({ error: 'Hiba a CV feltöltés során' });
     }
 });
 
-// CV törlése (admin törölhet bármit, user csak a sajátját)
-router.delete('/:cvLink', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res) => {
-    const cvLink = req.params.cvLink;
-    const userEmail = req.user.email;
-    const isAdmin = req.user.roles.includes('ROLE_ADMIN');
+
+// CV link lekérdezése email alapján
+router.post('/api/CVget', async (req, res) => {
 
     try {
-        // Ellenőrizzük, hogy a CV a felhasználóhoz tartozik-e, ha nem admin
-        if (!isAdmin) {
-            let connection;
-            try {
-                connection = await getConnection();
-                const result = await connection.execute(
-                    `SELECT 1 FROM allaskereso_cv_kapcsolat WHERE email = :userEmail AND cv_link = :cvLink`,
-                    { userEmail, cvLink }
-                );
-                if (result.rows.length === 0) {
-                    return res.status(403).json({ error: 'Nincs jogosultság a CV törléséhez' });
-                }
-            } finally {
-                if (connection) await connection.close();
-            }
-        }
+        const email = { email } = req.body;
+        const cv_link = await cvDao.getCv(email);
 
-        const success = await cvDao.deleteCv(cvLink);
+      if (cv_link) {
+        res.json(cv_link);
+
+      } else {
+        res.status(404).json({ error: 'CV nem található' });
+      }
+    } catch (err) {
+      res.status(500).json({ error: 'Hiba a CV lekérdezésekor' });
+    }
+  });
+
+
+// CV törlése
+router.delete('/api/CVdelete', async (req, res) => {
+
+    try {
+        const cv_link = {cv_link} = req.body;
+
+        const success = await cvDao.deleteCv(cv_link);
+
         if (success) {
             res.json({ message: 'CV sikeresen törölve' });
         } else {
@@ -87,5 +70,6 @@ router.delete('/:cvLink', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res
         res.status(500).json({ error: 'Hiba a CV törlése során' });
     }
 });
+
 
 module.exports = router;

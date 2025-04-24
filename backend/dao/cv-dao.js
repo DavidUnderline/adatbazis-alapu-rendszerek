@@ -1,18 +1,38 @@
-const { getConnection } = require('../config/db');
+const { executeQuery, getConnection } = require('../config/db');
 
 class CvDao {
     // Új CV link beszúrása
-    async insertCv(cvLink) {
+    async insertCv(cv) {
         let connection;
         try {
             connection = await getConnection();
+
+            //Cv beszuraas tablaba
             const result = await connection.execute(
-                `INSERT INTO cv (cv_link) VALUES (:cvLink)`,
-                { cvLink },
-                { autoCommit: true }
+                `INSERT INTO cv (cv_link) VALUES (:cv_link)`,
+                { cv_link: cv.cv_link },
+                { autoCommit: false }
             );
-            return result.rowsAffected === 1;
+
+            if (cvResult.rowsAffected !== 1) {
+                throw new Error('CV beszúrása sikertelen');
+            }
+
+            //kapcsolat beszurasa
+            const kapcsolatResult = await connection.execute(
+                `INSERT INTO allaskereso_cv_kapcsolat (email, cv_link) VALUES (:email, :cvLink)`,
+                { email: cv.email, cvLink: cv.cv_link },
+                { autoCommit: false }
+            );
+
+            if (kapcsolatResult.rowsAffected !== 1) {
+                throw new Error('Kapcsolat beszúrása sikertelen');
+            }            
+
+            await connection.commit();
+            return true;
         } catch (err) {
+            if (connection) await connection.rollback();
             console.error('Error inserting CV:', err);
             throw err;
         } finally {
@@ -21,15 +41,17 @@ class CvDao {
     }
 
     // CV link lekérdezése
-    async getCv(cvLink) {
+    async getCv( email ) {
         let connection;
         try {
+
             connection = await getConnection();
-            const result = await connection.execute(
-                `SELECT cv_link FROM cv WHERE cv_link = :cvLink`,
-                { cvLink }
-            );
+            const query = `SELECT cv_link FROM cv
+               WHERE email = :email`;
+            const result = await connection.execute(query, { email });
+
             return result.rows.length > 0 ? result.rows[0] : null;
+
         } catch (err) {
             console.error('Error fetching CV:', err);
             throw err;
@@ -38,31 +60,14 @@ class CvDao {
         }
     }
 
-    // Összes CV link lekérdezése
-    async getAllCvs() {
-        let connection;
-        try {
-            connection = await getConnection();
-            const result = await connection.execute(
-                `SELECT cv_link FROM cv`
-            );
-            return result.rows;
-        } catch (err) {
-            console.error('Error fetching all CVs:', err);
-            throw err;
-        } finally {
-            if (connection) await connection.close();
-        }
-    }
-
     // CV törlése
-    async deleteCv(cvLink) {
+    async deleteCv(cv_link) {
         let connection;
         try {
             connection = await getConnection();
             const result = await connection.execute(
-                `DELETE FROM cv WHERE cv_link = :cvLink`,
-                { cvLink },
+                `DELETE FROM cv WHERE cv_link = :cv_link`,
+                { cv_link },
                 { autoCommit: true }
             );
             return result.rowsAffected === 1;
@@ -73,6 +78,24 @@ class CvDao {
             if (connection) await connection.close();
         }
     }
+
+    // Összes CV link lekérdezése
+    // async getAllCvs() {
+    //     let connection;
+    //     try {
+    //         connection = await getConnection();
+    //         const result = await connection.execute(
+    //             `SELECT cv_link FROM cv`
+    //         );
+    //         return result.rows;
+    //     } catch (err) {
+    //         console.error('Error fetching all CVs:', err);
+    //         throw err;
+    //     } finally {
+    //         if (connection) await connection.close();
+    //     }
+    // }
+    
 }
 
 module.exports = new CvDao();
