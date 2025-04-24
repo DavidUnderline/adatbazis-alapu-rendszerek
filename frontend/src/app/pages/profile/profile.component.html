@@ -1,19 +1,31 @@
 <div
-  class="bg-white-50 bg-white-500 dark:bg-dark_blue-500 flex justify-between p-56 pt-32"
+  class="bg-white-50 bg-white-500 dark:bg-dark_blue-500 flex justify-center p-56 pt-32"
 >
-  <div class="bg-white-500">
-    <img src="" alt="Felhasználó avatárja" />
-    <h1>Email cím: {{ user.email }}</h1>
-    @if ( true ) {
-    
-      <!--TODO Allaskereso adatait feltölteni. -->
-    
-      <!-- TODO Allaskereso adatainak módosítása -->
+  @if ( user_allas || user_ceg) {
+  <div class="bg-white-500 p-4 rounded-2xl grid grid-cols-2">
+    @if ( user_allas === null ) {
+    <!--TODO Ceg adatait feltölteni. -->
+    <section>
+      <img src="" alt="Felhasználó avatárja" />
+    <h1>Email cím: {{ user_email }}</h1>
+      <h1>Cég neve: {{ user_ceg?.neve }}</h1>
+      <h2>Cég neve: {{ user_ceg?.adoazonosito }}</h2>
+      <p>Cég értékelése: {{ user_ceg?.ertekeles }}</p>
+    </section>
+    <!-- TODO Cég adatainak módosítása -->
+
     }@else {
+    <!--TODO Allaskereso adatait feltölteni. -->
+    <section>
+      <img src="" alt="Felhasználó avatárja" />
+      <h1>Email cím: {{ user_email }}</h1>
+      <h1>Felhasználó neve: {{ user_allas.nev }}</h1>
+      <h2>Végzettség: {{ user_allas.vegzettseg }}</h2>
+      <p>Státusz: {{ user_allas.statusz }}</p>
+    </section>
+    <!-- TODO Allaskereso adatainak módosítása -->
     
-      <!--TODO Ceg adatait feltölteni. -->
-    
-      <!-- TODO Cég adatainak módosítása -->
     }
   </div>
+  }
 </div>

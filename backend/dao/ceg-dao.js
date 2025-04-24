@@ -30,6 +30,22 @@ class CegDao {
             if (connection) await connection.close();
         }
     }
+
+    async getCegByEmail(email){
+        let connection;
+        try{
+            connection = await getConnection();
+            
+            const query = `SELECT ADOAZONOSITO, NEVE, ERTEKELES, TERULET_ID FROM CEG
+            WHERE EMAIL =: email`;
+            const result = await connection.execute(query, [email]);
+    
+            return result.rows.length === 1 ? result.rows[0] : null;
+        }catch(err){
+            console.error(err);
+            throw err;
+        }
+    }
 }
 
 module.exports = new CegDao();

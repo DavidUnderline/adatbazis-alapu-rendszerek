@@ -27,4 +27,18 @@ router.post('/api/register', async (req, res) => {
     }
 });
 
+router.post('/api/get', async (req, res) => {
+    const email = req.body.email;
+
+    try{
+        const ceg = await cegDao.getCegByEmail(email);
+        if(!ceg){
+            res.status(401).json({error: 'Cég nem található'});
+        }
+        res.json({success: true, ceg: ceg});
+    }catch(err){
+        res.status(500).json({ error: 'Hiba a cég lekérdezésekor'});
+    }
+})
+
 module.exports = router;

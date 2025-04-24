@@ -1,3 +1,3 @@
 # adatbazis-alapu-rendszerek
 
-# dave_branch
+# Frontend - Jáger Péter
