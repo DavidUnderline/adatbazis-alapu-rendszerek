@@ -16,21 +16,42 @@ router.post('/api/register', async (req, res) => {
             return;
         }
 
-        // CV-k hozzárendelése, ha megadtak
-        // if (cv_links && Array.isArray(cv_links)) {
-        //     for (const cv_link of cv_links) {
-        //         const cvExists = await cvDao.getCv(cv_link);
-        //         if (!cvExists) {
-        //             await cvDao.insertCv(cv_link);
-        //         }
-        //         await allaskeresoDao.addCvToAllaskereso(email, cv_link);
-        //     }
-        // }
-
         res.json({ success : true, email: allaskereso.EMAIL });
     } catch (err) {
         res.status(500).json({ error: 'Hiba a regisztráció során' });
     }
+});
+
+
+// Álláskereső módosítása
+router.post('/api/update', async (req, res) => {
+  const { name, email, education, password, tipo } = req.body;
+  // const allaskereso = req.body;
+  // console.table(allaskereso);
+  
+  try {
+      if(tipo){
+        res.json({ success : false, message: 'Ez nem ceg' });
+      }
+
+      const allaskereso = {
+        name,
+        email,
+        education,
+        password
+      };
+    
+      const success = await allaskeresoDao.updateAllaskereso(allaskereso);
+
+      if (!success) {
+          res.json({ success : false, message: 'Adatok frissítése sikertelen' });
+          return;
+      }
+
+      res.json({ success : true });
+  } catch (err) {
+      res.status(500).json({ error: 'Hiba az adatok frissítése során' });
+  }
 });
 
 // Összes álláskereső lekérdezése (admin jogosultság szükséges)
@@ -58,6 +79,7 @@ router.post('/api/get', async (req, res) => {
       res.status(500).json({ error: 'Hiba az álláskereső lekérdezésekor' });
     }
   });
+
 
 // // Új CV hozzáadása egy álláskeresőhöz
 // router.post('/:email/cv', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res) => {

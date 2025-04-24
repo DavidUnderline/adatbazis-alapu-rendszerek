@@ -8,6 +8,11 @@ import { Allas } from '../../shared/Model/Allas';
 import { CegFormComponent } from './ceg-form/ceg-form.component';
 import { AllaskeresoFormComponent } from './allaskereso-form/allaskereso-form.component';
 import { MatIcon } from '@angular/material/icon';
+import { CvFormComponent } from './cv-form/cv-form.component';
+import { CV } from '../../shared/Model/CV';
+import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
+import { DisplayDirective } from '../../shared/directives/display.directive';
+import { WorkListComponent } from "./work-list/work-list.component";
 @Component({
   selector: 'app-profile',
   imports: [
@@ -15,7 +20,11 @@ import { MatIcon } from '@angular/material/icon';
     CegFormComponent,
     AllaskeresoFormComponent,
     MatIcon,
-  ],
+    CvFormComponent,
+    ErrorMsgComponent,
+    DisplayDirective,
+    WorkListComponent
+],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
@@ -24,9 +33,13 @@ export class ProfileComponent {
   user_ceg: Ceg | null = null;
   user_email = localStorage.getItem('username');
   is_company = inject(IsCompanyService);
+  show_error = false;
+  error_msg: string = '';
+
 
   constructor(private http: HttpClient) {
     this.is_company.getIsCompany() ? this.loadCeg() : this.loadAllaskereso();
+    this.show_error=false;
   }
 
   loadCeg() {
@@ -47,7 +60,7 @@ export class ProfileComponent {
           };
         },
         (error) => {
-          console.error(error);
+          this.errorHandler(error.error.error)
         }
       );
   }
@@ -69,30 +82,53 @@ export class ProfileComponent {
           };
         },
         (error) => {
-          console.error(error);
+          this.errorHandler(error.error.error)
+
         }
       );
   }
 
   modifyAllaskereso(
       user_data: {
-        nev: string | null;
-        email: string | null;
-        vegzettseg: string | null;
-      },
-    cv_links?: string[]
+        nev: string | null,
+        email: string | null,
+        vegzettseg: string | null,
+        jelszo: string | null
+      }
   ) {
-    console.table(user_data);
-    console.table(cv_links);
+    this.http.post("http://localhost:3000/allaskereso/api/update", {user_data}).subscribe(
+      (response:any) => {
+        if(response.success){
+
+        }else{
+          this.errorHandler(response.message);
+        }
+      },
+      (err)=> {
+        this.errorHandler(err.error.error)
+      }
+    )
+
+    
    
     // Todo
   }
 
+  uploadCVs(cvs: CV[]){
+    // TODO
+  }
+
   modifyCeg(datas: {
-    adoazonosito: string | null;
-    nev: string | null;
-    email: string | null;
+    adoazonosito: string | null,
+    nev: string | null,
+    email: string | null,
+    jelszo: string | null;
   }) {
     // Todo
+  }
+
+  errorHandler(error: string){
+    this.show_error = true,
+    this.error_msg = error;
   }
 }

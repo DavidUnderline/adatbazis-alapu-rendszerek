@@ -1,4 +1,4 @@
 node_modules/
 .env
 backend/.env
-db.js
+config/db.js
