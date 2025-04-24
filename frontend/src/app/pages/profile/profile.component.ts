@@ -12,7 +12,7 @@ import { CvFormComponent } from './cv-form/cv-form.component';
 import { CV } from '../../shared/Model/CV';
 import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
-import { WorkListComponent } from "./work-list/work-list.component";
+import { WorkListComponent } from './work-list/work-list.component';
 @Component({
   selector: 'app-profile',
   imports: [
@@ -23,8 +23,8 @@ import { WorkListComponent } from "./work-list/work-list.component";
     CvFormComponent,
     ErrorMsgComponent,
     DisplayDirective,
-    WorkListComponent
-],
+    WorkListComponent,
+  ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
@@ -36,10 +36,9 @@ export class ProfileComponent {
   show_error = false;
   error_msg: string = '';
 
-
   constructor(private http: HttpClient) {
     this.is_company.getIsCompany() ? this.loadCeg() : this.loadAllaskereso();
-    this.show_error=false;
+    this.show_error = false;
   }
 
   loadCeg() {
@@ -60,7 +59,7 @@ export class ProfileComponent {
           };
         },
         (error) => {
-          this.errorHandler(error.error.error)
+          this.errorHandler(error.error.error);
         }
       );
   }
@@ -82,53 +81,54 @@ export class ProfileComponent {
           };
         },
         (error) => {
-          this.errorHandler(error.error.error)
-
+          this.errorHandler(error.error.error);
         }
       );
   }
 
-  modifyAllaskereso(
-      user_data: {
-        nev: string | null,
-        email: string | null,
-        vegzettseg: string | null,
-        jelszo: string | null
-      }
-  ) {
-    this.http.post("http://localhost:3000/allaskereso/api/update", {user_data}).subscribe(
-      (response:any) => {
-        if(response.success){
-
-        }else{
-          this.errorHandler(response.message);
+  modifyAllaskereso(user_data: {
+    nev: string | null;
+    email: string | null;
+    vegzettseg: string | null;
+    jelszo: string | null;
+  }) {
+    this.http
+      .post('http://localhost:3000/allaskereso/api/update', {
+        email: user_data.email,
+        neve: user_data.nev,
+        vegzettseg: user_data.vegzettseg,
+        jelszo: user_data.jelszo,
+      })
+      .subscribe(
+        (response: any) => {
+          if (response.success) {
+            this.loadAllaskereso();
+          } else {
+            this.errorHandler(response.message);
+          }
+        },
+        (err) => {
+          this.errorHandler(err.error.error);
         }
-      },
-      (err)=> {
-        this.errorHandler(err.error.error)
-      }
-    )
+      );
 
-    
-   
     // Todo
   }
 
-  uploadCVs(cvs: CV[]){
+  uploadCVs(cvs: CV[]) {
     // TODO
   }
 
   modifyCeg(datas: {
-    adoazonosito: string | null,
-    nev: string | null,
-    email: string | null,
+    adoazonosito: string | null;
+    nev: string | null;
+    email: string | null;
     jelszo: string | null;
   }) {
     // Todo
   }
 
-  errorHandler(error: string){
-    this.show_error = true,
-    this.error_msg = error;
+  errorHandler(error: string) {
+    (this.show_error = true), (this.error_msg = error);
   }
 }

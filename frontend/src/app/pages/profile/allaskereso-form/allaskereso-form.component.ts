@@ -37,9 +37,9 @@ export class AllaskeresoFormComponent {
 
     this.valid_form.emit({
       nev: `${form.k_nev} ${form.v_nev}`,
-      email: form.email,
+      email: (form.email)? form.email: localStorage.getItem("username"),
       vegzettseg: form.vegzettseg,
-      jelszo: sha256(sha256(form.jelszo1 as string + ((form.email)? form.email: localStorage.getItem("username"))))
+      jelszo: (form.jelszo1)? (sha256(sha256(form.jelszo1 as string + ((form.email)? form.email: localStorage.getItem("username"))))) : ''
     }) 
   }
 }

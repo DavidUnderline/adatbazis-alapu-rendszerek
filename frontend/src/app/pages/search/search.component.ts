@@ -2,14 +2,11 @@ import { Component, inject } from '@angular/core';
 import { SearchFormComponent } from './search-form/search-form.component';
 import { SearchFilterDialogComponent } from './search-filter-dialog/search-filter-dialog.component';
 import { Allas } from '../../shared/Model/Allas';
-// import jobs from '../../shared/dummy_data/jobs.json';
 import { WorkService } from '../../services/work.service';
 import { Router } from '@angular/router';
 import { DisplayDirective } from '../../shared/directives/display.directive';
-
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
-import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 
 
 @Component({
@@ -19,13 +16,11 @@ import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
     SearchFilterDialogComponent,
     DisplayDirective,
     HttpClientModule,
-    ErrorMsgComponent
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css',
 })
 export class SearchComponent {
-  private work_offers: Allas[] = [];
   filtered_work_offers: Allas[] = [];
   is_searched = false;
   addittional_filter!: {kovetelmeny: string, min: number, max: number}

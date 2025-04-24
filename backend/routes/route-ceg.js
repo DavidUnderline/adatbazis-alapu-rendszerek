@@ -29,32 +29,29 @@ router.post('/api/register', async (req, res) => {
 
 //ceg modositasa
 router.post('/api/update', async (req, res) => {
-  const { taxid, name, email, password, tipo } = req.body;
   // const allaskereso = req.body;
   // console.table(allaskereso);
   
   try {
-      if(!tipo){
-        res.json({ success : false, message: 'Ez nem allaskereso' });
-      }
-      
-      const ceg = {
-        taxid,
-        name,
-        email,
-        password
-      }
+    const ceg = { adoazonosito: req.body.adoazonosito };
+    if (req.body.neve) ceg.neve = req.body.neve;
+    if (req.body.email) ceg.email = req.body.email;
+    if (req.body.jelszo) ceg.jelszo = req.body.jelszo;
 
-      const success = await cegDao.updateCeg(ceg);
+    if (!updates.taxid) {
+        throw new Error('Adóazonosító kötelező');
+    }
 
-      if (!success) {
-          res.json({ success : false, message: 'Adatok frissítése sikertelen' });
-          return;
-      }
+    const success = await cegDao.updateCeg(ceg);
 
-      res.json({ success : true });
+    if (!success) {
+        res.json({ success : false, message: 'Adatok frissítése sikertelen' });
+        return;
+    }
+
+    res.json({ success : true });
   } catch (err) {
-      res.status(500).json({ error: 'Hiba az adatok frissítése során' });
+    res.status(500).json({ error: 'Hiba az adatok frissítése során' });
   }
 });
 
