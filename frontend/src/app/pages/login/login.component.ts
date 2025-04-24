@@ -36,35 +36,34 @@ export class LoginComponent {
   showError: boolean = true;
   error_msg: string = '';
 
-  handle_login(login: { email: string; password: string; }) {
-    const log = {
-      email: login.email,
-      password: sha256(sha256(login.password+login.email)),
-      tipo: this.companyservice.getIsCompany()
-    }
-    // login: { tipo: this.companyservice.getIsCompany() };
-    // console.table(login);
-    console.log("emittelt");
-    // console.log(this.companyservice.getIsCompany());
+handle_login(login: { email: string; password: string; }) {
+  const log = {
+    email: login.email,
+    password: sha256(sha256(login.password+login.email)),
+    tipo: this.companyservice.getIsCompany()
+  }
+  // login: { tipo: this.companyservice.getIsCompany() };
+  // console.table(login);
+  console.log("emittelt");
+  // console.log(this.companyservice.getIsCompany());
 
-    // const loginData = { email: login.email, password: login.password };
-      this.http.post<any>('http://localhost:3000/auth/api/login', log).subscribe(
-        response => {
-            if (response.success) {
-              this.loginservice.setLoginStatus(true);
-              this.companyservice.setIsCompany(false);
-              localStorage.setItem('username', response.email); //! kisbetű, allCapssel nem működik gyerekik
-              this.router.navigate(['/app']);
-  
-            } else {
-              this.errorHandler('Ismeretlen Hiba.')
-            }
-          },
-          (error) => {
-              this.errorHandler(error.error.error);
-          }
-        );
+  // const loginData = { email: login.email, password: login.password };
+  this.http.post<any>('http://localhost:3000/auth/api/login', log).subscribe(
+    response => {
+        if (response.success) {
+          this.loginservice.setLoginStatus(true);
+          this.companyservice.setIsCompany(false);
+          localStorage.setItem('username', response.email); //! kisbetű, allCapssel nem működik gyerekik
+          this.router.navigate(['/app']);
 
+        } else {
+          this.errorHandler('Ismeretlen Hiba.')
+        }
+      },
+      (error) => {
+          this.errorHandler(error);
+      }
+    );
   }
 
   errorHandler(error: string): void{

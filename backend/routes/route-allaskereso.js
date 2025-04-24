@@ -6,21 +6,9 @@ const cvDao = require('../dao/cv-dao');
 
 // Álláskereső regisztrálása
 router.post('/api/register', async (req, res) => {
-    const { email, password, name, last_signed_in, education, status } = req.body;
+    const allaskereso = req.body;
     
     try {
-        // ettol elromlik
-        // const hashedPassword = await bcrypt.hash(password, 10);
-
-        const allaskereso = {
-            email,
-            name,
-            password: password,
-            last_signed_in,
-            education,
-            status: status
-        };
-
         const success = await allaskeresoDao.insertAllaskereso(allaskereso);
 
         if (!success) {

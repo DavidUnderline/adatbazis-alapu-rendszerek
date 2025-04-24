@@ -33,7 +33,7 @@ export class SearchFilterDialogComponent {
       const form = this.additional_filter_form.getRawValue();
       
       if( form.max > 0 && form.max > form.min){
-        console.table(form)
+        // console.table(form)
         this.additional_filter_form_valid.emit({
           kovetelmeny: form.kovetelmeny,
           min: form.min,

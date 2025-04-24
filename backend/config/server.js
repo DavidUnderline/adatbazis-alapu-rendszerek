@@ -13,8 +13,11 @@ app.listen(port, () => {
 });
 
 const authRoute = require('../routes/auth');
-const allaskereso = require('../routes/route-allaskereso')
-const ceg = require('../routes/route-ceg')
+const allaskereso = require('../routes/route-allaskereso');
+const ceg = require('../routes/route-ceg');
+const allasok = require('../routes/route-allasok');
+
 app.use('/auth', authRoute);
 app.use('/allaskereso', allaskereso);
 app.use('/ceg', ceg);
+app.use('/allasok', allasok);

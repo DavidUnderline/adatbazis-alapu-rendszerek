@@ -1,11 +1,11 @@
 const oracledb = require('oracledb');
 const dbConfig = {
-    user: "system",
+    user: "pepssoo",
     password: "123",
-    connectString: "localhost/FREE",
+    connectString: "localhost/FREEPDB1",
 };
 
-async function executeQuery(sql, params = []) {
+async function executeQuery(sql, params = {}) {
     let connection;
     try {
         connection = await oracledb.getConnection(dbConfig);
