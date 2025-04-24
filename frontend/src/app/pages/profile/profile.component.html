@@ -1,5 +1,5 @@
 <div
-  class="bg-white-50 bg-white-500 dark:bg-dark_blue-500 flex justify-center p-56 pt-32"
+  class="bg-white-50 bg-white-500 dark:bg-dark_blue-500 flex flex-col items-center justify-center gap-8 p-56 pt-32"
 >
   @if ( user_allas || user_ceg) {
   <div
@@ -39,7 +39,9 @@
       (valid_form)="modifyAllaskereso($event)"
     ></app-allaskereso-form>
     <app-cv-form class="col-span-2"></app-cv-form>
-    }
-  </div>
   }
+</div>
+<app-error-msg [error_msg]="error_msg" [appDisplay]="show_error"></app-error-msg>
+  }
+
 </div>

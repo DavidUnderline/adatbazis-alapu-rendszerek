@@ -10,6 +10,8 @@ import { AllaskeresoFormComponent } from './allaskereso-form/allaskereso-form.co
 import { MatIcon } from '@angular/material/icon';
 import { CvFormComponent } from './cv-form/cv-form.component';
 import { CV } from '../../shared/Model/CV';
+import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
+import { DisplayDirective } from '../../shared/directives/display.directive';
 @Component({
   selector: 'app-profile',
   imports: [
@@ -17,7 +19,9 @@ import { CV } from '../../shared/Model/CV';
     CegFormComponent,
     AllaskeresoFormComponent,
     MatIcon,
-    CvFormComponent
+    CvFormComponent,
+    ErrorMsgComponent,
+    DisplayDirective
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
@@ -27,9 +31,13 @@ export class ProfileComponent {
   user_ceg: Ceg | null = null;
   user_email = localStorage.getItem('username');
   is_company = inject(IsCompanyService);
+  show_error = false;
+  error_msg: string = '';
+
 
   constructor(private http: HttpClient) {
     this.is_company.getIsCompany() ? this.loadCeg() : this.loadAllaskereso();
+    this.show_error=false;
   }
 
   loadCeg() {
@@ -50,7 +58,7 @@ export class ProfileComponent {
           };
         },
         (error) => {
-          console.error(error);
+          this.errorHandler(error.error.error)
         }
       );
   }
@@ -72,7 +80,8 @@ export class ProfileComponent {
           };
         },
         (error) => {
-          console.error(error);
+          this.errorHandler(error.error.error)
+
         }
       );
   }
@@ -85,7 +94,17 @@ export class ProfileComponent {
         jelszo: string | null
       }
   ) {
-    console.table(user_data);
+    this.http.post("http://localhost:3000/allaskereso/api/update", {user_data}).subscribe(
+      (response) => {
+        console.log("[---modifyAllaskereso---]");
+        console.table(response);
+      },
+      (err)=> {
+        this.errorHandler(err.error.error)
+      }
+    )
+
+    
    
     // Todo
   }
@@ -101,5 +120,10 @@ export class ProfileComponent {
     jelszo: string | null;
   }) {
     // Todo
+  }
+
+  errorHandler(error: string){
+    this.show_error = true,
+    this.error_msg = error;
   }
 }
