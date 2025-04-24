@@ -13,7 +13,7 @@ class CegDao {
                     ado: ceg.id, 
                     name: ceg.name,
                     email: ceg.email,
-                    password: ceg.password, //jelszot hashelni
+                    password: ceg.password,
                     rating: 0,
                     area_id: null
                 },

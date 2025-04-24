@@ -49,18 +49,16 @@ class AllaskeresoDao {
         let connection;
         try {
             connection = await getConnection();
-
             const fields = [];
             const binds = { email: allaskereso.email };
-
-            if (allaskereso.neve) {
+            if (allaskereso.neve != " ") {
                 fields.push('neve = :neve');
                 binds.neve = allaskereso.neve;
             }
 
             if (allaskereso.vegzettseg) {
                 fields.push('vegzettseg = :vegzettseg');
-                binds.neve = allaskereso.vegzettseg;
+                binds.vegzettseg = allaskereso.vegzettseg;
             }
 
             if (allaskereso.jelszo) {
@@ -70,9 +68,9 @@ class AllaskeresoDao {
             if (fields.length === 0) {
                 throw new Error('Nincs frissítendő mező');
             }
-
             const query = `UPDATE allaskereso SET ${fields.join(', ')} WHERE email = :email`;
-            
+            console.log(query);
+            console.table(binds);
             const result = await connection.execute(query, binds, { autoCommit: true });
 
             return result.rowsAffected === 1;
@@ -115,7 +113,7 @@ class AllaskeresoDao {
             //     : `SELECT a.email, a.neve, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
             //               (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
             //        FROM allaskereso a WHERE a.email = :email`;
-            const query = `SELECT email, neve, utolso_bejelentkezes, vegzettseg, statusz, cv_link FROM ALLASKERESO
+            const query = `SELECT email, neve, utolso_bejelentkezes, vegzettseg, statusz FROM ALLASKERESO
                WHERE email = :email`;
             const result = await connection.execute(query, { email });
             return result.rows.length > 0 ? result.rows[0] : null;

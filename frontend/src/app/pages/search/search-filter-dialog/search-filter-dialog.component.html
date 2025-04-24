@@ -15,11 +15,13 @@
       </fieldset>
 
       <fieldset class="border-b-dark_blue-500 border-b-2">
-        <input type="number" formControlName="min" name="min" id="min" placeholder="min" min="0" max="3000000" step="10000" class="focus:outline-0">
+        <label for="min">Min:</label>
+        <input type="number" formControlName="min" name="min" id="min" min="0" max="3000000" step="10000" class="focus:outline-0 pl-2">
       </fieldset>
 
       <fieldset class="border-b-dark_blue-500 border-b-2">
-        <input type="number" formControlName="max" name="max" id="max" placeholder="max" min="0" max="3000000" step="10000" class="focus:outline-0">
+        <label for="max">Max:</label>
+        <input type="number" formControlName="max" name="max" id="max" min="0" max="3000000" step="10000" class="focus:outline-0 pl-2">
       </fieldset>
 
       <input type="submit" (click)="apply()" value="Alkalmaz" class="col-span-2 focus:outline-0 hover:cursor-pointer w-fit ml-auto mr-auto bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl">

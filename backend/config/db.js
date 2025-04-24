@@ -5,7 +5,7 @@ const dbConfig = {
     connectString: "localhost/FREE",
 };
 
-async function executeQuery(sql, params = []) {
+async function executeQuery(sql, params = {}) {
     let connection;
     try {
         connection = await oracledb.getConnection(dbConfig);
