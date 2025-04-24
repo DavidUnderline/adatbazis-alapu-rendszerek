@@ -264,6 +264,7 @@ CREATE TABLE jelentkezo(
 
 ---------------------------------------- TRIGGEREK ----------------------------------------
 
+-------------------- cegertekeles atlag frissito trigger
 BEGIN
     EXECUTE IMMEDIATE 'DROP TRIGGER update_ertekeles';
 EXCEPTION
@@ -285,43 +286,54 @@ BEGIN
 END;
 /
 
+--------------------allaskereso 90 napon tuli inaktivitas trigger
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TRIGGER allaskereso_inactive_trigger';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
 CREATE OR REPLACE TRIGGER allaskereso_inactive_trigger
     BEFORE UPDATE OF utolso_bejelentkezes ON allaskereso
     FOR EACH ROW
     WHEN (NEW.utolso_bejelentkezes IS NOT NULL)
     BEGIN
         IF :OLD.utolso_bejelentkezes IS NOT NULL AND :OLD.utolso_bejelentkezes < SYSDATE - 90 THEN
-            :NEW.statusz := 0; -- Passzív státusz
+            :NEW.statusz := False; -- Passzív státusz
         END IF;
     END;
 /
 
 ---------------------------------------- Oracle Scheduler ----------------------------------------
 -- Csak mert megtehetem es ilyet is tudok, de azert triggerrel is megcsinalom, hogy a kovetelmeny ki legyen elegitve
+
 BEGIN
-    -- Job letrehozasa
-    EXECUTE IMMEDIATE '
-    CREATE OR REPLACE PROCEDURE update_inactive_users
-    AS
-    BEGIN
-        UPDATE allaskereso
-        SET statusz = 0 -- Passzív státusz (false)
-        WHERE utolso_bejelentkezes IS NOT NULL
-          AND utolso_bejelentkezes < SYSDATE - 90;
-        COMMIT;
-    END;';
+    DBMS_SCHEDULER.DROP_JOB (
+        job_name => 'UPDATE_INACTIVE_USERS_JOB',
+        force    => TRUE
+    );
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a job nem létezik, csendben folytatjuk
+        DBMS_OUTPUT.PUT_LINE('Hiba történt a job törlésekor: ' || SQLERRM);
+        NULL;
 END;
 /
 
 BEGIN
-    -- Ütemezett job létrehozása
     DBMS_SCHEDULER.CREATE_JOB (
         job_name        => 'UPDATE_INACTIVE_USERS_JOB',
         job_type        => 'PLSQL_BLOCK',
-        job_action      => 'BEGIN update_inactive_users; END;',
+        job_action      => 'BEGIN UPDATE allaskereso SET statusz = 0 WHERE utolso_bejelentkezes IS NOT NULL AND utolso_bejelentkezes < SYSDATE - 90; END;',
         start_date      => SYSTIMESTAMP,
-        repeat_interval => 'FREQ=DAILY;BYHOUR=0;BYMINUTE=0;BYSECOND=0', -- Minden éjfélkor
+        repeat_interval => 'FREQ=DAILY;BYHOUR=0;BYMINUTE=0;BYSECOND=0',
         enabled         => TRUE,
+        auto_drop       => FALSE,
         comments        => 'Napi álláskereső státusz frissítés 90 nap inaktivitás után'
     );
 END;
