@@ -14,18 +14,20 @@ import { LoginService } from '../../services/login.service';
 import { IsCompanyService } from '../../services/is-company.service';
 import { inject } from '@angular/core';
 import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
-import { DisplayDirective } from '../../shared/directives/display.directive'; 
+import { DisplayDirective } from '../../shared/directives/display.directive';
+import { SuccessMsgComponent } from "../../shared/success-msg/success-msg.component"; 
 
 
 @Component({
   selector: 'app-login',
-  imports: [LoginFormComponent, HttpClientModule, ErrorMsgComponent, DisplayDirective],
+  imports: [LoginFormComponent, HttpClientModule, ErrorMsgComponent, DisplayDirective, SuccessMsgComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
   constructor(private http: HttpClient, private router: Router){
     this.showError = false;
+    this.showSuccess = false;
   }
   
   valid_login: { email: string; password: string;} | null = null;
@@ -35,6 +37,9 @@ export class LoginComponent {
 
   showError: boolean = true;
   error_msg: string = '';
+
+  showSuccess:boolean = true;
+  success_msg: string = '';
 
 handle_login(login: { email: string; password: string; }) {
   const log = {
@@ -61,13 +66,19 @@ handle_login(login: { email: string; password: string; }) {
         }
       },
       (error) => {
-          this.errorHandler(error);
+          this.errorHandler(error.error.error);
       }
     );
   }
 
   errorHandler(error: string): void{
+    console.table(error);
     this.showError = true;
     this.error_msg = error;
+  }
+
+  successHandler(success: string){
+    this.showSuccess = true;
+    this.success_msg = success;
   }
 }
