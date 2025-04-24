@@ -2,16 +2,16 @@ const { executeQuery, getConnection } = require('../config/db');
 
 class AllaskeresoDao {
     // Álláskereső lekérdezése email alapján jelszó nélkül (bejelentkezéshez)
-    async user(email, tipo) {
+    async user(email, password, tipo) {
         let query = "";
         if(tipo === false){
-            query = "SELECT email FROM allaskereso WHERE email = :email";
+            query = "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
         
         } else{
-            query = "SELECT email FROM ceg WHERE email = :email";
+            query = "SELECT email FROM ceg WHERE email = :email AND jelszo = :password";
         } 
 
-        const result = await executeQuery(query,[email]);
+        const result = await executeQuery(query,{email: email, password: password});
         return result.length > 0 ? result[0] : null;
     }
 

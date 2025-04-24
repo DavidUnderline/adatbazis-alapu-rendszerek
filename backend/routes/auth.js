@@ -20,7 +20,7 @@ router.post('/api/login', async (req, res) => {
     }
 
     try {
-        const allaskereso = await allaskeresoDao.user(email, tipo);
+        const allaskereso = await allaskeresoDao.user(email, password, tipo);
 
         if (!allaskereso) {
             return res.status(401).json({ error: 'Érvénytelen email vagy jelszó' });
