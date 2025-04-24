@@ -1,19 +1,17 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoginService {
-  private key = "is_logged";
+  private key = 'is_logged';
+  private router = inject(Router);
 
   constructor() {
     if (localStorage.getItem(this.key) === null) {
       localStorage.setItem(this.key, JSON.stringify(false));
     }
-  }
-
-  logOut(){
-    localStorage.setItem(this.key, JSON.stringify(false));
   }
 
   setLoginStatus(isLoggedIn: boolean): void {
@@ -27,5 +25,10 @@ export class LoginService {
 
   isLoggedIn(): boolean {
     return this.getLoginStatus();
+  }
+
+  logOut() {
+    localStorage.setItem(this.key, JSON.stringify(false));
+    this.router.navigate(["/home"]);
   }
 }

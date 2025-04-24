@@ -5,10 +5,17 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { response } from 'express';
 import { IsCompanyService } from '../../services/is-company.service';
 import { Allas } from '../../shared/Model/Allas';
-
+import { CegFormComponent } from './ceg-form/ceg-form.component';
+import { AllaskeresoFormComponent } from './allaskereso-form/allaskereso-form.component';
+import { MatIcon } from '@angular/material/icon';
 @Component({
   selector: 'app-profile',
-  imports: [HttpClientModule],
+  imports: [
+    HttpClientModule,
+    CegFormComponent,
+    AllaskeresoFormComponent,
+    MatIcon,
+  ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
@@ -19,11 +26,10 @@ export class ProfileComponent {
   is_company = inject(IsCompanyService);
 
   constructor(private http: HttpClient) {
-    (this.is_company.getIsCompany()) ? this.loadCeg() : this.loadAllaskereso();
+    this.is_company.getIsCompany() ? this.loadCeg() : this.loadAllaskereso();
   }
 
   loadCeg() {
-    console.log("ceg");
     this.http
       .post<any>('http://localhost:3000/ceg/api/get', {
         email: this.user_email,
@@ -37,10 +43,8 @@ export class ProfileComponent {
             neve: ceg_adat[1] as string,
             jelszo: '',
             ertekeles: ceg_adat[2],
-            terulet: ceg_adat[3]
+            terulet: ceg_adat[3],
           };
-          
-          
         },
         (error) => {
           console.error(error);
@@ -49,14 +53,12 @@ export class ProfileComponent {
   }
 
   loadAllaskereso() {
-    console.log("allaskereso")
     this.http
       .post<any>('http://localhost:3000/allaskereso/api/get', {
         email: this.user_email,
       })
       .subscribe(
         (response) => {
-          console.table(response);
           this.user_allas = {
             email: response[0] as string,
             nev: response[1] as string,
@@ -70,5 +72,22 @@ export class ProfileComponent {
           console.error(error);
         }
       );
+  }
+
+  modifyAllaskereso(datas: {
+    nev: string | null;
+    email: string | null;
+    vegzettseg: string | null;
+  }) {
+    console.table(datas);
+    // Todo
+  }
+
+  modifyCeg(datas: {
+    adoazonosito: string | null;
+    nev: string | null;
+    email: string | null;
+  }) {
+    // Todo
   }
 }
