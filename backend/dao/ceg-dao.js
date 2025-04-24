@@ -31,11 +31,37 @@ class CegDao {
         }
     }
 
+    async updateCeg(ceg) {
+        let connection;
+        try {
+            //taxid,name,email,password
+            connection = await getConnection();
+            const result = await connection.execute(
+                `UPDATE ceg 
+                    SET neve = :name, email = :email, jelszo = :password, 
+                    WHERE adoazonosito = :taxid`,
+                {
+                    taxid: ceg.taxid,
+                    name: ceg.name,
+                    email: ceg.email,
+                    
+                },
+                { autoCommit: true }
+            );
+            return result.rowsAffected === 1;
+        } catch (err) {
+            console.error('Error updating ceg:', err);
+            throw err;
+        } finally {
+            if (connection) await connection.close();
+        }
+    }
+    
+
     async getCegByEmail(email){
         let connection;
         try{
             connection = await getConnection();
-            
             const query = `SELECT ADOAZONOSITO, NEVE, ERTEKELES, TERULET_ID FROM CEG
             WHERE EMAIL =: email`;
             const result = await connection.execute(query, [email]);
