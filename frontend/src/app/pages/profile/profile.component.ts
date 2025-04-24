@@ -75,12 +75,25 @@ export class ProfileComponent {
   }
 
   modifyAllaskereso(datas: {
-    nev: string | null;
-    email: string | null;
-    vegzettseg: string | null;
-  }) {
-    console.table(datas);
-    // Todo
+    this.http
+      .post<any>('http://localhost:3000/allaskereso/api/update', {
+        email: this.user_email,
+      })
+      .subscribe(
+        (response) => {
+          this.user_allas = {
+            email: response[0] as string,
+            nev: response[1] as string,
+            jelszo: '',
+            utolso_bejelentkezes: response[2] as Date,
+            vegzettseg: response[3] as string,
+            statusz: (response[4] as boolean) ? 'online' : 'inaktiv',
+          };
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
   }
 
   modifyCeg(datas: {

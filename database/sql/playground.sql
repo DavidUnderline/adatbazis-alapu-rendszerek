@@ -1,2 +1,3 @@
-SELECT ADOAZONOSITO, NEVE, ERTEKELES, TERULET_ID FROM CEG
-WHERE EMAIL = 'jagerkft@citromail.com';
+SELECT ac.cv_link
+FROM allaskereso_cv_kapcsolat ac
+WHERE ac.email = 'john.doe@example.com'

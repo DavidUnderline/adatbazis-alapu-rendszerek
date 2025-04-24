@@ -14,7 +14,7 @@ class CvDao {
                 { autoCommit: false }
             );
 
-            if (cvResult.rowsAffected !== 1) {
+            if (result.rowsAffected !== 1) {
                 throw new Error('CV beszúrása sikertelen');
             }
 
