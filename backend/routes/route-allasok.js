@@ -11,8 +11,8 @@ router.post('/api/searchjob', async (req, res) => {
         
         if(!allasok)
             res.json({ error: 'Nem található allás' });
-        
-        res.json(allasok);
+        else
+            res.json(allasok);
         
     } catch (err) {
         res.status(500).json({ error: 'Hiba az allások lekérdezésekor' });

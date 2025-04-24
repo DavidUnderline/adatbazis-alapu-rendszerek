@@ -39,6 +39,8 @@ export class SearchComponent {
     // console.table(work_filter);
     // console.table(this.addittional_filter);
     let data = {};
+    this.is_searched = true;
+    this.filtered_work_offers = [];
     
     if(this.addittional_filter != undefined){
       data = {
@@ -58,14 +60,25 @@ export class SearchComponent {
 
     this.http.post<any>('http://localhost:3000/allasok/api/searchjob', data).subscribe(
       response => {
-          if (response.success) {
+          if (response.error === undefined) {
             console.table(response);
-            // this.filtered_work_offers = [];
-            
-            // this.work_offers.forEach((work) => {
-            //     this.filtered_work_offers.push(work);
-            // });
+            response.forEach((work: any) => {
+                this.filtered_work_offers.push({
+                  cim: work.CIM as string,
+                  leiras: work.LEIRAS as string,
+                  kovetelmenyek: work.KOVETELMENYEK as string,
+                  ber: work.BER as number,
+                  mikor: work.MIKOR as Date,
+                  ceg_adoazonosito: work.CEG_ADOAZONOSITO as string,
+                  is_accepted: work.IS_ACCEPTED as boolean,
+                  terulet_id: work.TERULET_ID as number,
+                  kategoria_neve: '',
+                  kulcsszo_neve: ''
+                });
+              });
           } else {
+            console.log("[ERROR]:\n");
+            
             console.table(response);
           }
         },
