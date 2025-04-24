@@ -39,7 +39,7 @@ export class CegFormComponent {
         adoazonosito: form.adoazonosito,
         neve: form.nev,
         email: form.email,
-        jelszo: sha256(sha256(form.jelszo1)),
+        jelszo: sha256(sha256(form.jelszo1+form.email)),
         ertekeles: 0,
         terulet: 0, //begéetett érték
       });

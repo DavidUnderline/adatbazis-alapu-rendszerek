@@ -31,7 +31,7 @@ export class LoginComponent {
   handle_login(login: { email: string; password: string; }) {
     const log = {
       email: login.email,
-      password: login.password,
+      password: sha256(sha256(login.password+login.email)),
       tipo: this.companyservice.getIsCompany()
     }
     // login: { tipo: this.companyservice.getIsCompany() };
