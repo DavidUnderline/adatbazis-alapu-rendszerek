@@ -28,12 +28,12 @@ export class SearchFilterDialogComponent {
   }
 
   apply() {
-    console.log(this.additional_filter_form.valid);
+    // console.log(this.additional_filter_form.valid);
     if (this.additional_filter_form.valid) {
       const form = this.additional_filter_form.getRawValue();
       
       if( form.max > 0 && form.max > form.min){
-        console.table(form)
+        // console.table(form)
         this.additional_filter_form_valid.emit({
           kovetelmeny: form.kovetelmeny,
           min: form.min,

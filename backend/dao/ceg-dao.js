@@ -13,7 +13,7 @@ class CegDao {
                     ado: ceg.id, 
                     name: ceg.name,
                     email: ceg.email,
-                    password: ceg.password, //jelszot hashelni
+                    password: ceg.password,
                     rating: 0,
                     area_id: null
                 },
@@ -31,21 +31,21 @@ class CegDao {
         }
     }
 
-    async getCegByEmail(email){
-        let connection;
-        try{
-            connection = await getConnection();
+    // async getCegByEmail(email){
+    //     let connection;
+    //     try{
+    //         connection = await getConnection();
             
-            const query = `SELECT ADOAZONOSITO, NEVE, ERTEKELES, TERULET_ID FROM CEG
-            WHERE EMAIL =: email`;
-            const result = await connection.execute(query, [email]);
+    //         const query = `SELECT ADOAZONOSITO, NEVE, ERTEKELES, TERULET_ID FROM CEG
+    //         WHERE EMAIL =: email`;
+    //         const result = await connection.execute(query, [email]);
     
-            return result.rows.length === 1 ? result.rows[0] : null;
-        }catch(err){
-            console.error(err);
-            throw err;
-        }
-    }
+    //         return result.rows.length === 1 ? result.rows[0] : null;
+    //     }catch(err){
+    //         console.error(err);
+    //         throw err;
+    //     }
+    // }
 }
 
 module.exports = new CegDao();

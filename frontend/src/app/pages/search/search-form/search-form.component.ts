@@ -26,15 +26,16 @@ export class SearchFormComponent {
       return;
     }
 
-    console.log(
-      `[LOG]: ${this.work_filter.value?.form_keyword_company}\t${this.work_filter?.value.form_location}`
-    );
+    // console.log(
+    //   `[LOG]: ${this.work_filter.value?.form_keyword_company}\t${this.work_filter?.value.form_location}`
+    // );
     //TODO ez csak egy dummy terulet-id összehozó, szerintem okos lenne egy hastablet összedobni ehez.
     let terulet_id: number =
-      this.work_filter.value.form_location?.toLowerCase() === 'szeged'
-        ? 5
-        : this.work_filter.value.form_location?.toLowerCase() === 'budapest'
-        ? 3
+      this.work_filter.value.form_location?.toLowerCase() === 'veszprém' ? 3
+        : this.work_filter.value.form_location?.toLowerCase() === 'budapest'? 1
+        : this.work_filter.value.form_location?.toLowerCase() === 'szekesfehervar'? 2
+        : this.work_filter.value.form_location?.toLowerCase() === 'kaposvár'? 4
+        : this.work_filter.value.form_location?.toLowerCase() === 'miskolc'? 5
         : 0;
     //TODO ez csak egy dummy ceg-id összehozó, szerintem okos lenne egy hastablet összedobni ehez.
     let ceg_adoazonosito: string =
