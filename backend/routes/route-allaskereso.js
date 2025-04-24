@@ -59,7 +59,6 @@ router.post('/api/register', async (req, res) => {
 // Álláskereső adatainak lekérdezése email alapján (saját adatokhoz vagy admin)
 router.post('/api/get', async (req, res) => {
     const email = req.body.email;
-  
     try {
       const allaskereso = await allaskeresoDao.getAllaskeresoByEmail(email);
       if (allaskereso) {

@@ -74,12 +74,17 @@ export class ProfileComponent {
       );
   }
 
-  modifyAllaskereso(datas: {
-    nev: string | null;
-    email: string | null;
-    vegzettseg: string | null;
-  }) {
-    console.table(datas);
+  modifyAllaskereso(
+      user_data: {
+        nev: string | null;
+        email: string | null;
+        vegzettseg: string | null;
+      },
+    cv_links?: string[]
+  ) {
+    console.table(user_data);
+    console.table(cv_links);
+   
     // Todo
   }
 

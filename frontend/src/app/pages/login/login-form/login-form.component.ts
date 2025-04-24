@@ -28,16 +28,16 @@ export class LoginFormComponent {
     password: string;
   }>();
 
+  @Output() login_error = new EventEmitter<string>();
+
   submit() {
-    console.log("belep");
     if (this.login_form.valid) {
-      console.log("valid");
       this.valid_login.emit({
         email: this.login_form.value.email || '',
         password: this.login_form.value.password || '',
       });
       return;
     }
-    console.log("nem valid");
+    this.login_error.emit("Az email vagy a jelszó nem megfelelő formátumban lett megadva.");
   }
 }

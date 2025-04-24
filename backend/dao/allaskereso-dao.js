@@ -76,7 +76,7 @@ class AllaskeresoDao {
             //     : `SELECT a.email, a.neve, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
             //               (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
             //        FROM allaskereso a WHERE a.email = :email`;
-            const query = `SELECT email, neve, utolso_bejelentkezes, vegzettseg, statusz, cv_link FROM ALLASKERESO
+            const query = `SELECT email, neve, utolso_bejelentkezes, vegzettseg, statusz FROM ALLASKERESO
                WHERE email = :email`;
             const result = await connection.execute(query, { email });
             return result.rows.length > 0 ? result.rows[0] : null;

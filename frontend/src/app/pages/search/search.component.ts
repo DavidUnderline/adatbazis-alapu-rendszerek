@@ -5,7 +5,7 @@ import { Allas } from '../../shared/Model/Allas';
 import jobs from '../../shared/dummy_data/jobs.json';
 import { WorkService } from '../../services/work.service';
 import { Router } from '@angular/router';
-import { DisplayDirective } from './display.directive';
+import { DisplayDirective } from '../../shared/directives/display.directive';
 
 
 @Component({
