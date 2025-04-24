@@ -28,17 +28,18 @@ router.post('/api/update', async (req, res) => {
   // const { name, email, education, password } = req.body;
   // const allaskereso = req.body;
   // console.table(allaskereso);
-  
   try {
 
     const allaskereso = { email: req.body.email };
     if (req.body.neve) allaskereso.neve = req.body.neve;
     if (req.body.vegzettseg) allaskereso.vegzettseg = req.body.vegzettseg;
     if (req.body.jelszo) allaskereso.jelszo = req.body.jelszo;
+    
+    console.table(allaskereso)
 
-    if (!updates.taxid) {
-        throw new Error('Email kötelező');
-    }
+    // if (!updates.taxid) {
+    //     throw new Error('Email kötelező');
+    // }
     
       const success = await allaskeresoDao.updateAllaskereso(allaskereso);
 

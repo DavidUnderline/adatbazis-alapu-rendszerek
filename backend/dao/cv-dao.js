@@ -8,13 +8,13 @@ class CvDao {
             connection = await getConnection();
 
             //Cv beszuraas tablaba
+            console.table(cv);
             const result = await connection.execute(
                 `INSERT INTO cv (cv_link) VALUES (:cv_link)`,
                 { cv_link: cv.cv_link },
                 { autoCommit: false }
             );
-
-            if (cvResult.rowsAffected !== 1) {
+            if (result.rowsAffected != 1) {
                 throw new Error('CV beszúrása sikertelen');
             }
 
@@ -46,11 +46,12 @@ class CvDao {
         try {
 
             connection = await getConnection();
-            const query = `SELECT cv_link FROM cv
-               WHERE email = :email`;
-            const result = await connection.execute(query, { email });
+            console.log("\n\n"+email+"\n\n")
+            const query = `SELECT cv_link FROM ALLASKERESO_CV_KAPCSOLAT
+               WHERE email = :email`; //Todo kapcsolat tábla where?????
+            const result = await connection.execute(query, { email: email });
 
-            return result.rows.length > 0 ? result.rows[0] : null;
+            return result.rows.length > 0 ? result.rows : null;
 
         } catch (err) {
             console.error('Error fetching CV:', err);

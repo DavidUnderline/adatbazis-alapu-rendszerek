@@ -2,21 +2,23 @@ const express = require('express');
 const router = express.Router();
 const cvDao = require('../dao/cv-dao');
 // const { userAuth } = require('../config/auth');
-const { body, validationResult } = require('express-validator');
+// const { body, validationResult } = require('express-validator');
 
 
 // Új CV link hozzáadása
-router.post('/api/CVinsert',[
-    body('cv_link').notEmpty().withMessage('CV link kötelező'),
-    body('email').isEmail().withMessage('Érvénytelen email')
-], async (req, res) => {
+router.post('/api/CVinsert',
+//     [
+//     // body('cv_link').notEmpty().withMessage('CV link kötelező'),
+//     // body('email').isEmail().withMessage('Érvénytelen email')
+// ],
+ async (req, res) => {
     
     //Ez itt csak ellenőrzi a beírt adatokat. Ha gondot okoz kikommentezhető
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) {
+    //     return res.status(400).json({ errors: errors.array() });
+    // }
+    console.log("HALIHO")
     try {
         const cv = {cv_link, email } = req.body;
 
@@ -38,8 +40,8 @@ router.post('/api/CVinsert',[
 router.post('/api/CVget', async (req, res) => {
 
     try {
-        const email = { email } = req.body;
-        const cv_link = await cvDao.getCv(email);
+        const email = req.body;
+        const cv_link = await cvDao.getCv(email.email);
 
       if (cv_link) {
         res.json(cv_link);
@@ -55,9 +57,8 @@ router.post('/api/CVget', async (req, res) => {
 
 // CV törlése
 router.delete('/api/CVdelete', async (req, res) => {
-
     try {
-        const cv_link = {cv_link} = req.body;
+        const cv_link = req.body.cv_link;
 
         const success = await cvDao.deleteCv(cv_link);
 

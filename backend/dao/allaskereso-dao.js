@@ -49,18 +49,16 @@ class AllaskeresoDao {
         let connection;
         try {
             connection = await getConnection();
-
             const fields = [];
             const binds = { email: allaskereso.email };
-
-            if (allaskereso.neve) {
+            if (allaskereso.neve != " ") {
                 fields.push('neve = :neve');
                 binds.neve = allaskereso.neve;
             }
 
             if (allaskereso.vegzettseg) {
                 fields.push('vegzettseg = :vegzettseg');
-                binds.neve = allaskereso.vegzettseg;
+                binds.vegzettseg = allaskereso.vegzettseg;
             }
 
             if (allaskereso.jelszo) {
@@ -70,9 +68,9 @@ class AllaskeresoDao {
             if (fields.length === 0) {
                 throw new Error('Nincs frissítendő mező');
             }
-
             const query = `UPDATE allaskereso SET ${fields.join(', ')} WHERE email = :email`;
-            
+            console.log(query);
+            console.table(binds);
             const result = await connection.execute(query, binds, { autoCommit: true });
 
             return result.rowsAffected === 1;
