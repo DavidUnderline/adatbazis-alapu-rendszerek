@@ -8,6 +8,8 @@ import { Allas } from '../../shared/Model/Allas';
 import { CegFormComponent } from './ceg-form/ceg-form.component';
 import { AllaskeresoFormComponent } from './allaskereso-form/allaskereso-form.component';
 import { MatIcon } from '@angular/material/icon';
+import { CvFormComponent } from './cv-form/cv-form.component';
+import { CV } from '../../shared/Model/CV';
 @Component({
   selector: 'app-profile',
   imports: [
@@ -15,6 +17,7 @@ import { MatIcon } from '@angular/material/icon';
     CegFormComponent,
     AllaskeresoFormComponent,
     MatIcon,
+    CvFormComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
@@ -76,22 +79,26 @@ export class ProfileComponent {
 
   modifyAllaskereso(
       user_data: {
-        nev: string | null;
-        email: string | null;
-        vegzettseg: string | null;
-      },
-    cv_links?: string[]
+        nev: string | null,
+        email: string | null,
+        vegzettseg: string | null,
+        jelszo: string | null
+      }
   ) {
     console.table(user_data);
-    console.table(cv_links);
    
     // Todo
   }
 
+  uploadCVs(cvs: CV[]){
+    // TODO
+  }
+
   modifyCeg(datas: {
-    adoazonosito: string | null;
-    nev: string | null;
-    email: string | null;
+    adoazonosito: string | null,
+    nev: string | null,
+    email: string | null,
+    jelszo: string | null;
   }) {
     // Todo
   }

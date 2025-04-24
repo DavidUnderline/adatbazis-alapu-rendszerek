@@ -34,8 +34,10 @@ export class SearchComponent {
   }
 
   filter_works(work_filter: Allas) {
+    
     this.filtered_work_offers = [];
     this.is_searched = false;
+    // console.table(this.addittional_filter);
     
     this.work_offers.forEach((work) => {
       if (

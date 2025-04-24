@@ -28,7 +28,7 @@ export class SearchFilterDialogComponent {
   }
 
   apply() {
-    console.log(this.additional_filter_form.valid);
+    // console.log(this.additional_filter_form.valid);
     if (this.additional_filter_form.valid) {
       const form = this.additional_filter_form.getRawValue();
       

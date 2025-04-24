@@ -1,0 +1,42 @@
+<section class="flex flex-col gap-4">
+  @for (cv of cvs; track $index) {
+  <div class="relative   p-4 outline-2 outline-dark_blue-500 rounded-2xl flex gap-2 group hover:cursor-pointer hover:text-white-500 hover:bg-dark_blue-500">
+    <mat-icon>link</mat-icon>
+    <div class="flex flex-col">
+      <h1>cv {{ $index }}</h1>
+      <p>{{ cv.link }}</p>
+      <mat-icon class="absolute top-[0.5lh] right-[0.5lh] hover:cursor-pointer hover:text-dark_red-500" (click)="deleteById($index)">close</mat-icon>
+    </div>
+  </div>
+  }
+
+  <form class="flex gap-4 w-full">
+    <fieldset
+      class="w-full text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end font-medium"
+    >
+      <input
+        type="text"
+        placeholder="CV-link "
+        class="h-[1lh] outline-none text-medium focus:outline-0 peer text-dark_blue-500 w-full"
+        minlength="10"
+        formControlName="cv-link"
+        #cv
+      />
+      <div class="hover:text-dark_red-500 translate-[0.25lh]">
+        <mat-icon
+          class="z-10 hover:text-dark_red-500 hover:cursor-pointer"
+          (click)="addcv(cv.value)"
+          >add</mat-icon
+        >
+      </div>
+    </fieldset>
+
+    <button
+    type="submit"
+    class="bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl cursor-pointer flex justify-center gap-1.5"
+  >
+    <mat-icon>upload_file</mat-icon>
+    Módosítás
+  </button>
+  </form>
+</section>

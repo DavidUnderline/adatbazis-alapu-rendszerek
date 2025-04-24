@@ -3,10 +3,10 @@
 >
   @if ( user_allas || user_ceg) {
   <div
-    class="bg-white-500 p-8 rounded-2xl grid grid-cols-2 gap-x-4 gap-y-8 w-[50%]"
+    class="bg-white-500 p-8 rounded-2xl grid grid-col-2 gap-x-4 gap-y-8 w-[70%]"
   >
     @if ( user_allas === null ) {
-    <section>
+    <section class="col-row-2">
       <mat-icon class="big-icon text-dark_blue-500 fill-dark_blue-500 mb-2">account_circle</mat-icon>
       <h1 class="text-dark_blue-500 font-medium">Email cím: <span class="text-dark_red-500">{{ user_email }}</span></h1>
       <h1 class="text-dark_blue-500 font-medium">Cég neve: <span class="text-dark_red-500">{{ user_ceg?.neve }}</span></h1>
@@ -38,6 +38,7 @@
     <app-allaskereso-form
       (valid_form)="modifyAllaskereso($event)"
     ></app-allaskereso-form>
+    <app-cv-form class="col-span-2"></app-cv-form>
     }
   </div>
   }
