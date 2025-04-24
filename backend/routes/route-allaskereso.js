@@ -28,21 +28,38 @@ router.post('/api/register', async (req, res) => {
             return;
         }
 
-        // CV-k hozzárendelése, ha megadtak
-        // if (cv_links && Array.isArray(cv_links)) {
-        //     for (const cv_link of cv_links) {
-        //         const cvExists = await cvDao.getCv(cv_link);
-        //         if (!cvExists) {
-        //             await cvDao.insertCv(cv_link);
-        //         }
-        //         await allaskeresoDao.addCvToAllaskereso(email, cv_link);
-        //     }
-        // }
-
         res.json({ success : true, email: allaskereso.EMAIL });
     } catch (err) {
         res.status(500).json({ error: 'Hiba a regisztráció során' });
     }
+});
+
+
+// Álláskereső módosítása
+router.post('/api/update', async (req, res) => {
+  // const { email, password, name, education } = req.body;
+  const allaskereso = req.body;
+  // console.table(allaskereso);
+  
+  try {
+      const allaskereso = {
+          nev,
+          email,
+          vegzettseg,
+          jelszo
+      };
+
+      const success = await allaskeresoDao.updateAllaskereso(allaskereso);
+
+      if (!success) {
+          res.json({ success : false, message: 'Adatok frissítése sikertelen' });
+          return;
+      }
+
+      res.json({ success : true });
+  } catch (err) {
+      res.status(500).json({ error: 'Hiba az adatok frissítése során' });
+  }
 });
 
 // Összes álláskereső lekérdezése (admin jogosultság szükséges)
@@ -59,7 +76,6 @@ router.post('/api/register', async (req, res) => {
 // Álláskereső adatainak lekérdezése email alapján (saját adatokhoz vagy admin)
 router.post('/api/get', async (req, res) => {
     const email = req.body.email;
-  
     try {
       const allaskereso = await allaskeresoDao.getAllaskeresoByEmail(email);
       if (allaskereso) {
@@ -71,6 +87,21 @@ router.post('/api/get', async (req, res) => {
       res.status(500).json({ error: 'Hiba az álláskereső lekérdezésekor' });
     }
   });
+
+
+router.post('/api/get', async (req, res) => {
+  const email = req.body.email;
+  try {
+    const allaskereso = await allaskeresoDao.getAllaskeresoByEmail(email);
+    if (allaskereso) {
+      res.json(allaskereso);
+    } else {
+      res.status(404).json({ error: 'Álláskereső nem található' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Hiba az álláskereső lekérdezésekor' });
+  }
+});
 
 // // Új CV hozzáadása egy álláskeresőhöz
 // router.post('/:email/cv', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res) => {
