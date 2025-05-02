@@ -92,9 +92,11 @@ export class ProfileComponent {
     vegzettseg: string | null;
     jelszo: string | null;
   }) {
+
     this.http
       .post('http://localhost:3000/allaskereso/api/update', {
         email: user_data.email,
+        email2: localStorage.getItem('username'),
         neve: user_data.nev,
         vegzettseg: user_data.vegzettseg,
         jelszo: user_data.jelszo,

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const allaskeresoDao = require('../dao/allaskereso-dao');
-const cvDao = require('../dao/cv-dao');
 // const { userAuth } = require('../config/auth');
 
 // Álláskereső regisztrálása
@@ -25,18 +24,14 @@ router.post('/api/register', async (req, res) => {
 
 // Álláskereső módosítása
 router.post('/api/update', async (req, res) => {
-  // const { name, email, education, password } = req.body;
-  // const allaskereso = req.body;
-  // console.table(allaskereso);
   try {
 
     const allaskereso = { email: req.body.email };
     if (req.body.neve) allaskereso.neve = req.body.neve;
+    if (req.body.email2) allaskereso.email2 = req.body.email2;
     if (req.body.vegzettseg) allaskereso.vegzettseg = req.body.vegzettseg;
     if (req.body.jelszo) allaskereso.jelszo = req.body.jelszo;
-    
-    console.table(allaskereso)
-
+  
     // if (!updates.taxid) {
     //     throw new Error('Email kötelező');
     // }

@@ -263,6 +263,18 @@ CREATE TABLE jelentkezo(
 );
 
 ---------------------------------------- TRIGGEREK ----------------------------------------
+-------------------- allaskereso_cv_kapcsolat (email) tabla frissito trigger
+CREATE OR REPLACE TRIGGER update_child_email
+BEFORE UPDATE OF email ON allaskereso
+FOR EACH ROW
+BEGIN
+    IF :NEW.email <> :OLD.email THEN
+        UPDATE allaskereso_cv_kapcsolat
+        SET email = :NEW.email
+        WHERE email = :OLD.email;
+    END IF;
+END;
+/
 
 -------------------- cegertekeles atlag frissito trigger
 BEGIN

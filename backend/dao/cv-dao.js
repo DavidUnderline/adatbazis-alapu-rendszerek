@@ -80,6 +80,26 @@ class CvDao {
         }
     }
 
+    // TODO
+    // CV update
+    async updateCV(data) {
+        // let connection;
+        
+        // try {
+        //     connection = await getConnection();
+        //     const query = "update allaskereso_cv_kapcsolat set email = :toemail WHERE email = :email";
+        //     const result = await connection.execute(query, data);
+        //     return result.rowsAffected === 1;
+
+        // } catch (err) {
+        //     console.error('ERROR UPDATING CV:', err);
+        //     // throw err;
+        // } finally {
+        //     if (connection) await connection.close();
+        // }
+    }
+    // !
+
     // Összes CV link lekérdezése
     // async getAllCvs() {
     //     let connection;

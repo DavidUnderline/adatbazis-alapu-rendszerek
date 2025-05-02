@@ -1,4 +1,5 @@
 const { executeQuery, getConnection } = require('../config/db');
+const cvDao = require('../dao/cv-dao');
 
 class AllaskeresoDao {
     // Álláskereső lekérdezése email alapján jelszó nélkül (bejelentkezéshez)
@@ -47,6 +48,7 @@ class AllaskeresoDao {
 
     async updateAllaskereso(allaskereso) {
         let connection;
+
         try {
             connection = await getConnection();
             const fields = [];
@@ -54,6 +56,12 @@ class AllaskeresoDao {
             if (allaskereso.neve != " ") {
                 fields.push('neve = :neve');
                 binds.neve = allaskereso.neve;
+            }
+
+            if(allaskereso.email != allaskereso.email2){
+                fields.push('email = :toemail');
+                binds.email = allaskereso.email2;
+                binds.toemail = allaskereso.email;
             }
 
             if (allaskereso.vegzettseg) {
@@ -71,8 +79,11 @@ class AllaskeresoDao {
             const query = `UPDATE allaskereso SET ${fields.join(', ')} WHERE email = :email`;
             console.log(query);
             console.table(binds);
-            const result = await connection.execute(query, binds, { autoCommit: true });
+            // return;
 
+            const result = await connection.execute(query, binds);
+            console.log(result);
+            
             return result.rowsAffected === 1;
         } catch (err) {
             console.error('Error updating allaskereso:', err);
