@@ -57,8 +57,9 @@ export class CvFormComponent {
   insertCV(){
     for (let key in this.cvs) {
       const cv: CV = this.cvs[key];
-      this.http.post<any>('http://localhost:3000/cv/api/CVinsert', {cv_link: cv.link, email: this.email}).subscribe(
-        (response) => {
+      this.http.post<any>('http://localhost:3000/cv/api/CVinsert', 
+        {cv_link: cv.link, email: this.email})
+        .subscribe((response) => {
           // TODO
           if(response.success){
             console.log(response);

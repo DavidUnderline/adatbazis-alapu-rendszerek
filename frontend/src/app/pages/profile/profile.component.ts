@@ -42,12 +42,9 @@ export class ProfileComponent {
   }
 
   loadCeg() {
-    this.http
-      .post<any>('http://localhost:3000/ceg/api/get', {
+    this.http.post<any>('http://localhost:3000/ceg/api/get', {
         email: this.user_email,
-      })
-      .subscribe(
-        (response) => {
+      }).subscribe((response) => {
           const ceg_adat = response.ceg;
           this.user_ceg = {
             adoazonosito: ceg_adat[0] as string,
@@ -65,12 +62,10 @@ export class ProfileComponent {
   }
 
   loadAllaskereso() {
-    this.http
-      .post<any>('http://localhost:3000/allaskereso/api/get', {
+    console.log(this.user_email);
+    this.http.post<any>('http://localhost:3000/allaskereso/api/get', {
         email: this.user_email,
-      })
-      .subscribe(
-        (response) => {
+      }).subscribe((response) => {
           this.user_allas = {
             email: response[0] as string,
             nev: response[1] as string,
@@ -93,17 +88,16 @@ export class ProfileComponent {
     jelszo: string | null;
   }) {
 
-    this.http
-      .post('http://localhost:3000/allaskereso/api/update', {
+    this.http.post<any>('http://localhost:3000/allaskereso/api/update', {
         email: user_data.email,
         email2: localStorage.getItem('username'),
         neve: user_data.nev,
         vegzettseg: user_data.vegzettseg,
         jelszo: user_data.jelszo,
-      })
-      .subscribe(
-        (response: any) => {
+      }).subscribe((response) => {
           if (response.success) {
+            localStorage.setItem('username', response.email);
+            this.user_email = response.email;
             this.loadAllaskereso();
           } else {
             this.errorHandler(response.message);

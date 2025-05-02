@@ -48,6 +48,7 @@ class AllaskeresoDao {
 
     async updateAllaskereso(allaskereso) {
         let connection;
+        let isemail = 0;
 
         try {
             connection = await getConnection();
@@ -62,6 +63,7 @@ class AllaskeresoDao {
                 fields.push('email = :toemail');
                 binds.email = allaskereso.email2;
                 binds.toemail = allaskereso.email;
+                isemail = 1;
             }
 
             if (allaskereso.vegzettseg) {
@@ -77,14 +79,16 @@ class AllaskeresoDao {
                 throw new Error('Nincs frissítendő mező');
             }
             const query = `UPDATE allaskereso SET ${fields.join(', ')} WHERE email = :email`;
-            console.log(query);
-            console.table(binds);
-            // return;
+            // console.log(query);
+            // console.table(binds);
 
             const result = await connection.execute(query, binds);
-            console.log(result);
+            await connection.execute('COMMIT');
             
-            return result.rowsAffected === 1;
+            return {
+                success: result.rowsAffected === 1,
+                email: binds.toemail
+            };
         } catch (err) {
             console.error('Error updating allaskereso:', err);
             throw err;

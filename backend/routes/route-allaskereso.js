@@ -36,16 +36,16 @@ router.post('/api/update', async (req, res) => {
     //     throw new Error('Email kötelező');
     // }
     
-      const success = await allaskeresoDao.updateAllaskereso(allaskereso);
+      const data = await allaskeresoDao.updateAllaskereso(allaskereso);
 
-      if (!success) {
+      if (!data.success) {
           res.json({ success : false, message: 'Adatok frissítése sikertelen' });
           return;
       }
+      res.json({ success : true, email : data.email });
 
-      res.json({ success : true });
   } catch (err) {
-      res.status(500).json({ error: 'Hiba az adatok frissítése során' });
+      res.json({ error: 'Hiba az adatok frissítése során' });
   }
 });
 
