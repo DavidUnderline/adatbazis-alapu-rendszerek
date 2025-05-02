@@ -15,10 +15,15 @@ export class CvFormComponent {
   cvs: CV[] = [];
 
   constructor(private http: HttpClient){
-    this.http.post('http://localhost:3000/cv/api/CVget', {email: this.email}).subscribe(
-      (response: any) => {
-        for(let i = 0; i < response.length; i++){
-          this.showCV(response[i][0]);
+    this.http.post<any>('http://localhost:3000/cv/api/CVget', {email: this.email}).subscribe(
+      (response) => {
+        if(response.success){
+          for(let i = 0; i < response.cv_link.length; ++i){
+            this.showCV(response.cv_link[i][0]);
+          }
+
+        } else{
+          console.log(response);
         }
       },(error) => {
         console.error(error);
@@ -36,7 +41,12 @@ export class CvFormComponent {
     this.http.delete<any>('http://localhost:3000/cv/api/CVdelete', { body: { cv_link: cv.link } }).subscribe(
       (response) => {
         // TODO
+        if(response.success){
           console.log(response);
+          
+        } else{
+          console.log(response);
+        }
         // !
       }, (error) => {
         console.error(error);
@@ -50,9 +60,15 @@ export class CvFormComponent {
       this.http.post<any>('http://localhost:3000/cv/api/CVinsert', {cv_link: cv.link, email: this.email}).subscribe(
         (response) => {
           // TODO
+          if(response.success){
             console.log(response);
+            
+          } else{
+            console.log(response);
+          } 
           // !
         },(error) => {
+          console.log("error?")
           console.error(error);
         }
       )

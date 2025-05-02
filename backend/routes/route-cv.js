@@ -33,11 +33,11 @@ router.post('/api/CVget', async (req, res) => {
         const cv_link = await cvDao.getCv(email.email);
 
       if (cv_link) {
-        res.json(cv_link);
+        res.json({ success: true, cv_link });
+        return;
+      } 
+      res.json({ success: false, error: 'CV nem található' });
 
-      } else {
-        res.json({ error: 'CV nem található' });
-      }
     } catch (err) {
       res.json({ error: 'Hiba a CV lekérdezésekor' });
     }
@@ -46,17 +46,17 @@ router.post('/api/CVget', async (req, res) => {
 
 // CV törlése
 router.delete('/api/CVdelete', async (req, res) => {
+  const cv_link = req.body.cv_link;
+  
     try {
-        const cv_link = req.body.cv_link;
-
         const success = await cvDao.deleteCv(cv_link);
 
         if (success) {
-          res.json({message: 'CV sikeresen törölve' });
+          res.json({ success: true, message: 'CV sikeresen törölve' });
+          return;
+        } 
+        res.json({ success: false, error: 'CV nem található' });
         
-        } else{
-          res.json({error: 'CV nem található' });
-        }
     } catch (err) {
         res.json({ error: 'Hiba a CV törlése során' });
     }
