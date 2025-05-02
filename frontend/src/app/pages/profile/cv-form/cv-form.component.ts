@@ -17,49 +17,47 @@ export class CvFormComponent {
   constructor(private http: HttpClient){
     this.http.post('http://localhost:3000/cv/api/CVget', {email: this.email}).subscribe(
       (response: any) => {
-        console.table(response);
         for(let i = 0; i < response.length; i++){
-        
-          this.addcv(response[i][0]);
-        };
+          this.showCV(response[i][0]);
+        }
       },(error) => {
-
-      }
-    )
+        console.error(error);
+      });
   }
 
-  addcv(cv_link: string){
+  showCV(cv_link: string){
     if(cv_link.length > 10){
-      
       this.cvs.push({link: cv_link});
     }
   }
 
   deleteById(index: number) {
    let cv = this.cvs.splice(index, 1)[0];
-    this.http.delete('http://localhost:3000/cv/api/CVdelete', { body: { cv_link: cv.link } }).subscribe(
+    this.http.delete<any>('http://localhost:3000/cv/api/CVdelete', { body: { cv_link: cv.link } }).subscribe(
       (response) => {
-
+        // TODO
+          console.log(response);
+        // !
       }, (error) => {
         console.error(error);
       }
     )
   }
 
-  updateCVs(){
+  insertCV(){
     for (let key in this.cvs) {
       const cv: CV = this.cvs[key];
-      this.http.post('http://localhost:3000/cv/api/CVinsert', {cv_link: cv.link, email: this.email}).subscribe(
-        (response: any) => {
-          console.log(response.success)
+      this.http.post<any>('http://localhost:3000/cv/api/CVinsert', {cv_link: cv.link, email: this.email}).subscribe(
+        (response) => {
+          // TODO
+            console.log(response);
+          // !
         },(error) => {
           console.error(error);
         }
       )
     }
   }
-
-
 
 }
 
