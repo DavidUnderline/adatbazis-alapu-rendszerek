@@ -8,7 +8,7 @@ router.post('/api/searchjob', async (req, res) => {
 
     try {
         const allasok = await allasokDao.getAllasok(data);
-        
+
         if(!allasok){
             res.json({ error: 'Nem található allás' });
             return;

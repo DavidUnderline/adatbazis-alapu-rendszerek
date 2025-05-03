@@ -1,5 +1,5 @@
 const { executeQuery, getConnection } = require('../config/db');
-const cvDao = require('../dao/cv-dao');
+// const cvDao = require('../dao/cv-dao');
 
 class AllaskeresoDao {
     // Álláskereső lekérdezése email alapján jelszó nélkül (bejelentkezéshez)
@@ -101,25 +101,6 @@ class AllaskeresoDao {
         }
     }
 
-    // egy CV hozzárendelése egy álláskeresőhöz
-    // async addCvToAllaskereso(email, cvLink) {
-    //     let connection;
-    //     try {
-    //         // connection = await getConnection();
-    //         const result = await connection.execute(
-    //             `INSERT INTO allaskereso_cv_kapcsolat (email, cv_link) VALUES (:email, :cvLink)`,
-    //             { email, cvLink },
-    //             { autoCommit: true }
-    //         );
-    //         return result.rowsAffected === 1;
-    //     } catch (err) {
-    //         console.error('Error adding CV to allaskereso:', err);
-    //         throw err;
-    //     } finally {
-    //         if (connection) await connection.close();
-    //     }
-    // }
-
     // Álláskereső lekérdezése email alapján, CV-kkel együtt (jelszóval admin esetén)
     async getAllaskeresoByEmail(email, includePassword = false) {
         let connection;
@@ -143,6 +124,26 @@ class AllaskeresoDao {
             if (connection) await connection.close();
         }
     }
+
+    // egy CV hozzárendelése egy álláskeresőhöz
+    // async addCvToAllaskereso(email, cvLink) {
+    //     let connection;
+    //     try {
+    //         // connection = await getConnection();
+    //         const result = await connection.execute(
+    //             `INSERT INTO allaskereso_cv_kapcsolat (email, cv_link) VALUES (:email, :cvLink)`,
+    //             { email, cvLink },
+    //             { autoCommit: true }
+    //         );
+    //         return result.rowsAffected === 1;
+    //     } catch (err) {
+    //         console.error('Error adding CV to allaskereso:', err);
+    //         throw err;
+    //     } finally {
+    //         if (connection) await connection.close();
+    //     }
+    // }
+
 
     // Összes álláskereső lekérdezése, CV-kkel együtt (jelszóval admin esetén)
     // async getAllAllaskeresok() {
