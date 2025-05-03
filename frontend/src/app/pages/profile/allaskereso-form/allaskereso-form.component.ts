@@ -27,13 +27,23 @@ export class AllaskeresoFormComponent {
   }>();
 
   Submit(){
+    // TODO
     if(!this.register_form.valid){
       return;
     }
+
     const form = this.register_form.getRawValue();
     if( form.jelszo1 !== form.jelszo2){
       return;
     }
+
+    // ha jelszot akar valtoztatni kell email
+    // ha email-t akar valtoztatni kell jelszo
+    if((!form.email && form.jelszo1 != '') || (!form.jelszo1 && form.email != '')){
+      console.log("nem ok")
+      return;
+    }
+    // !
 
     this.valid_form.emit({
       nev: `${form.k_nev} ${form.v_nev}`,

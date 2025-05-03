@@ -69,7 +69,7 @@ export class CvFormComponent {
           } 
           // !
         },(error) => {
-          console.log("error?")
+          console.log("error")
           console.error(error);
         }
       )

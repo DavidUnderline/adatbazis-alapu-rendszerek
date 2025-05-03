@@ -11,8 +11,11 @@ class AllaskeresoDao {
         } else{
             query = "SELECT email FROM ceg WHERE email = :email AND jelszo = :password";
         } 
+        // console.table(query);
+        // console.table({email: email, password: password, tipo: tipo});
 
         const result = await executeQuery(query,{email: email, password: password});
+        // console.table(result);
         return result.length > 0 ? result[0] : null;
     }
 
@@ -48,7 +51,6 @@ class AllaskeresoDao {
 
     async updateAllaskereso(allaskereso) {
         let connection;
-        let isemail = 0;
 
         try {
             connection = await getConnection();
@@ -59,11 +61,11 @@ class AllaskeresoDao {
                 binds.neve = allaskereso.neve;
             }
 
-            if(allaskereso.email != allaskereso.email2){
+            if((allaskereso.email != allaskereso.email2) || (allaskereso.email === allaskereso.email2) ){
                 fields.push('email = :toemail');
                 binds.email = allaskereso.email2;
                 binds.toemail = allaskereso.email;
-                isemail = 1;
+                binds.jelszo = allaskereso.jelszo;
             }
 
             if (allaskereso.vegzettseg) {
@@ -78,9 +80,11 @@ class AllaskeresoDao {
             if (fields.length === 0) {
                 throw new Error('Nincs frissítendő mező');
             }
+            
             const query = `UPDATE allaskereso SET ${fields.join(', ')} WHERE email = :email`;
             // console.log(query);
             // console.table(binds);
+            // return;
 
             const result = await connection.execute(query, binds);
             await connection.execute('COMMIT');

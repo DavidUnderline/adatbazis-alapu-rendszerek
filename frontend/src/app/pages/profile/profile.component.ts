@@ -87,6 +87,7 @@ export class ProfileComponent {
     vegzettseg: string | null;
     jelszo: string | null;
   }) {
+    console.table(user_data);
 
     this.http.post<any>('http://localhost:3000/allaskereso/api/update', {
         email: user_data.email,

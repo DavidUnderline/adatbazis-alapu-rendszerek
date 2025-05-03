@@ -21,14 +21,16 @@ router.post('/api/register', async (req, res) => {
     }
 });
 
-
 // Álláskereső módosítása
 router.post('/api/update', async (req, res) => {
   try {
-
     const allaskereso = { email: req.body.email };
     if (req.body.neve) allaskereso.neve = req.body.neve;
-    if (req.body.email2) allaskereso.email2 = req.body.email2;
+    if (req.body.email2) {
+      // console.table("inside route:\n" + req.body);
+      allaskereso.email2 = req.body.email2;
+      allaskereso.jelszo2 = req.body.jelszo;
+    }
     if (req.body.vegzettseg) allaskereso.vegzettseg = req.body.vegzettseg;
     if (req.body.jelszo) allaskereso.jelszo = req.body.jelszo;
   
@@ -36,13 +38,13 @@ router.post('/api/update', async (req, res) => {
     //     throw new Error('Email kötelező');
     // }
     
-      const data = await allaskeresoDao.updateAllaskereso(allaskereso);
+    const data = await allaskeresoDao.updateAllaskereso(allaskereso);
 
-      if (!data.success) {
-          res.json({ success : false, message: 'Adatok frissítése sikertelen' });
-          return;
-      }
-      res.json({ success : true, email : data.email });
+    if (!data.success) {
+        res.json({ success : false, message: 'Adatok frissítése sikertelen' });
+        return;
+    }
+    res.json({ success : true, email : data.email });
 
   } catch (err) {
       res.json({ error: 'Hiba az adatok frissítése során' });
