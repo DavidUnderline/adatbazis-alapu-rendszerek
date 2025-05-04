@@ -8,19 +8,19 @@ const cvDao = require('../dao/cv-dao');
 // Új CV link hozzáadása
 router.post('/api/CVinsert', async (req, res) => {
     try {
+      console.table(req.body);
         const cv = {cv_link, email } = req.body;
-
         const success = await cvDao.insertCv(cv);
 
         if (!success) {
-          res.json({ error: 'CV feltöltés sikertelen' });
+          res.json({ error: 'CV feltöltés sikertelen', success: false });
         
         } else{
-          res.json({ message: 'CV sikeresen feltöltve' });
+          res.json({ message: 'CV sikeresen feltöltve', success: true });
         }
 
     } catch (err) {
-        res.json({ error: 'Hiba a CV feltöltés során' });
+        res.json({ message: 'Hiba a CV feltöltés során', success: false });
     }
 });
 
@@ -47,7 +47,6 @@ router.post('/api/CVget', async (req, res) => {
 // CV törlése
 router.delete('/api/CVdelete', async (req, res) => {
   const cv_link = req.body.cv_link;
-  
     try {
         const success = await cvDao.deleteCv(cv_link);
 

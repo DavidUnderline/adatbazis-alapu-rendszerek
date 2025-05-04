@@ -14,6 +14,8 @@ import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { WorkListComponent } from './work-list/work-list.component';
 import { JobsService } from '../../services/jobs.service';
+import { SuccessMsgComponent } from '../../shared/success-msg/success-msg.component';
+import { fakeAsync } from '@angular/core/testing';
 @Component({
   selector: 'app-profile',
   imports: [
@@ -23,6 +25,7 @@ import { JobsService } from '../../services/jobs.service';
     MatIcon,
     CvFormComponent,
     ErrorMsgComponent,
+    SuccessMsgComponent,
     DisplayDirective,
     WorkListComponent,
   ],
@@ -35,8 +38,11 @@ export class ProfileComponent {
   user_email = localStorage.getItem('username');
   is_company = inject(IsCompanyService);
   jobservice = inject(JobsService);
+
   show_error = false;
   error_msg: string = '';
+  show_success = false;
+  success_msg = '';
 
   constructor(private http: HttpClient) {
     this.is_company.getIsCompany() ? this.loadCeg() : this.loadAllaskereso();
@@ -45,9 +51,12 @@ export class ProfileComponent {
   }
 
   loadCeg() {
-    this.http.post<any>('http://localhost:3000/ceg/api/get', {
+    this.http
+      .post<any>('http://localhost:3000/ceg/api/get', {
         email: this.user_email,
-      }).subscribe((response) => {
+      })
+      .subscribe(
+        (response) => {
           const ceg_adat = response.ceg;
           this.user_ceg = {
             adoazonosito: ceg_adat[0] as string,
@@ -66,9 +75,12 @@ export class ProfileComponent {
 
   loadAllaskereso() {
     // console.log(this.user_email);
-    this.http.post<any>('http://localhost:3000/allaskereso/api/get', {
+    this.http
+      .post<any>('http://localhost:3000/allaskereso/api/get', {
         email: this.user_email,
-      }).subscribe((response) => {
+      })
+      .subscribe(
+        (response) => {
           this.user_allas = {
             email: response[0] as string,
             nev: response[1] as string,
@@ -85,15 +97,18 @@ export class ProfileComponent {
   }
 
   modifyAllaskereso(user_data: any) {
-    if(user_data.email != localStorage.getItem('username'))
+    if (user_data.email != localStorage.getItem('username'))
       user_data.originalemail = localStorage.getItem('username');
 
-    this.http.post<any>('http://localhost:3000/allaskereso/api/update', {
+    this.http
+      .post<any>('http://localhost:3000/allaskereso/api/update', {
         email: user_data.email,
         neve: user_data.nev,
         vegzettseg: user_data.vegzettseg,
         jelszo: user_data.jelszo,
-      }).subscribe((response) => {
+      })
+      .subscribe(
+        (response) => {
           if (response.success) {
             localStorage.setItem('username', response.email);
             this.user_email = response.email;
@@ -122,8 +137,30 @@ export class ProfileComponent {
   }) {
     // Todo
   }
+  handleMsg(msg: { success: boolean; msg: string }) {
+    this.show_error = false;
+    this.show_success = false;
+    this.error_msg = '';
+    this.success_msg = '';
 
+    console.log('---[ handleMsg ]---');
+    console.table(msg);
+    if(msg.msg === undefined)
+    {
+      return;
+    }
+
+    if (msg.success) {
+      this.successHandler(msg.msg);
+    } else {
+      this.errorHandler(msg.msg);
+    }
+  }
   errorHandler(error: string) {
     (this.show_error = true), (this.error_msg = error);
+  }
+
+  successHandler(success: string) {
+    (this.show_success = true), (this.success_msg = success);
   }
 }

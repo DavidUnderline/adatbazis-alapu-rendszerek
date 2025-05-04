@@ -3,21 +3,35 @@
 >
   @if ( user_allas || user_ceg) {
   <div
-    class="bg-white-500 p-8 rounded-2xl grid grid-col-2 gap-x-4 gap-y-8 w-[70%] w-auto"
+    class="bg-white-500 p-8 rounded-2xl grid grid-col-2 gap-x-4 gap-y-8 w-[80%]"
   >
     @if ( user_allas === null ) {
     <section class="">
-      <mat-icon class="big-icon text-dark_blue-500 fill-dark_blue-500 mb-2">account_circle</mat-icon>
-      <h1 class="text-dark_blue-500 font-medium">Email cím: <span class="text-dark_red-500">{{ user_email }}</span></h1>
-      <h1 class="text-dark_blue-500 font-medium">Cég neve: <span class="text-dark_red-500">{{ user_ceg?.neve }}</span></h1>
-      <h2 class="text-dark_blue-500 font-medium">Cég adóazonosítója: <span class="text-dark_red-500">{{ user_ceg?.adoazonosito }}</span></h2>
-      <p class="text-dark_blue-500 font-medium">Cég értékelése: <span class="text-dark_red-500">{{ user_ceg?.ertekeles }}</span></p>
+      <mat-icon class="big-icon text-dark_blue-500 fill-dark_blue-500 mb-2"
+        >account_circle</mat-icon
+      >
+      <h1 class="text-dark_blue-500 font-medium">
+        Email cím: <span class="text-dark_red-500">{{ user_email }}</span>
+      </h1>
+      <h1 class="text-dark_blue-500 font-medium">
+        Cég neve: <span class="text-dark_red-500">{{ user_ceg?.neve }}</span>
+      </h1>
+      <h2 class="text-dark_blue-500 font-medium">
+        Cég adóazonosítója:
+        <span class="text-dark_red-500">{{ user_ceg?.adoazonosito }}</span>
+      </h2>
+      <p class="text-dark_blue-500 font-medium">
+        Cég értékelése:
+        <span class="text-dark_red-500">{{ user_ceg?.ertekeles }}</span>
+      </p>
     </section>
     <app-ceg-form (valid_form)="modifyCeg($event)"></app-ceg-form>
     <app-work-list class="col-span-2"></app-work-list>
     }@else {
     <section class="flex flex-col items-start gap-4">
-      <mat-icon class="big-icon text-dark_blue-500 fill-dark_blue-500">account_circle</mat-icon>
+      <mat-icon class="big-icon text-dark_blue-500 fill-dark_blue-500"
+        >account_circle</mat-icon
+      >
       <div>
         <h1 class="text-dark_blue-500 font-medium">
           Email cím: <span class="text-dark_red-500">{{ user_email }}</span>
@@ -39,11 +53,16 @@
     <app-allaskereso-form
       (valid_form)="modifyAllaskereso($event)"
     ></app-allaskereso-form>
-    <app-cv-form class="col-span-2"
-    ></app-cv-form>
+    <app-cv-form class="col-span-2" (msg)="handleMsg($event)"></app-cv-form>
+    }
+  </div>
+  <app-error-msg
+    [error_msg]="error_msg"
+    [appDisplay]="show_error"
+  ></app-error-msg>
+  <app-success-msg
+    [success_msg]="success_msg"
+    [appDisplay]="show_success"
+  ></app-success-msg>
   }
-</div>
-<app-error-msg [error_msg]="error_msg" [appDisplay]="show_error"></app-error-msg>
-  }
-
 </div>
