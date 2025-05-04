@@ -81,17 +81,12 @@ export class ProfileComponent {
       );
   }
 
-  modifyAllaskereso(user_data: {
-    nev: string | null;
-    email: string | null;
-    vegzettseg: string | null;
-    jelszo: string | null;
-  }) {
-    // console.table(user_data);
+  modifyAllaskereso(user_data: any) {
+    if(user_data.email != localStorage.getItem('username'))
+      user_data.originalemail = localStorage.getItem('username');
 
     this.http.post<any>('http://localhost:3000/allaskereso/api/update', {
         email: user_data.email,
-        email2: localStorage.getItem('username'),
         neve: user_data.nev,
         vegzettseg: user_data.vegzettseg,
         jelszo: user_data.jelszo,

@@ -26,8 +26,8 @@ router.post('/api/update', async (req, res) => {
   try {
     const allaskereso = { email: req.body.email };
     if (req.body.neve) allaskereso.neve = req.body.neve;
-    if (req.body.email2) {
-      allaskereso.email2 = req.body.email2;
+    if (req.body.originalemail) {
+      allaskereso.originalemail = req.body.originalemail;
       allaskereso.jelszo2 = req.body.jelszo;
     }
     if (req.body.vegzettseg) allaskereso.vegzettseg = req.body.vegzettseg;
@@ -36,7 +36,7 @@ router.post('/api/update', async (req, res) => {
     // if (!updates.taxid) {
     //     throw new Error('Email kötelező');
     // }
-    
+
     const data = await allaskeresoDao.updateAllaskereso(allaskereso);
 
     if (!data.success) {
