@@ -13,10 +13,10 @@ router.post('/api/CVinsert', async (req, res) => {
         const success = await cvDao.insertCv(cv);
 
         if (!success) {
-          res.json({ error: 'CV feltöltés sikertelen' });
+          res.json({ error: 'CV feltöltés sikertelen', success: false });
         
         } else{
-          res.json({ message: 'CV sikeresen feltöltve' });
+          res.json({ message: 'CV sikeresen feltöltve', success: true });
         }
 
     } catch (err) {
