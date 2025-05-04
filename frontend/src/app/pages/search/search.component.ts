@@ -21,7 +21,7 @@ import { HttpClientModule } from '@angular/common/http';
   styleUrl: './search.component.css',
 })
 export class SearchComponent {
-  filtered_work_offers: Allas[] = [];
+  filtered_work_offers: any = [];
   is_searched = false;
   addittional_filter!: {kovetelmeny: string, min: number, max: number}
   private work_service = inject(WorkService);
@@ -58,10 +58,10 @@ export class SearchComponent {
     this.http.post<any>('http://localhost:3000/allasok/api/searchjob', data)
     .subscribe(response => {
         if (response.success) {
-          console.table(response);
           // console.log(Object.keys(response.allasok).length);
           response.allasok.forEach((work: any) => {
               this.filtered_work_offers.push({
+                id: work.ID as number,
                 cim: work.CIM as string,
                 leiras: work.LEIRAS as string,
                 kovetelmenyek: work.KOVETELMENYEK as string,

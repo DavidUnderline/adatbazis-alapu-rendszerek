@@ -16,7 +16,9 @@ class Allasok{
         // ! ezt is
         // |  company    │   'ceg'    │
         // │  location   │     1      │
-        // │ requirement │ 'kulcsszo' │
+
+        // │ date - not older than x days │ number │???
+        
         // │  salarymax  │    200     │
         // │  salarymin  │    100     │
         
@@ -59,8 +61,8 @@ class Allasok{
 
         const query = `select * from allaslehetoseg inner join terulet t ON t.id = terulet_id`+
         ` where is_accepted = :is_accepted ${fields.join(' ')}`;
-        console.log(query);
-        console.table(binds);
+        // console.log(query);
+        // console.table(binds);
         // return;
 
         try{

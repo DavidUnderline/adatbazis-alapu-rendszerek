@@ -128,6 +128,12 @@ class AllaskeresoDao {
     
     // Álláskereső állásra jelentkezés
     async applyForJob(binds) {
+        console.log("inside applyForJob");
+        console.table(binds);
+        console.log(binds);
+        console.log(binds.data.email);
+        console.log(binds.job_id);
+        return;
         const query = `INSERT INTO jelentkezo (allaskereso_email, allaslehetoseg_id) VALUES (:email, :jobid)`;
         const result = await executeQuery(query, binds);
         console.table(result);

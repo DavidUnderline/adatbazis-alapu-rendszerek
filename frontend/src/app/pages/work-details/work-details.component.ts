@@ -36,20 +36,21 @@ export class WorkDetailsComponent implements OnInit {
   apply() {
     const data = {
       email: localStorage.getItem('username'),
+      job_id: this.work.getWork()?.id
       // cv_link: localStorage.getItem('active_cv'),
-      // ceg_id: this.work.getWork()?.id
+      // ceg_id: this.work.getWork()?.
     }
-    // this.http.post<any>('http://localhost:3000/allaskereso/api/applyforjob', { data }).subscribe((response) => {
-    //     if (response.success) {
-    //       console.log(response);
-    //     } else {
-    //       console.log(response);
-    //     }
-    //   },
-    //   (error) => {
-    //     this.errorHandler(error);
-    //   }
-    // );
+    this.http.post<any>('http://localhost:3000/allaskereso/api/applyforjob', { data }).subscribe((response) => {
+        if (response.success) {
+          console.log(response);
+        } else {
+          console.log(response);
+        }
+      },
+      (error) => {
+        this.errorHandler(error);
+      }
+    );
   }
 
   errorHandler(error: string) {
