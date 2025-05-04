@@ -24,95 +24,82 @@ export class CvFormComponent {
       .subscribe(
         (response) => {
           if (response.success) {
-            localStorage.setItem('active_cv', response.cv_link[0][0]);
-            // console.log(response.cv_link[0][0]);
-            for (let i = 0; i < response.cv_link.length; ++i) {
-              this.showCV(response.cv_link[i][0]);
-            }
-          } else {
-            console.log(response);
-          }
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-  }
-
-  showCV(cv_link: string) {
-    if (cv_link.length > 10) {
-      this.cvs.push({ link: cv_link });
-    }
-    
-    this.insertCV();
-  }
-
-  deleteById(index: number) {
-    let cv = this.cvs.splice(index, 1)[0];
-    this.http
-      .delete<any>('http://localhost:3000/cv/api/CVdelete', {
-        body: { cv_link: cv.link },
-      })
-      .subscribe(
-        (response) => {
-          // TODO
-          console.log("---[ deleteById ]---");
-          
-          console.table(response)
-          if (response.success) {
-            this.msg.emit({
-              success: true,
-              msg: response.message
-            });
-
-          } else {
-            this.msg.emit({
-              success: false,
-              msg: response.message
+            console.table(response);
+            response.cv_link.map((cv: string) => {
+              if (cv.at(0) !== undefined) {
+                this.showCV({
+                  link: cv.at(0)!,
+                });
+              }
             });
           }
-          // !
         },
         (error) => {
           this.msg.emit({
-            success: true,
+            success: false,
             msg: error.error
-          });
+          })
         }
       );
   }
 
-  insertCV() {
-    for (let key in this.cvs) {
-      const cv: CV = this.cvs[key];
-      this.http
-        .post<any>('http://localhost:3000/cv/api/CVinsert', {
-          cv_link: cv.link,
-          email: this.email,
+  insertCV(cv_link: string) {
+    if(cv_link.length < 10) return;
+
+    this.http.post('http://localhost:3000/cv/api/CVinsert', {cv_link: cv_link, email: this.email}).subscribe(
+      (response: any) => {
+        if( response.success ){
+          this.showCV({link: cv_link})
+          this.msg.emit({
+            success: true,
+            msg: response.message
+          })
+        }else{
+          this.msg.emit({
+            success: false,
+            msg: response.message
+          })
+        }
+      },
+      (error) => {
+        this.msg.emit({
+          success: false,
+          msg: error.error
         })
-        .subscribe(
-          (response) => {
-            // TODO
-            if (response.success) {
-              this.msg.emit({
-                success: true,
-                msg: response.message
-              });
-            } else {
-              this.msg.emit({
-              success: false,
-              msg: response.message
-            });
-            }
-            // !
-          },
-          (error) => {
-            this.msg.emit({
-              success: false,
-              msg: error.error
-            });
-          }
-        );
+      }
+    )
+  }
+
+  deleteById(index: number) {
+    const deleted_cv: CV = this.cvs.splice(index, 1)[0];
+    console.log(deleted_cv.link)
+    this.http.delete('http://localhost:3000/cv/api/CVdelete', { body: { cv_link: deleted_cv.link } }).subscribe(
+      (response: any) => {
+        if (response.success) {
+          this.msg.emit({
+            success: true,
+            msg: response.message
+          });
+        } else {
+          this.msg.emit({
+            success: false,
+            msg: response.message
+          });
+        }
+      },
+      (error) => {
+        this.msg.emit({
+          success: false,
+          msg: error.error
+        });
+      }
+    );
+  }
+
+  //! Felpusholja a CV-ket lokálba, hogy látható legyen.
+  showCV(cv: CV) {
+    if (cv.link.length >= 10) {
+      this.cvs.push(cv);
     }
   }
 }

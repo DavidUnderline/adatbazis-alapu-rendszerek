@@ -33,7 +33,7 @@ class CvDao {
             return true;
         } catch (err) {
             if (connection) await connection.rollback();
-            console.error('Error inserting CV:', err);
+            console.error('\n\nError inserting CV:', err);
             throw err;
         } finally {
             if (connection) await connection.close();

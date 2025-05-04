@@ -94,7 +94,7 @@ export class ProfileComponent {
   }
 
   modifyAllaskereso(user_data: any) {
-    if(user_data.email != localStorage.getItem('username'))
+    if (user_data.email != localStorage.getItem('username'))
       user_data.originalemail = localStorage.getItem('username');
 
     this.http
@@ -140,8 +140,13 @@ export class ProfileComponent {
     this.error_msg = '';
     this.success_msg = '';
 
-    console.log("---[ handleMsg ]---")
+    console.log('---[ handleMsg ]---');
     console.table(msg);
+    if(msg.msg === undefined)
+    {
+      return;
+    }
+
     if (msg.success) {
       this.successHandler(msg.msg);
     } else {
