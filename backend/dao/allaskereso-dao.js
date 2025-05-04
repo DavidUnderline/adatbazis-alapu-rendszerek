@@ -51,7 +51,7 @@ class AllaskeresoDao {
 
     async updateAllaskereso(allaskereso) {
         let connection;
-        console.table(allaskereso);
+
         try {
             connection = await getConnection();
             const fields = [];
@@ -61,9 +61,10 @@ class AllaskeresoDao {
                 binds.neve = allaskereso.neve;
             }
 
-            if((allaskereso.email != allaskereso.email2) || (allaskereso.email === allaskereso.email2) ){
+            if(allaskereso.originalemail){
+                console.log("emailchange");
                 fields.push('email = :toemail');
-                binds.email = allaskereso.email2;
+                binds.email = allaskereso.originalemail;
                 binds.toemail = allaskereso.email;
                 binds.jelszo = allaskereso.jelszo;
             }
@@ -82,8 +83,8 @@ class AllaskeresoDao {
             }
             
             const query = `UPDATE allaskereso SET ${fields.join(', ')} WHERE email = :email`;
-            console.log(query);
-            console.table(binds);
+            // console.log(query);
+            // console.table(binds);
             // return;
 
             const result = await connection.execute(query, binds);
@@ -91,7 +92,7 @@ class AllaskeresoDao {
             
             return {
                 success: result.rowsAffected === 1,
-                email: binds.toemail
+                email: binds.toemail ? binds.toemail : binds.email
             };
         } catch (err) {
             console.error('Error updating allaskereso:', err);

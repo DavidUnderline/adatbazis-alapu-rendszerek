@@ -43,6 +43,8 @@ export class CvFormComponent {
     if (cv_link.length > 10) {
       this.cvs.push({ link: cv_link });
     }
+    
+    this.insertCV();
   }
 
   deleteById(index: number) {
