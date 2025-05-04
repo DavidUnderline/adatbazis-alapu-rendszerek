@@ -13,6 +13,7 @@ import { CV } from '../../shared/Model/CV';
 import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { WorkListComponent } from './work-list/work-list.component';
+import { JobsService } from '../../services/jobs.service';
 @Component({
   selector: 'app-profile',
   imports: [
@@ -33,12 +34,14 @@ export class ProfileComponent {
   user_ceg: Ceg | null = null;
   user_email = localStorage.getItem('username');
   is_company = inject(IsCompanyService);
+  jobservice = inject(JobsService);
   show_error = false;
   error_msg: string = '';
 
   constructor(private http: HttpClient) {
     this.is_company.getIsCompany() ? this.loadCeg() : this.loadAllaskereso();
     this.show_error = false;
+    console.log("applied jobs: ", this.jobservice.getjobsid());
   }
 
   loadCeg() {

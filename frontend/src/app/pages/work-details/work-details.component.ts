@@ -6,6 +6,7 @@ import { LoginService } from '../../services/login.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
+import { JobsService } from '../../services/jobs.service';
 
 @Component({
   selector: 'app-work-details',
@@ -21,6 +22,7 @@ export class WorkDetailsComponent implements OnInit {
   work = inject(WorkService);
   isLogged = inject(LoginService);
   private router = inject(Router);
+  jobservice = inject(JobsService);
 
   show_error = false;
   error_msg: string = '';
@@ -34,6 +36,11 @@ export class WorkDetailsComponent implements OnInit {
   }
 
   apply() {
+    if(this.isapplied()){
+      console.error("already applied");
+      return;
+    }
+
     const data = {
       email: localStorage.getItem('username'),
       job_id: this.work.getWork()?.id
@@ -51,6 +58,16 @@ export class WorkDetailsComponent implements OnInit {
         this.errorHandler(error);
       }
     );
+  }
+
+  isapplied(){
+    for(let i of this.jobservice.getjobsid()){
+      if(i == this.work.getWork()?.id){
+        return true;
+      }
+    }
+    
+    return false;
   }
 
   errorHandler(error: string) {

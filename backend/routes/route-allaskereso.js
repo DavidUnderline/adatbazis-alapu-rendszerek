@@ -16,8 +16,9 @@ router.post('/api/register', async (req, res) => {
         }
 
         res.json({ success : true, email: allaskereso.EMAIL });
+
     } catch (err) {
-        res.status(500).json({ error: 'Hiba a regisztráció során' });
+        res.json({ error: 'Hiba a regisztráció során' });
     }
 });
 
@@ -59,6 +60,7 @@ router.post('/api/get', async (req, res) => {
       
       if (allaskereso) {
         res.json(allaskereso);
+        return;
       
       } else {
         res.json({ error: 'Álláskereső nem található' });
@@ -73,7 +75,7 @@ router.post('/api/get', async (req, res) => {
     
     try {
       const success = await allaskeresoDao.applyForJob(data);
-      // console.table(success);
+      console.table(success);
 
       if (!success) {
         res.json({ success : false, message: 'Sikertelen jelentkezés' });

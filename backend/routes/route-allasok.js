@@ -12,9 +12,10 @@ router.post('/api/searchjob', async (req, res) => {
         if(!allasok){
             res.json({ success: false, error: 'Nem található allás' });
             return;
-        }
-        else
+        
+        } else{
             res.json({ success: true, allasok });
+        }
         
     } catch (err) {
         res.json({ error: 'Hiba az allások lekérdezésekor' });

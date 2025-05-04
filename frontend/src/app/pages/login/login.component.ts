@@ -16,6 +16,8 @@ import { inject } from '@angular/core';
 import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { SuccessMsgComponent } from "../../shared/success-msg/success-msg.component"; 
+import { json } from 'express';
+import { JobsService } from '../../services/jobs.service';
 
 
 @Component({
@@ -34,6 +36,7 @@ export class LoginComponent {
 
   loginservice = inject(LoginService);
   companyservice = inject(IsCompanyService);
+  jobservice = inject(JobsService);
 
   showError: boolean = true;
   error_msg: string = '';
@@ -59,6 +62,7 @@ handle_login(login: { email: string; password: string; }) {
           this.loginservice.setLoginStatus(true);
           this.companyservice.setIsCompany(false);
           localStorage.setItem('username', response.email); //! kisbetű, allCapssel nem működik gyerekik
+          this.jobservice.setjobsid(response.jobs);
           this.router.navigate(['/app']);
 
         } else {
