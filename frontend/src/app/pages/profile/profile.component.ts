@@ -2,9 +2,9 @@ import { Component, inject } from '@angular/core';
 import { Allaskereso } from '../../shared/Model/Allaskereso';
 import { Ceg } from '../../shared/Model/Ceg';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { response } from 'express';
+// import { response } from 'express';
 import { IsCompanyService } from '../../services/is-company.service';
-import { Allas } from '../../shared/Model/Allas';
+// import { Allas } from '../../shared/Model/Allas';
 import { CegFormComponent } from './ceg-form/ceg-form.component';
 import { AllaskeresoFormComponent } from './allaskereso-form/allaskereso-form.component';
 import { MatIcon } from '@angular/material/icon';
@@ -56,13 +56,13 @@ export class ProfileComponent {
           };
         },
         (error) => {
-          this.errorHandler(error.error.error);
+          this.errorHandler(error);
         }
       );
   }
 
   loadAllaskereso() {
-    console.log(this.user_email);
+    // console.log(this.user_email);
     this.http.post<any>('http://localhost:3000/allaskereso/api/get', {
         email: this.user_email,
       }).subscribe((response) => {
@@ -76,7 +76,7 @@ export class ProfileComponent {
           };
         },
         (error) => {
-          this.errorHandler(error.error.error);
+          this.errorHandler(error);
         }
       );
   }
@@ -87,7 +87,7 @@ export class ProfileComponent {
     vegzettseg: string | null;
     jelszo: string | null;
   }) {
-    console.table(user_data);
+    // console.table(user_data);
 
     this.http.post<any>('http://localhost:3000/allaskereso/api/update', {
         email: user_data.email,
@@ -105,7 +105,7 @@ export class ProfileComponent {
           }
         },
         (err) => {
-          this.errorHandler(err.error.error);
+          this.errorHandler(err);
         }
       );
 

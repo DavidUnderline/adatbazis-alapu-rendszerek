@@ -51,7 +51,7 @@ class AllaskeresoDao {
 
     async updateAllaskereso(allaskereso) {
         let connection;
-
+        console.table(allaskereso);
         try {
             connection = await getConnection();
             const fields = [];
@@ -82,8 +82,8 @@ class AllaskeresoDao {
             }
             
             const query = `UPDATE allaskereso SET ${fields.join(', ')} WHERE email = :email`;
-            // console.log(query);
-            // console.table(binds);
+            console.log(query);
+            console.table(binds);
             // return;
 
             const result = await connection.execute(query, binds);
@@ -124,46 +124,16 @@ class AllaskeresoDao {
             if (connection) await connection.close();
         }
     }
-
-    // egy CV hozzárendelése egy álláskeresőhöz
-    // async addCvToAllaskereso(email, cvLink) {
-    //     let connection;
-    //     try {
-    //         // connection = await getConnection();
-    //         const result = await connection.execute(
-    //             `INSERT INTO allaskereso_cv_kapcsolat (email, cv_link) VALUES (:email, :cvLink)`,
-    //             { email, cvLink },
-    //             { autoCommit: true }
-    //         );
-    //         return result.rowsAffected === 1;
-    //     } catch (err) {
-    //         console.error('Error adding CV to allaskereso:', err);
-    //         throw err;
-    //     } finally {
-    //         if (connection) await connection.close();
-    //     }
-    // }
-
-
-    // Összes álláskereső lekérdezése, CV-kkel együtt (jelszóval admin esetén)
-    // async getAllAllaskeresok() {
-    //     let connection;
-    //     try {
-    //         // connection = await getConnection();
-    //         const result = await connection.execute(
-    //             `SELECT a.email, a.neve, a.jelszo, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
-    //                     (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
-    //              FROM allaskereso a`
-    //         );
-    //         return result.rows;
-    //     } catch (err) {
-    //         console.error('Error fetching all allaskeresok:', err);
-    //         throw err;
-    //     } finally {
-    //         if (connection) await connection.close();
-    //     }
-    // }
-
+    
+    // Álláskereső állásra jelentkezés
+    async applyForJob(binds) {
+        const query = `INSERT INTO jelentkezo (allaskereso_email, allaslehetoseg_id) VALUES (:email, :jobid)`;
+        const result = await executeQuery(query, binds);
+        console.table(result);
+        return;
+        // return result.rowsAffected === 1;
+    }
+    
     // Utolsó bejelentkezés frissítése
     // async updateLastLogin(email) {
     //     let connection;
@@ -183,25 +153,6 @@ class AllaskeresoDao {
     //     }
     // }
 
-    // Jelszó módosítása
-    // async updatePassword(email, hashedPassword) {
-    //     let connection;
-    //     try {
-    //         // connection = await getConnection();
-    //         const result = await connection.execute(
-    //             `UPDATE allaskereso SET jelszo = :hashedPassword WHERE email = :email`,
-    //             { hashedPassword, email },
-    //             { autoCommit: true }
-    //         );
-    //         return result.rowsAffected === 1;
-    //     } catch (err) {
-    //         console.error('Error updating password:', err);
-    //         throw err;
-    //     } finally {
-    //         if (connection) await connection.close();
-    //     }
-    // }
-
     // Álláskereső törlése (kapcsolatok automatikusan törlődnek CASCADE miatt)
     // async deleteAllaskereso(email) {
     //     let connection;
@@ -215,26 +166,6 @@ class AllaskeresoDao {
     //         return result.rowsAffected === 1;
     //     } catch (err) {
     //         console.error('Error deleting allaskereso:', err);
-    //         throw err;
-    //     } finally {
-    //         if (connection) await connection.close();
-    //     }
-    // }
-
-    // CV kapcsolat törlése egy álláskeresőtől
-    // // CV torlodik, amikor a kapcsolatot toroljuk --> on delete-ek beallitasa szukseges
-    // async deleteCvFromAllaskereso(email, cvLink) {
-    //     let connection;
-    //     try {
-    //         // connection = await getConnection();
-    //         const result = await connection.execute(
-    //             `DELETE FROM allaskereso_cv_kapcsolat WHERE email = :email AND cv_link = :cvLink`,
-    //             { email, cvLink },
-    //             { autoCommit: true }
-    //         );
-    //         return result.rowsAffected === 1;
-    //     } catch (err) {
-    //         console.error('Error deleting CV from allaskereso:', err);
     //         throw err;
     //     } finally {
     //         if (connection) await connection.close();

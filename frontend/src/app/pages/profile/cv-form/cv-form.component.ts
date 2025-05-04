@@ -18,6 +18,8 @@ export class CvFormComponent {
     this.http.post<any>('http://localhost:3000/cv/api/CVget', {email: this.email}).subscribe(
       (response) => {
         if(response.success){
+          localStorage.setItem("active_cv", response.cv_link[0][0]);
+          // console.log(response.cv_link[0][0]);
           for(let i = 0; i < response.cv_link.length; ++i){
             this.showCV(response.cv_link[i][0]);
           }

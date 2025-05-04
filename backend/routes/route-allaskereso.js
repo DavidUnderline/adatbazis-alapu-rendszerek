@@ -27,7 +27,6 @@ router.post('/api/update', async (req, res) => {
     const allaskereso = { email: req.body.email };
     if (req.body.neve) allaskereso.neve = req.body.neve;
     if (req.body.email2) {
-      // console.table("inside route:\n" + req.body);
       allaskereso.email2 = req.body.email2;
       allaskereso.jelszo2 = req.body.jelszo;
     }
@@ -51,17 +50,6 @@ router.post('/api/update', async (req, res) => {
   }
 });
 
-// Összes álláskereső lekérdezése (admin jogosultság szükséges)
-// router.get('/', userAuth(['ROLE_ADMIN']), async (req, res) => {
-//     try {
-//         const allaskeresok = await allaskeresoDao.getAllAllaskeresok();
-//         res.json(allaskeresok);
-//     } catch (err) {
-//         res.status(500).json({ error: 'Hiba az álláskeresők lekérdezésekor' });
-//     }
-// });
-
-
 // Álláskereső adatainak lekérdezése email alapján (saját adatokhoz vagy admin)
 router.post('/api/get', async (req, res) => {
     const email = req.body.email;
@@ -77,58 +65,23 @@ router.post('/api/get', async (req, res) => {
     }
   });
 
+  router.post('/api/applyforjob', async (req, res) => {
+    const data = req.body;
+    try {
+      const success = await allaskeresoDao.applyForJob(data);
+  
+      if (!success) {
+        res.json({ success : false, message: 'Sikertelen jelentkezés' });
+        return;
+      }
+  
+      res.json({ success : true, message: 'Sikeres jelentkezés' });
 
-// // Új CV hozzáadása egy álláskeresőhöz
-// router.post('/:email/cv', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res) => {
-//     const email = req.params.email;
-//     const { cv_link } = req.body;
-//     if (!cv_link) {
-//         return res.status(400).json({ error: 'CV link kötelező' });
-//     }
-//     if (req.user.email !== email && !req.user.roles.includes('ROLE_ADMIN')) {
-//         return res.status(403).json({ error: 'Nincs jogosultság' });
-//     }
-
-//     try {
-//         const cvExists = await cvDao.getCv(cv_link);
-//         if (!cvExists) {
-//             await cvDao.insertCv(cv_link);
-//         }
-//         const success = await allaskeresoDao.addCvToAllaskereso(email, cv_link);
-//         if (success) {
-//             res.status(201).json({ message: 'CV sikeresen hozzáadva' });
-//         } else {
-//             res.status(500).json({ error: 'CV hozzáadása sikertelen' });
-//         }
-//     } catch (err) {
-//         res.status(500).json({ error: 'Hiba a CV hozzáadása során' });
-//     }
-// });
-
-// // Jelszó módosítása
-// router.put('/:email/password', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res) => {
-//     const email = req.params.email;
-//     const { jelszo } = req.body;
-//     if (!jelszo) {
-//         return res.status(400).json({ error: 'Jelszó kötelező' });
-//     }
-//     if (req.user.email !== email && !req.user.roles.includes('ROLE_ADMIN')) {
-//         return res.status(403).json({ error: 'Nincs jogosultság' });
-//     }
-
-//     try {
-//         const hashedPassword = await bcrypt.hash(jelszo, 10);
-//         const success = await allaskeresoDao.updatePassword(email, hashedPassword);
-//         if (success) {
-//             res.json({ message: 'Jelszó sikeresen módosítva' });
-//         } else {
-//             res.status(404).json({ error: 'Álláskereső nem található' });
-//         }
-//     } catch (err) {
-//         res.status(500).json({ error: 'Hiba a jelszó módosítása során' });
-//     }
-// });
-
+    } catch (err) {
+      res.json({ error: 'Hiba a jelentkezés során' });
+    }
+  });
+  
 // // Álláskereső törlése (admin vagy saját maga)
 // router.delete('/:email', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res) => {
 //     const email = req.params.email;

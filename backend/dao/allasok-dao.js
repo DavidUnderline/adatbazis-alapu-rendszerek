@@ -10,7 +10,7 @@ class Allasok{
         };
         const fields = [];
 
-        // console.table(data);
+        console.table(data);
         // console.log(Object.keys(data).length);
         
         // ! ezt is
@@ -29,11 +29,11 @@ class Allasok{
         // }
 
         if(data.location != 0){
-            fields.push("AND terulet_id = :location");
+            fields.push("AND t.varos LIKE '%' || :location || '%'");
             binds.location = data.location;
         }
 
-        // if(!data.requirement){
+        // if(!data.keyword){
         //     fields.push(" AND kovetelmenyek LIKE '%' || :requirement || '%'");
         // }
 
@@ -57,14 +57,15 @@ class Allasok{
             //     " AND kovetelmenyek LIKE '%' || :requirement || '%'"+ 
             //     " AND (ber <= :salarymax AND ber >= :salarymin)";
 
-        const query = `select * from allaslehetoseg where is_accepted = :is_accepted ${fields.join(' ')}`;
-        // console.log(query);
-        // console.table(binds);
+        const query = `select * from allaslehetoseg inner join terulet t ON t.id = terulet_id`+
+        ` where is_accepted = :is_accepted ${fields.join(' ')}`;
+        console.log(query);
+        console.table(binds);
         // return;
 
         try{
             const result = await executeQuery(query, binds);   
-            // console.log(result);
+            console.log(result);
             return result.length > 0 ? result : null;
 
         } catch (err) {

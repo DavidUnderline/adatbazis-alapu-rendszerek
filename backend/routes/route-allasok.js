@@ -10,14 +10,14 @@ router.post('/api/searchjob', async (req, res) => {
         const allasok = await allasokDao.getAllasok(data);
 
         if(!allasok){
-            res.json({ error: 'Nem található allás' });
+            res.json({ success: false, error: 'Nem található allás' });
             return;
         }
         else
-            res.json(allasok);
+            res.json({ success: true, allasok });
         
     } catch (err) {
-        res.status(500).json({ error: 'Hiba az allások lekérdezésekor' });
+        res.json({ error: 'Hiba az allások lekérdezésekor' });
     }
 });
 

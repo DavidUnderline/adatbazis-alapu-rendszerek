@@ -50,10 +50,11 @@
     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium ea repudiandae autem, quos illo facilis accusantium. Fugit quaerat magni mollitia, repudiandae beatae officia tenetur impedit, quo repellendus, repellat porro quisquam?</p>
 
     <button
-    [disabled]="!isLogged.isLoggedIn()"
+    [disabled]="isLogged.isLoggedIn() == false" 
+    (click)="apply()"
     class="bg-dark_red-500 text-white-500 font-medium text-xl rounded-xl cursor-pointer p-5 pl-20 pr-20 disabled:bg-dark_blue-500 disabled:cursor-not-allowed"
   >
-    Érdekel
+    Jelentkezés
   </button>
 
   </div>

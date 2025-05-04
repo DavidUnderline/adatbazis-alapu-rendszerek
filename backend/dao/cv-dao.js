@@ -79,44 +79,6 @@ class CvDao {
             if (connection) await connection.close();
         }
     }
-
-    // TODO
-    // CV update
-    async updateCV(data) {
-        // let connection;
-        
-        // try {
-        //     connection = await getConnection();
-        //     const query = "update allaskereso_cv_kapcsolat set email = :toemail WHERE email = :email";
-        //     const result = await connection.execute(query, data);
-        //     return result.rowsAffected === 1;
-
-        // } catch (err) {
-        //     console.error('ERROR UPDATING CV:', err);
-        //     // throw err;
-        // } finally {
-        //     if (connection) await connection.close();
-        // }
-    }
-    // !
-
-    // Összes CV link lekérdezése
-    // async getAllCvs() {
-    //     let connection;
-    //     try {
-    //         connection = await getConnection();
-    //         const result = await connection.execute(
-    //             `SELECT cv_link FROM cv`
-    //         );
-    //         return result.rows;
-    //     } catch (err) {
-    //         console.error('Error fetching all CVs:', err);
-    //         throw err;
-    //     } finally {
-    //         if (connection) await connection.close();
-    //     }
-    // }
-    
 }
 
 module.exports = new CvDao();
