@@ -6,7 +6,7 @@ class AllaskeresoDao {
     async user(email, password, tipo) {
         let query = "";
         let query2 = "";
-        if(tipo === false){
+        if(tipo === "allaskereso"){
             query = "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
             query2 = "select allaslehetoseg_id from jelentkezo where allaskereso_email = :email";
         } else{

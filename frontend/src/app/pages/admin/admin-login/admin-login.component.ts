@@ -38,6 +38,7 @@ export class AdminLoginComponent {
       tipo: 'admin',
     };
 
+
     console.table(logData);
     console.log('emittelt');
 

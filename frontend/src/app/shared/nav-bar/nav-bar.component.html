@@ -7,36 +7,33 @@
     >ProfSession</a
   >
   <div class="flex gap-12">
+
     
-    @if (isCompany.getIsCompany()) {
-      <a
-      href="/publish"
-      class="font-medium text-xl p-2 pt-1 pb-1 rounded-sm transition text-dark-blue-500 dark:text-white-500 hover:bg-dark_blue-500 hover:text-white-500 dark:hover:bg-white-500 dark:hover:text-dark_blue-500"
-      >Hírdetés</a
-    >
-     @if (!isLogged.getLoginStatus()){
-      <button
-      class="font-medium text-xl p-2 pt-1 pb-1 rounded-sm transition text-dark_blue-500 dark:text-white-500 hover:bg-dark_blue-500 hover:text-white-500 dark:hover:bg-white-500 dark:hover:text-dark_blue-500 hover:cursor-pointer"
-      (click)="flip_isCompany()"
-    >
-      Cégeknek
-    </button>
-     }
-    }@else {
-      <a
-      href="/search"
-      class="font-medium text-xl p-2 pt-1 pb-1 rounded-sm transition text-dark-blue-500 dark:text-white-500 hover:bg-dark_blue-500 hover:text-white-500 dark:hover:bg-white-500 dark:hover:text-dark_blue-500"
-      >Keresés</a
-    >
-    @if (!isLogged.getLoginStatus()){
-      <button
-      class="font-medium text-xl p-2 pt-1 pb-1 rounded-sm transition text-dark_blue-500 dark:text-white-500 hover:bg-dark_blue-500 hover:text-white-500 dark:hover:bg-white-500 dark:hover:text-dark_blue-500 hover:cursor-pointer"
-      (click)="flip_isCompany()"
-    >
-      Álláskeresőnek
-    </button>
-  }
-    } @if (isLogged.getLoginStatus()) {
+    @switch (login_service.getRole()) {
+      @case ("ceg") {
+        <a href="/publish" class="font-medium text-xl p-2 pt-1 pb-1 rounded-sm transition text-dark-blue-500 dark:text-white-500 hover:bg-dark_blue-500 hover:text-white-500 dark:hover:bg-white-500 dark:hover:text-dark_blue-500">Hírdetés</a>
+       @if (!login_service.isLoggedIn()){
+          <button class="font-medium text-xl p-2 pt-1 pb-1 rounded-sm transition text-dark_blue-500 dark:text-white-500 hover:bg-dark_blue-500 hover:text-white-500 dark:hover:bg-white-500 dark:hover:text-dark_blue-500 hover:cursor-pointer" (click)="flip_isCompany()">
+          Cégeknek
+          </button>
+        }
+      }
+      @case ("allaskereso") {
+        <a href="/search" class="font-medium text-xl p-2 pt-1 pb-1 rounded-sm transition text-dark-blue-500 dark:text-white-500 hover:bg-dark_blue-500 hover:text-white-500 dark:hover:bg-white-500 dark:hover:text-dark_blue-500">Keresés</a>
+        @if (!login_service.isLoggedIn()){
+          <button class="font-medium text-xl p-2 pt-1 pb-1 rounded-sm transition text-dark_blue-500 dark:text-white-500 hover:bg-dark_blue-500 hover:text-white-500 dark:hover:bg-white-500 dark:hover:text-dark_blue-500 hover:cursor-pointer" (click)="flip_isCompany()">
+          Álláskeresőnek
+          </button>
+        }
+      }
+      @case ("admin") {
+        <h1>ADMIN</h1>
+      }
+      @default {
+        <h1>baj</h1>
+      }
+    }
+    @if (login_service.isLoggedIn()) {
     <a
       href="/profile"
       class="font-medium text-xl p-2 pt-1 pb-1 rounded-sm transition text-dark_blue-500 dark:text-white-500 hover:bg-dark_blue-500 hover:text-white-500 dark:hover:bg-white-500 dark:hover:text-dark_blue-500"
@@ -44,7 +41,7 @@
     >
     <a
       class="font-medium text-xl p-2 pt-1 pb-1 rounded-sm transition text-dark_blue-500 dark:text-white-500 hover:bg-dark_blue-500 hover:text-white-500 dark:hover:bg-white-500 dark:hover:text-dark_blue-500 hover:cursor-pointer"
-      (click)="isLogged.logOut()"
+      (click)="login_service.logOut()"
       >Kijelentkezés</a
     >
     }@else{

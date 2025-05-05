@@ -3,7 +3,7 @@
 >
   <div class="bg-white-500 p-4 rounded-2xl w-[40%] flex flex-col align-middle justify-center">
     <h1 class="text-dark_blue-500 font-medium m-auto text-2xl">Bejelentkezés</h1>
-    <h2 class="text-dark_blue-500 font-medium m-auto text-xl pb-10">{{companyservice.getIsCompany() ? "Cégnek" : "Álláskeresőnek"}}</h2>
+    <h2 class="text-dark_blue-500 font-medium m-auto text-xl pb-10">{{(loginservice.getRole() === 'ceg')? "Cégeknek": "Álláskeresőknek"}}</h2>
     <app-login-form (valid_login)="handle_login($event)" (login_error)="errorHandler($event)"></app-login-form>
   </div>
 

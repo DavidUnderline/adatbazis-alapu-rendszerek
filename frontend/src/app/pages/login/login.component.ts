@@ -35,7 +35,6 @@ export class LoginComponent {
   valid_login: { email: string; password: string;} | null = null;
 
   loginservice = inject(LoginService);
-  companyservice = inject(IsCompanyService);
   jobservice = inject(JobsService);
 
   showError: boolean = true;
@@ -48,7 +47,7 @@ handle_login(login: { email: string; password: string; }) {
   const data = {
     email: login.email,
     password: sha256(sha256(login.password+login.email)),
-    tipo: this.companyservice.getIsCompany()
+    tipo: this.loginservice.getRole()
   }
   
   // console.log("emittelt");
@@ -57,8 +56,7 @@ handle_login(login: { email: string; password: string; }) {
       // console.table(response);
       if (response.success) {
           this.loginservice.setLoginStatus(true);
-          this.companyservice.setIsCompany(false);
-          localStorage.setItem('username', response.email); //! kisbetű, allCapssel nem működik gyerekik
+          localStorage.setItem('username', response.email);
           data.tipo ? this.jobservice.setjobsid([{ALLASLEHETOSEG_ID: response.jobs}]) : this.jobservice.setjobsid(response.jobs);
 
           this.router.navigate(['/app']);

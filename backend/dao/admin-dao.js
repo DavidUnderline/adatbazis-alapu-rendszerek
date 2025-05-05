@@ -6,9 +6,10 @@ class AdminDao {
     let connection;
     try{
       connection = await getConnection();
-      let query= "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
+      let query= "SELECT email FROM MODERATOR WHERE email = :email AND jelszo = :password";
 
       const result = await connection.execute(query, {email: email, password: password}, {autoCommit: true});
+      console.log(result.rows.length);
       return result.rows.length === 1
     }catch(err){}
       console.error('Error looking up admin: '+err);

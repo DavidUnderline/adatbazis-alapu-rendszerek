@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { LoginService } from '../../services/login.service';
 import { IsCompanyService } from '../../services/is-company.service';
@@ -10,12 +9,14 @@ import { IsCompanyService } from '../../services/is-company.service';
   styleUrl: './nav-bar.component.css',
 })
 export class NavBarComponent {
-  isLogged = inject(LoginService);
-  isCompany = inject( IsCompanyService)
+  login_service = inject(LoginService)
+  role = this.login_service.getRole();
+  constructor(){
+    console.log();
+  }
 
   flip_isCompany(){
-    console.log(this.isCompany.getIsCompany());
-    this.isCompany.setIsCompany(!this.isCompany.getIsCompany())
-    console.log(this.isCompany.getIsCompany());
+    
+    this.login_service.changeNormalRoles();
   }
 }
