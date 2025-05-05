@@ -1,61 +1,35 @@
 <div
   class="bg-white-50 bg-white-500 dark:bg-dark_blue-500 flex flex-col items-center justify-center gap-8 p-56 pt-32"
 >
-  @if ( user_allas || user_ceg) {
+  <!-- @if ( ) { -->
   <div
     class="bg-white-500 p-8 rounded-2xl grid grid-col-2 gap-x-4 gap-y-8 w-[80%]"
   >
-    @if ( user_allas === null ) {
-    <section class="">
-      <mat-icon class="big-icon text-dark_blue-500 fill-dark_blue-500 mb-2"
-        >account_circle</mat-icon
-      >
-      <h1 class="text-dark_blue-500 font-medium">
-        Email cím: <span class="text-dark_red-500">{{ user_email }}</span>
-      </h1>
-      <h1 class="text-dark_blue-500 font-medium">
-        Cég neve: <span class="text-dark_red-500">{{ user_ceg?.neve }}</span>
-      </h1>
-      <h2 class="text-dark_blue-500 font-medium">
-        Cég adóazonosítója:
-        <span class="text-dark_red-500">{{ user_ceg?.adoazonosito }}</span>
-      </h2>
-      <p class="text-dark_blue-500 font-medium">
-        Cég értékelése:
-        <span class="text-dark_red-500">{{ user_ceg?.ertekeles }}</span>
-      </p>
-    </section>
-    <app-ceg-form (valid_form)="modifyCeg($event)"></app-ceg-form>
-    <app-work-list class="col-span-2"></app-work-list>
-    }@else {
-    <section class="flex flex-col items-start gap-4">
-      <mat-icon class="big-icon text-dark_blue-500 fill-dark_blue-500"
-        >account_circle</mat-icon
-      >
-      <div>
-        <h1 class="text-dark_blue-500 font-medium">
-          Email cím: <span class="text-dark_red-500">{{ user_email }}</span>
-        </h1>
-        <h1 class="text-dark_blue-500 font-medium">
-          Felhasználó neve:
-          <span class="text-dark_red-500">{{ user_allas.nev }}</span>
-        </h1>
-        <h2 class="text-dark_blue-500 font-medium">
-          Végzettség:
-          <span class="text-dark_red-500">{{ user_allas.vegzettseg }}</span>
-        </h2>
-        <p class="text-dark_blue-500 font-medium">
-          Státusz:
-          <span class="text-dark_red-500">{{ user_allas.statusz }}</span>
-        </p>
-      </div>
-    </section>
-    <app-allaskereso-form
-      (valid_form)="modifyAllaskereso($event)"
-    ></app-allaskereso-form>
-    <app-cv-form class="col-span-2" (msg)="handleMsg($event)"></app-cv-form>
+    @switch (login_service.getRole()) {
+      @case ("ceg") {
+        <app-ceg-datas [ceg_data]="user_ceg"></app-ceg-datas>
+        <app-ceg-form (valid_form)="modifyCeg($event)"></app-ceg-form>
+        <app-work-list class="col-span-2"></app-work-list>
+      }
+
+      @case ("allaskereso") {
+        <app-allaskereso-datas [allaskereso_data]="user_allas"></app-allaskereso-datas>
+        <app-allaskereso-form
+          (valid_form)="modifyAllaskereso($event)"
+        ></app-allaskereso-form>
+        <app-cv-form class="col-span-2" (msg)="handleMsg($event)"></app-cv-form>    
+      }
+
+      @case ("admin") {
+        <app-admin-datas [admin_data]="user_moderator"></app-admin-datas>
+      }
+
+      @default {
+        <h1 class="bg-white-500">BAJ VAN</h1>
+      }
     }
   </div>
+
   <app-error-msg
     [error_msg]="error_msg"
     [appDisplay]="show_error"
@@ -64,5 +38,5 @@
     [success_msg]="success_msg"
     [appDisplay]="show_success"
   ></app-success-msg>
-  }
+  <!-- } -->
 </div>

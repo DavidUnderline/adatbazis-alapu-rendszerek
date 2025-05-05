@@ -15,7 +15,6 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 // Bejelentkezés
 router.post('/api/login', async (req, res) => {
     const { email, password, tipo } = req.body;
-    console.log({email, password, tipo});
     if (!email || !password) {
         return res.json({ error: 'Email és jelszó kötelező' });
     }

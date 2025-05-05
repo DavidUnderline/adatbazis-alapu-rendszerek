@@ -17,9 +17,11 @@ const allaskereso = require('../routes/route-allaskereso');
 const ceg = require('../routes/route-ceg');
 const allasok = require('../routes/route-allasok');
 const cv = require('../routes/route-cv')
+const admin = require('../routes/route-admin')
 
 app.use('/auth', authRoute);
 app.use('/allaskereso', allaskereso);
 app.use('/ceg', ceg);
 app.use('/allasok', allasok);
 app.use('/cv', cv);
+app.use('/admin', admin);

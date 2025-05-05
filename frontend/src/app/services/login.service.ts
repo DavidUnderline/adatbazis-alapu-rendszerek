@@ -35,7 +35,8 @@ export class LoginService {
 
   logOut() {
     localStorage.setItem(this._log, JSON.stringify(false));
-    this.jobservice.clearjobsid();
+    this.setRole("allaskereso");
+    this.jobservice.clearjobs();
     this.router.navigate(['/home']);
   }
 

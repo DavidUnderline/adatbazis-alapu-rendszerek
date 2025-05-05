@@ -56,7 +56,6 @@ handle_login(login: { email: string; password: string; }) {
       console.table(response);
       if (response.success) {
           this.loginservice.setLoginStatus(true);
-          this.companyservice.setIsCompany(false);
           localStorage.setItem('username', response.email); //! kisbetű, allCapssel nem működik gyerekik
           this.jobservice.setjobs(response.jobs);
           this.router.navigate(['/app']);
