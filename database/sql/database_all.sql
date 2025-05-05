@@ -144,8 +144,7 @@ END;
 /
 
 CREATE TABLE kulcsszo(
-  neve VARCHAR2(255) PRIMARY KEY NOT NULL,
-
+  neve VARCHAR2(255) PRIMARY KEY NOT NULL
 );
 
 -------------------- allaslehetoseg es kulcsszo kapcsolat tabla
@@ -166,7 +165,7 @@ CREATE TABLE allaslehetoseg_kulcsszo_kapcsolat (
     kulcsszo_neve VARCHAR2(255),
     PRIMARY KEY (allaslehetoseg_id, kulcsszo_neve),
     FOREIGN KEY (allaslehetoseg_id) REFERENCES allaslehetoseg(id) ON DELETE CASCADE, -- Álláslehetőség törlésekor a kulcsszó-kapcsolatai is törlődjenek
-    FOREIGN KEY (kulcsszo_neve) REFERENCES kulcsszo(neve)
+    FOREIGN KEY (kulcsszo_neve) REFERENCES kulcsszo(neve) ON DELETE CASCADE
 );
 
 -------------------- kategoria tabla
