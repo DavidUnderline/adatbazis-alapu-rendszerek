@@ -19,6 +19,7 @@ const allasok = require('../routes/route-allasok');
 const cv = require('../routes/route-cv')
 const kategoria = require('../routes/route-kategoria')
 const kulcsszo = require('../routes/route-kulcsszo')
+const admin = require('../routes/route-admin')
 
 app.use('/auth', authRoute);
 app.use('/allaskereso', allaskereso);
@@ -27,3 +28,4 @@ app.use('/allasok', allasok);
 app.use('/cv', cv);
 app.use('/kategoria', kategoria);
 app.use('/kulcsszo', kulcsszo);
+app.use('/admin', admin);
