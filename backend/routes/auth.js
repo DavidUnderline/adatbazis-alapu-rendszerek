@@ -14,14 +14,12 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 // Bejelentkezés
 router.post('/api/login', async (req, res) => {
-    console.log("---[ auth.js ]---")
     const { email, password, tipo } = req.body;
     console.log({email, password, tipo});
     if (!email || !password) {
         return res.json({ error: 'Email és jelszó kötelező' });
     }
     if(tipo === 'admin'){
-        console.log("\tadmin")
         try{
             const isLogged = await adminDao.user(email, password);
             if(!isLogged){
@@ -49,20 +47,6 @@ router.post('/api/login', async (req, res) => {
                 jobs: allaskereso.jobs
             });
 
-            // const isPasswordValid = await bcrypt.compare(password, allaskereso.JELSZO);
-            // if (!isPasswordValid) {
-            //     return res.status(401).json({ error: 'Érvénytelen email vagy jelszó' });
-            // }
-
-            // JWT token generálása
-            // const token = jwt.sign(
-            //     { email: allaskereso.EMAIL, roles: ['ROLE_USER'] }, // Admin szerepkör külön logika
-            //     JWT_SECRET,
-            //     { expiresIn: '1h' }
-            // );
-
-            // await allaskeresoDao.updateLastLogin(email);
-            // res.json({ token, message: 'Sikeres bejelentkezés' });
         } catch (err) {
             res.status(500).json({ error: 'Hiba a bejelentkezés során' });
             console.log(err);

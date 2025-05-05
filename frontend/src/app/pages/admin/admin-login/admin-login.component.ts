@@ -50,6 +50,7 @@ export class AdminLoginComponent {
           if (response.success) {
             this.loginservice.setLoginStatus(true);
             localStorage.setItem('username', logData.email); 
+            this.loginservice.setRole('admin');
             this.router.navigate(['/admin_home']); 
           } else {
             this.errorHandler(response.message);

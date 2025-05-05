@@ -12,6 +12,8 @@ import { last } from 'rxjs';
 import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { SuccessMsgComponent } from '../../shared/success-msg/success-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
+import { LoginComponent } from '../login/login.component';
+import { LoginService } from '../../services/login.service';
 
 @Component({
   selector: 'app-register',
@@ -27,7 +29,7 @@ import { DisplayDirective } from '../../shared/directives/display.directive';
   styleUrl: './register.component.css',
 })
 export class RegisterComponent {
-  isCompany = inject(IsCompanyService);
+  login_service = inject(LoginService);
   router = inject(Router);
   valid_register!: Allaskereso | Ceg;
 
@@ -51,6 +53,7 @@ export class RegisterComponent {
         education: user.vegzettseg,
         status: user.statusz,
       };
+      console.table(registerData);
 
       this.http
         .post<any>(

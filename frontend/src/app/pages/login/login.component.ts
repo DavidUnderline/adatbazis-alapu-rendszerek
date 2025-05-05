@@ -50,7 +50,7 @@ handle_login(login: { email: string; password: string; }) {
     tipo: this.loginservice.getRole()
   }
   
-  // console.log("emittelt");
+  console.table(data);
   this.http.post<any>('http://localhost:3000/auth/api/login', data).subscribe(
     response => {
       // console.table(response);

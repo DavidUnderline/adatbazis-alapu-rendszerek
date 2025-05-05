@@ -17,9 +17,8 @@ class AllaskeresoDao {
         } 
         // console.table(query);
         // console.table({email: email, password: password, tipo: tipo});
-
         const user = await executeQuery(query,{email: email, password: password});
-        const jobs = await executeQuery(query2, tipo === true ? {adoazonosito: user ? user[0].ADOAZONOSITO : null} : {email: email});
+        const jobs = await executeQuery(query2, tipo === 'ceg' ? {adoazonosito: user ? user[0].ADOAZONOSITO : null} : {email: email});
         console.table(jobs);
 
         const resp = {
