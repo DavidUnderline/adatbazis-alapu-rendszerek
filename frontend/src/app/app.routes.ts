@@ -11,6 +11,6 @@ export const routes: Routes = [
   { path: 'login', loadComponent: ()=> import("./pages/login/login.component").then(c => c.LoginComponent), title: title + " | Login"},
   { path: 'publish', loadComponent: () => import("./pages/publish/publish.component").then( c => c.PublishComponent), title: title + " | Hírdetés"},
   { path: 'profile', loadComponent: () => import("./pages/profile/profile.component").then( c => c.ProfileComponent), title: title + " | Profil"},
-
+  { path: 'admin_login', loadComponent: () => import("./pages/admin/admin-login/admin-login.component").then( c => c.AdminLoginComponent), title: title + " | ADMIN"},
   { path: '**', component: HeroComponent, title: title + ' | Welcome'}
 ];
