@@ -6,7 +6,7 @@ class AllaskeresoDao {
     async user(email, password, tipo) {
         let query = "";
         let query2 = "";
-        if(tipo === false){
+        if(tipo === "allaskereso"){
             query = "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
             query2 = "select * from allaslehetoseg a "+
             "inner join jelentkezo j on j.allaslehetoseg_id = a.id "+
@@ -18,10 +18,9 @@ class AllaskeresoDao {
         } 
         // console.table(query);
         // console.table({email: email, password: password, tipo: tipo});
-
         const user = await executeQuery(query,{email: email, password: password});
-        const jobs = await executeQuery(query2, tipo === true ? {adoazonosito: user ? user[0].ADOAZONOSITO : null} : {email: email});
-        // console.table(jobs);
+        const jobs = await executeQuery(query2, tipo === 'ceg' ? {adoazonosito: user ? user[0].ADOAZONOSITO : null} : {email: email});
+        console.table(jobs);
 
         const resp = {
             user: user,

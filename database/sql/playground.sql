@@ -1,3 +1,1 @@
-SELECT ac.cv_link
-FROM allaskereso_cv_kapcsolat ac
-WHERE ac.email = 'john.doe@example.com'
+SELECT email FROM MODERATOR WHERE email = 'jageradmin@gmail.com' AND jelszo = '87ca8329678020d83fe62727da3f3ca89673bbe00bf1e5ddcedfebd166776ae5'

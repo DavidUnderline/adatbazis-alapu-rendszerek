@@ -16,6 +16,11 @@ import { WorkListComponent } from './work-list/work-list.component';
 import { JobsService } from '../../services/jobs.service';
 import { SuccessMsgComponent } from '../../shared/success-msg/success-msg.component';
 import { fakeAsync } from '@angular/core/testing';
+import { LoginService } from '../../services/login.service';
+import { AdminDatasComponent } from "./admin-datas/admin-datas.component";
+import { CegDatasComponent } from "./ceg-datas/ceg-datas.component";
+import { AllaskeresoDatasComponent } from "./allaskereso-datas/allaskereso-datas.component";
+import { Moderator } from '../../shared/Model/Moderator';
 @Component({
   selector: 'app-profile',
   imports: [
@@ -28,15 +33,20 @@ import { fakeAsync } from '@angular/core/testing';
     SuccessMsgComponent,
     DisplayDirective,
     WorkListComponent,
-  ],
+    AdminDatasComponent,
+    CegDatasComponent,
+    AllaskeresoDatasComponent
+],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent {
-  user_allas: Allaskereso | null = null;
-  user_ceg: Ceg | null = null;
+  user_allas!: Allaskereso;
+  user_ceg!: Ceg;
+  user_moderator!: Moderator;
+
   user_email = localStorage.getItem('username');
-  is_company = inject(IsCompanyService);
+  login_service = inject(LoginService);
   jobservice = inject(JobsService);
 
   show_error = false;
@@ -45,9 +55,24 @@ export class ProfileComponent {
   success_msg = '';
 
   constructor(private http: HttpClient) {
-    this.is_company.getIsCompany() ? this.loadCeg() : this.loadAllaskereso();
+    switch (this.login_service.getRole()) {
+      case 'allaskereso':
+        this.loadAllaskereso();
+        break;
+      case 'ceg':
+        this.loadCeg();
+        break;
+      case 'admin':
+        this.loadModerator();
+        console.log("admin");
+        break;
+      default:
+        //Ez kizárt dolog, mert nem tudom.
+        break;
+    }
+
     this.show_error = false;
-    console.log("applied jobs: ", this.jobservice.getjobs());
+    console.log('applied jobs: ', this.jobservice.getjobs());
   }
 
   loadCeg() {
@@ -96,27 +121,55 @@ export class ProfileComponent {
       );
   }
 
+  loadModerator() {
+    this.http
+    .post<any>('http://localhost:3000/admin/api/get', { email: this.user_email})
+    .subscribe(
+      (response) => {
+        console.table(response)
+        if(response.success){
+          this.user_moderator = {
+            neve: response.neve,
+            email: response.email
+          };
+        }
+
+      },
+      (error)=> {});
+    
+  }
+
   modifyAllaskereso(user_data: any) {
     // TODO
     console.table(user_data);
     this.show_error = false;
 
-    if(!user_data.nev.length && !user_data.email.length && !user_data.vegzettseg.length && !user_data.jelszo.length){
-      this.errorHandler("Nincs frissítendő adat");
+    if (
+      !user_data.nev.length &&
+      !user_data.email.length &&
+      !user_data.vegzettseg.length &&
+      !user_data.jelszo.length
+    ) {
+      this.errorHandler('Nincs frissítendő adat');
       return;
     }
 
-    if (user_data.email.length != 0 && user_data.email != localStorage.getItem('username'))
+    if (
+      user_data.email.length != 0 &&
+      user_data.email != localStorage.getItem('username')
+    )
       user_data.originalemail = localStorage.getItem('username');
 
-    if(user_data.email.length == 0)
+    if (user_data.email.length == 0)
       user_data.email = localStorage.getItem('username');
-    
+
     // console.table(user_data);
     // return;
-    this.http.post<any>('http://localhost:3000/allaskereso/api/update', { user_data })
-      .subscribe((response) => {
-        // console.table(response);
+    this.http
+      .post<any>('http://localhost:3000/allaskereso/api/update', { user_data })
+      .subscribe(
+        (response) => {
+          // console.table(response);
           if (response.success) {
             this.successHandler(response.message);
             localStorage.setItem('username', response.email);
@@ -132,25 +185,32 @@ export class ProfileComponent {
       );
   }
 
- 
-
   modifyCeg(data: any) {
     this.show_error = false;
-    if(!data.adoazonosito.length && !data.nev.length && !data.email.length && !data.jelszo.length){
-        this.errorHandler("Nincs frissítendő adat");
-        return;
+    if (
+      !data.adoazonosito.length &&
+      !data.nev.length &&
+      !data.email.length &&
+      !data.jelszo.length
+    ) {
+      this.errorHandler('Nincs frissítendő adat');
+      return;
     }
 
-    if (data.email.length != 0 && data.email != localStorage.getItem('username'))
+    if (
+      data.email.length != 0 &&
+      data.email != localStorage.getItem('username')
+    )
       data.originalemail = localStorage.getItem('username');
 
-    if(data.email.length == 0)
-      data.email = localStorage.getItem('username');
+    if (data.email.length == 0) data.email = localStorage.getItem('username');
 
     // console.table(user_data);
-    this.http.post<any>('http://localhost:3000/ceg/api/update', { data })
-      .subscribe((response) => {
-        console.table(response);
+    this.http
+      .post<any>('http://localhost:3000/ceg/api/update', { data })
+      .subscribe(
+        (response) => {
+          console.table(response);
           if (response.success) {
             this.successHandler(response.message);
             localStorage.setItem('username', response.email);
@@ -173,8 +233,7 @@ export class ProfileComponent {
 
     console.log('---[ handleMsg ]---');
     console.table(msg);
-    if(msg.msg === undefined)
-    {
+    if (msg.msg === undefined) {
       return;
     }
 

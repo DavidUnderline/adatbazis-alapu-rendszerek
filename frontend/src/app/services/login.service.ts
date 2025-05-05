@@ -6,22 +6,26 @@ import { JobsService } from './jobs.service';
   providedIn: 'root',
 })
 export class LoginService {
-  private key = 'is_logged';
+  private _log = 'is_logged';
+  private _role = 'role';
   private router = inject(Router);
   jobservice = inject(JobsService);
 
   constructor() {
-    if (localStorage.getItem(this.key) === null) {
-      localStorage.setItem(this.key, JSON.stringify(false));
+    if (localStorage.getItem(this._log) === null) {
+      localStorage.setItem(this._log, JSON.stringify(false));
+    }
+    if (localStorage.getItem(this._role) === null) {
+      localStorage.setItem(this._role, JSON.stringify('allaskereso'));
     }
   }
 
   setLoginStatus(isLoggedIn: boolean): void {
-    localStorage.setItem(this.key, JSON.stringify(isLoggedIn));
+    localStorage.setItem(this._log, JSON.stringify(isLoggedIn));
   }
 
-  getLoginStatus(): boolean {
-    const status = localStorage.getItem(this.key);
+  private getLoginStatus(): boolean {
+    const status = localStorage.getItem(this._log);
     return status == 'true';
   }
 
@@ -30,8 +34,29 @@ export class LoginService {
   }
 
   logOut() {
-    localStorage.setItem(this.key, JSON.stringify(false));
+    localStorage.setItem(this._log, JSON.stringify(false));
+    this.setRole("allaskereso");
     this.jobservice.clearjobs();
-    this.router.navigate(["/home"]);
+    this.router.navigate(['/home']);
+  }
+
+  getRole(): "allaskereso" | "ceg" | "admin" {
+    const role = localStorage.getItem(this._role)?.replaceAll("\"", "") as "allaskereso" | "ceg" | "admin";
+
+
+    return role;
+  }
+
+  setRole(role: 'allaskereso' | 'ceg' | 'admin') {
+    localStorage.setItem(this._role, role);
+  }
+
+  changeNormalRoles() {
+    const role = this.getRole();
+    if (role === 'allaskereso') {
+      this.setRole('ceg');
+    } else if (role === 'ceg') {
+      this.setRole('allaskereso');
+    }
   }
 }
