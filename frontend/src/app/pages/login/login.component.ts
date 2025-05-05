@@ -54,13 +54,12 @@ handle_login(login: { email: string; password: string; }) {
   // console.log("emittelt");
   this.http.post<any>('http://localhost:3000/auth/api/login', data).subscribe(
     response => {
-      // console.table(response);
+      console.table(response);
       if (response.success) {
           this.loginservice.setLoginStatus(true);
           this.companyservice.setIsCompany(false);
           localStorage.setItem('username', response.email); //! kisbetű, allCapssel nem működik gyerekik
-          data.tipo ? this.jobservice.setjobsid([{ALLASLEHETOSEG_ID: response.jobs}]) : this.jobservice.setjobsid(response.jobs);
-
+          this.jobservice.setjobs(response.jobs);
           this.router.navigate(['/app']);
 
         } else {

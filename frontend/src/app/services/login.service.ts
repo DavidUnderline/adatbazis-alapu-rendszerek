@@ -31,7 +31,7 @@ export class LoginService {
 
   logOut() {
     localStorage.setItem(this.key, JSON.stringify(false));
-    this.jobservice.clearjobsid();
+    this.jobservice.clearjobs();
     this.router.navigate(["/home"]);
   }
 }

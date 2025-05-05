@@ -24,27 +24,30 @@ router.post('/api/register', async (req, res) => {
 
 // Álláskereső módosítása
 router.post('/api/update', async (req, res) => {
-  try {
-    const allaskereso = { email: req.body.email };
-    if (req.body.neve) allaskereso.neve = req.body.neve;
-    if (req.body.originalemail) {
-      allaskereso.originalemail = req.body.originalemail;
-      allaskereso.jelszo2 = req.body.jelszo;
-    }
-    if (req.body.vegzettseg) allaskereso.vegzettseg = req.body.vegzettseg;
-    if (req.body.jelszo) allaskereso.jelszo = req.body.jelszo;
+  const data = req.body.user_data;
+  const allaskereso = { email: data.email };
   
+  if (data.nev) allaskereso.neve = data.nev;
+  if (data.originalemail !== data.email) {
+    allaskereso.originalemail = data.originalemail;
+    allaskereso.jelszo2 = data.jelszo;
+  }
+  if (data.vegzettseg) allaskereso.vegzettseg = data.vegzettseg;
+  if (data.jelszo) allaskereso.jelszo = data.jelszo;
+
+  try {
     // if (!updates.taxid) {
     //     throw new Error('Email kötelező');
     // }
 
-    const data = await allaskeresoDao.updateAllaskereso(allaskereso);
-
-    if (!data.success) {
-        res.json({ success : false, message: 'Adatok frissítése sikertelen' });
-        return;
+    const result = await allaskeresoDao.updateAllaskereso(allaskereso);
+    
+    if (!result.success) {
+      res.json({ success : false, message: 'Adatok frissítése sikertelen' });
+      return;
     }
-    res.json({ success : true, email : data.email });
+
+    res.json({ success : true, email : result.email, message: 'Adatok frissítése sikeres' });
 
   } catch (err) {
       res.json({ error: 'Hiba az adatok frissítése során' });
@@ -74,15 +77,16 @@ router.post('/api/get', async (req, res) => {
     const data = req.body;
     
     try {
-      const success = await allaskeresoDao.applyForJob(data);
-      console.table(success);
+      const result = await allaskeresoDao.applyForJob(data);
+      // console.table(result);
+      // console.log(result.jobs[0].ID);
 
-      if (!success) {
+      if (!result.success) {
         res.json({ success : false, message: 'Sikertelen jelentkezés' });
         return;
       }
   
-      res.json({ success : true, message: 'Sikeres jelentkezés' });
+      res.json({ success : true, message: 'Sikeres jelentkezés', jobs: result.jobs });
 
     } catch (err) {
       res.json({ error: 'Hiba a jelentkezés során' });

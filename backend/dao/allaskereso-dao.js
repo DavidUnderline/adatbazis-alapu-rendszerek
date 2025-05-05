@@ -8,19 +8,20 @@ class AllaskeresoDao {
         let query2 = "";
         if(tipo === false){
             query = "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
-            query2 = "select allaslehetoseg_id from jelentkezo where allaskereso_email = :email";
+            query2 = "select * from allaslehetoseg a "+
+            "inner join jelentkezo j on j.allaslehetoseg_id = a.id "+
+            "where j.allaskereso_email = :email"; 
+            
         } else{
             query = "SELECT email, adoazonosito FROM ceg WHERE email = :email AND jelszo = :password";
-            // TODO
-            query2 = "select id from allaslehetoseg where ceg_adoazonosito = :adoazonosito";
-            // !
+            query2 = "select * from allaslehetoseg where ceg_adoazonosito = :adoazonosito";
         } 
         // console.table(query);
         // console.table({email: email, password: password, tipo: tipo});
 
         const user = await executeQuery(query,{email: email, password: password});
         const jobs = await executeQuery(query2, tipo === true ? {adoazonosito: user ? user[0].ADOAZONOSITO : null} : {email: email});
-        console.table(jobs);
+        // console.table(jobs);
 
         const resp = {
             user: user,
@@ -62,6 +63,7 @@ class AllaskeresoDao {
 
     async updateAllaskereso(allaskereso) {
         let connection;
+        // console.table(allaskereso);
 
         try {
             connection = await getConnection();
@@ -94,7 +96,8 @@ class AllaskeresoDao {
             }
             
             const query = `UPDATE allaskereso SET ${fields.join(', ')} WHERE email = :email`;
-            // console.log(query);
+            // console.log("--- QUERY: \n", query);
+            // console.log("--- BINDS: \n");
             // console.table(binds);
             // return;
 
@@ -145,9 +148,19 @@ class AllaskeresoDao {
         }
 
         const query = `INSERT INTO jelentkezo (allaskereso_email, allaslehetoseg_id) VALUES (:email, :job_id)`;
-        const result = await executeQuery(query, params);
-    
-        return result === 1;
+        const query2 = "select * from allaslehetoseg where id = :job_id";
+
+        const success = await executeQuery(query, params);
+        let result;
+        if(success)
+            result = await executeQuery(query2, {job_id: binds.data.job_id} );
+
+        const data = {
+            success: success,
+            jobs: result || null
+        }
+
+        return data;
     }
     
     // Utolsó bejelentkezés frissítése

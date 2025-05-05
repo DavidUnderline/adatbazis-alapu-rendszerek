@@ -47,7 +47,7 @@ export class ProfileComponent {
   constructor(private http: HttpClient) {
     this.is_company.getIsCompany() ? this.loadCeg() : this.loadAllaskereso();
     this.show_error = false;
-    console.log("applied jobs: ", this.jobservice.getjobsid());
+    console.log("applied jobs: ", this.jobservice.getjobs());
   }
 
   loadCeg() {
@@ -100,16 +100,12 @@ export class ProfileComponent {
     if (user_data.email != localStorage.getItem('username'))
       user_data.originalemail = localStorage.getItem('username');
 
-    this.http
-      .post<any>('http://localhost:3000/allaskereso/api/update', {
-        email: user_data.email,
-        neve: user_data.nev,
-        vegzettseg: user_data.vegzettseg,
-        jelszo: user_data.jelszo,
-      })
-      .subscribe(
-        (response) => {
+    // console.table(user_data);
+    this.http.post<any>('http://localhost:3000/allaskereso/api/update', { user_data })
+      .subscribe((response) => {
+        // console.table(response);
           if (response.success) {
+            this.successHandler(response.message);
             localStorage.setItem('username', response.email);
             this.user_email = response.email;
             this.loadAllaskereso();
