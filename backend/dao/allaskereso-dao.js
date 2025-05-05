@@ -62,6 +62,7 @@ class AllaskeresoDao {
     }
 
     async updateAllaskereso(allaskereso) {
+        // console.log(allaskereso);
         let connection;
         // console.table(allaskereso);
 
@@ -75,7 +76,6 @@ class AllaskeresoDao {
             }
 
             if(allaskereso.originalemail){
-                console.log("emailchange");
                 fields.push('email = :toemail');
                 binds.email = allaskereso.originalemail;
                 binds.toemail = allaskereso.email;

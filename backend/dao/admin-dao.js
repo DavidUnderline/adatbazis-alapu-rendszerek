@@ -2,11 +2,11 @@ const { executeQuery, getConnection } = require('../config/db');
 
 class AdminDao {
   async user(email, password){
-    
+    // console.log(email, password);
     let connection;
     try{
       connection = await getConnection();
-      let query= "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
+      let query= "SELECT email FROM moderator WHERE email = :email AND jelszo = :password";
 
       const result = await connection.execute(query, {email: email, password: password}, {autoCommit: true});
       return result.rows.length === 1

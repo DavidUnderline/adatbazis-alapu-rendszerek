@@ -97,10 +97,23 @@ export class ProfileComponent {
   }
 
   modifyAllaskereso(user_data: any) {
-    if (user_data.email != localStorage.getItem('username'))
+    // TODO
+    console.table(user_data);
+    this.show_error = false;
+
+    if(!user_data.nev.length && !user_data.email.length && !user_data.vegzettseg.length && !user_data.jelszo.length){
+      this.errorHandler("Nincs frissítendő adat");
+      return;
+    }
+
+    if (user_data.email.length != 0 && user_data.email != localStorage.getItem('username'))
       user_data.originalemail = localStorage.getItem('username');
 
+    if(user_data.email.length == 0)
+      user_data.email = localStorage.getItem('username');
+    
     // console.table(user_data);
+    // return;
     this.http.post<any>('http://localhost:3000/allaskereso/api/update', { user_data })
       .subscribe((response) => {
         // console.table(response);
@@ -109,7 +122,6 @@ export class ProfileComponent {
             localStorage.setItem('username', response.email);
             this.user_email = response.email;
             this.loadAllaskereso();
-            this.successHandler(response.message);
           } else {
             this.errorHandler(response.message);
           }
@@ -118,19 +130,40 @@ export class ProfileComponent {
           this.errorHandler(err);
         }
       );
-
-    // Todo
   }
 
  
 
-  modifyCeg(datas: {
-    adoazonosito: string | null;
-    nev: string | null;
-    email: string | null;
-    jelszo: string | null;
-  }) {
-    // Todo
+  modifyCeg(data: any) {
+    this.show_error = false;
+    if(!data.adoazonosito.length && !data.nev.length && !data.email.length && !data.jelszo.length){
+        this.errorHandler("Nincs frissítendő adat");
+        return;
+    }
+
+    if (data.email.length != 0 && data.email != localStorage.getItem('username'))
+      data.originalemail = localStorage.getItem('username');
+
+    if(data.email.length == 0)
+      data.email = localStorage.getItem('username');
+
+    // console.table(user_data);
+    this.http.post<any>('http://localhost:3000/ceg/api/update', { data })
+      .subscribe((response) => {
+        console.table(response);
+          if (response.success) {
+            this.successHandler(response.message);
+            localStorage.setItem('username', response.email);
+            this.user_email = response.email;
+            this.loadCeg();
+          } else {
+            this.errorHandler(response.message);
+          }
+        },
+        (err) => {
+          this.errorHandler(err);
+        }
+      );
   }
   handleMsg(msg: { success: boolean; msg: string }) {
     this.show_error = false;
