@@ -16,17 +16,21 @@ router.post('/api/login', async (req, res) => {
     const { email, password, tipo } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ error: 'Email és jelszó kötelező' });
+        return res.json({ error: 'Email és jelszó kötelező' });
     }
 
     try {
         const allaskereso = await allaskeresoDao.user(email, password, tipo);
 
         if (!allaskereso) {
-            return res.status(401).json({ error: 'Érvénytelen email vagy jelszó' });
+            return res.json({ success : false, error: 'Érvénytelen email vagy jelszó' });
         }
-        
-        res.json({ success : true, email: allaskereso.EMAIL });
+
+        res.json({ 
+            success : true, 
+            email: allaskereso.user[0].EMAIL, 
+            jobs: allaskereso.jobs
+        });
 
         // const isPasswordValid = await bcrypt.compare(password, allaskereso.JELSZO);
         // if (!isPasswordValid) {

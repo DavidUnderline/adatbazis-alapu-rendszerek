@@ -16,8 +16,9 @@ router.post('/api/register', async (req, res) => {
         }
 
         res.json({ success : true, email: allaskereso.EMAIL });
+
     } catch (err) {
-        res.status(500).json({ error: 'Hiba a regisztráció során' });
+        res.json({ error: 'Hiba a regisztráció során' });
     }
 });
 
@@ -53,23 +54,29 @@ router.post('/api/update', async (req, res) => {
 // Álláskereső adatainak lekérdezése email alapján (saját adatokhoz vagy admin)
 router.post('/api/get', async (req, res) => {
     const email = req.body.email;
+
     try {
       const allaskereso = await allaskeresoDao.getAllaskeresoByEmail(email);
+      
       if (allaskereso) {
         res.json(allaskereso);
+        return;
+      
       } else {
-        res.status(404).json({ error: 'Álláskereső nem található' });
+        res.json({ error: 'Álláskereső nem található' });
       }
     } catch (err) {
-      res.status(500).json({ error: 'Hiba az álláskereső lekérdezésekor' });
+      res.json({ error: 'Hiba az álláskereső lekérdezésekor' });
     }
   });
 
   router.post('/api/applyforjob', async (req, res) => {
     const data = req.body;
+    
     try {
       const success = await allaskeresoDao.applyForJob(data);
-  
+      console.table(success);
+
       if (!success) {
         res.json({ success : false, message: 'Sikertelen jelentkezés' });
         return;

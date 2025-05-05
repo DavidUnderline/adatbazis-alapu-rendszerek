@@ -21,9 +21,9 @@ import { HttpClientModule } from '@angular/common/http';
   styleUrl: './search.component.css',
 })
 export class SearchComponent {
-  filtered_work_offers: Allas[] = [];
+  filtered_work_offers: any = [];
   is_searched = false;
-  addittional_filter!: {kovetelmeny: string, min: number, max: number}
+  addittional_filter!: {company: string | null, min: number, max: number}
   private work_service = inject(WorkService);
   private router = inject(Router);
   show: boolean = false;
@@ -38,12 +38,12 @@ export class SearchComponent {
     this.is_searched = true;
     this.filtered_work_offers = [];
     
-    // csak a szovegre nem mukodik az additional_filter
+    // console.table(this.addittional_filter);
     if(this.addittional_filter != undefined){
       data = {
         keyword: work_filter.keyword,
         location: work_filter.city,
-        requirement: this.addittional_filter.kovetelmeny,
+        company: this.addittional_filter.company,
         salarymax: this.addittional_filter.max,
         salarymin: this.addittional_filter.min
       }
@@ -58,10 +58,10 @@ export class SearchComponent {
     this.http.post<any>('http://localhost:3000/allasok/api/searchjob', data)
     .subscribe(response => {
         if (response.success) {
-          console.table(response);
           // console.log(Object.keys(response.allasok).length);
           response.allasok.forEach((work: any) => {
               this.filtered_work_offers.push({
+                id: work.ID as number,
                 cim: work.CIM as string,
                 leiras: work.LEIRAS as string,
                 kovetelmenyek: work.KOVETELMENYEK as string,

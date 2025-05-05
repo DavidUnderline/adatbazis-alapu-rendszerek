@@ -6,6 +6,7 @@ import { LoginService } from '../../services/login.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
+import { JobsService } from '../../services/jobs.service';
 
 @Component({
   selector: 'app-work-details',
@@ -19,6 +20,7 @@ export class WorkDetailsComponent implements OnInit {
   work = inject(WorkService);
   isLogged = inject(LoginService);
   private router = inject(Router);
+  jobservice = inject(JobsService);
 
   show_error = false;
   error_msg: string = '';
@@ -32,22 +34,46 @@ export class WorkDetailsComponent implements OnInit {
   }
 
   apply() {
+    if(this.isapplied()){
+      console.log(this.isapplied());
+      return;
+    }
+
     const data = {
       email: localStorage.getItem('username'),
+      job_id: this.work.getWork()?.id
       // cv_link: localStorage.getItem('active_cv'),
-      // ceg_id: this.work.getWork()?.id
+      // ceg_id: this.work.getWork()?.
     }
-    // this.http.post<any>('http://localhost:3000/allaskereso/api/applyforjob', { data }).subscribe((response) => {
-    //     if (response.success) {
-    //       console.log(response);
-    //     } else {
-    //       console.log(response);
-    //     }
-    //   },
-    //   (error) => {
-    //     this.errorHandler(error);
-    //   }
-    // );
+    this.http.post<any>('http://localhost:3000/allaskereso/api/applyforjob', { data })
+      .subscribe((response) => {
+        if (response.success) {
+          console.log(response);
+          // TODO
+          this.jobservice.setjobsid([{ALLASLEHETOSEG_ID: data.job_id}]);
+
+        } else {
+          console.log(response);
+        }
+      },
+      (error) => {
+        this.errorHandler(error);
+      }
+    );
+  }
+
+  isapplied(){
+    if(this.jobservice.getjobsid() == null){
+      return false;
+    }
+
+    for(let i of this.jobservice.getjobsid()){
+      if(i == this.work.getWork()?.id){
+        return true;
+      }
+    }
+
+    return false;
   }
 
   errorHandler(error: string) {

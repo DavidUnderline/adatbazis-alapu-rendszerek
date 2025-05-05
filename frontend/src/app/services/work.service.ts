@@ -9,7 +9,7 @@ export class WorkService {
     localStorage.setItem(this.key, JSON.stringify(data));
   }
 
-  getWork(): Allas | null {
+  getWork(): any | null {
     const stored = localStorage.getItem(this.key);
     return stored ? JSON.parse(stored) : null;
   }

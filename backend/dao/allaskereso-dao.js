@@ -5,18 +5,29 @@ class AllaskeresoDao {
     // Álláskereső lekérdezése email alapján jelszó nélkül (bejelentkezéshez)
     async user(email, password, tipo) {
         let query = "";
+        let query2 = "";
         if(tipo === false){
             query = "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
-        
+            query2 = "select allaslehetoseg_id from jelentkezo where allaskereso_email = :email";
         } else{
-            query = "SELECT email FROM ceg WHERE email = :email AND jelszo = :password";
+            query = "SELECT email, adoazonosito FROM ceg WHERE email = :email AND jelszo = :password";
+            // TODO
+            query2 = "select id from allaslehetoseg where ceg_adoazonosito = :adoazonosito";
+            // !
         } 
         // console.table(query);
         // console.table({email: email, password: password, tipo: tipo});
 
-        const result = await executeQuery(query,{email: email, password: password});
-        // console.table(result);
-        return result.length > 0 ? result[0] : null;
+        const user = await executeQuery(query,{email: email, password: password});
+        const jobs = await executeQuery(query2, tipo === true ? {adoazonosito: user ? user[0].ADOAZONOSITO : null} : {email: email});
+        console.table(jobs);
+
+        const resp = {
+            user: user,
+            jobs: jobs
+        };
+
+        return resp.user.length > 0 ? resp : null;
     }
 
     // Új álláskereső regisztrálása
@@ -128,11 +139,15 @@ class AllaskeresoDao {
     
     // Álláskereső állásra jelentkezés
     async applyForJob(binds) {
-        const query = `INSERT INTO jelentkezo (allaskereso_email, allaslehetoseg_id) VALUES (:email, :jobid)`;
-        const result = await executeQuery(query, binds);
-        console.table(result);
-        return;
-        // return result.rowsAffected === 1;
+        const params = {
+            email: binds.data.email,
+            job_id: binds.data.job_id
+        }
+
+        const query = `INSERT INTO jelentkezo (allaskereso_email, allaslehetoseg_id) VALUES (:email, :job_id)`;
+        const result = await executeQuery(query, params);
+    
+        return result === 1;
     }
     
     // Utolsó bejelentkezés frissítése
