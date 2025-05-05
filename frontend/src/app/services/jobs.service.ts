@@ -8,6 +8,7 @@ export class JobsService {
   private key = 'jobs';
 
   setjobsid(data: any){
+    // console.table(data);
     const localjobs = this.getjobsid();
     
     let temp = [];
@@ -16,7 +17,7 @@ export class JobsService {
     }
 
     const ids = localjobs != null ? temp.concat(localjobs) : temp;
-    console.log(ids);
+    // console.log(ids);
     
     const jobsid = JSON.stringify(ids);
     localStorage.setItem(this.key, jobsid);
