@@ -59,6 +59,35 @@ class Allasok{
         
         return result.length > 0 ? result : false;
     }
+
+    async insertAllas(allas){
+        // console.log(allas);
+
+        const query_terulet_id = "select id from terulet where varos = :varos";
+        const terulet_id = await executeQuery(query_terulet_id, {varos: allas.varos});
+
+        const query_ceg_adoid = "select adoazonosito from ceg where email = :email";
+        const ceg_adoid = await executeQuery(query_ceg_adoid, {email: allas.email});
+        
+        const insert_binds = {
+            cim: allas.cim,
+            leiras: allas.leiras,
+            kovetelmenyek: allas.kovetelmenyek,
+            mikor: allas.mikor,
+            ber: allas.ber,
+            is_accepted: allas.is_accepted,
+            terulet_id: terulet_id[0].ID,
+            adoazonosotito: ceg_adoid[0].ADOAZONOSITO,
+        }
+        // console.table(insert_binds);
+        // return;
+
+        const insert_query = "insert into allaslehetoseg "+
+        "(cim, leiras, kovetelmenyek, mikor, ber, is_accepted, terulet_id, ceg_adoazonosito) "+
+        `values (:cim, :leiras, :kovetelmenyek, TO_TIMESTAMP(:mikor, 'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"'), :ber, :is_accepted, :terulet_id, :adoazonosotito)`;
+        
+        return await executeQuery(insert_query, insert_binds);
+    }
 };
 
 module.exports = new Allasok();
