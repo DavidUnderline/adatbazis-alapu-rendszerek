@@ -109,6 +109,7 @@ export class ProfileComponent {
             localStorage.setItem('username', response.email);
             this.user_email = response.email;
             this.loadAllaskereso();
+            this.successHandler(response.message);
           } else {
             this.errorHandler(response.message);
           }
@@ -121,9 +122,7 @@ export class ProfileComponent {
     // Todo
   }
 
-  uploadCVs(cvs: CV[]) {
-    // TODO
-  }
+ 
 
   modifyCeg(datas: {
     adoazonosito: string | null;

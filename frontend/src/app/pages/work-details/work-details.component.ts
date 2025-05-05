@@ -12,8 +12,6 @@ import { JobsService } from '../../services/jobs.service';
   selector: 'app-work-details',
   imports: [
     HttpClientModule,
-    ErrorMsgComponent,
-    DisplayDirective
   ],
   templateUrl: './work-details.component.html',
   styleUrl: './work-details.component.css',

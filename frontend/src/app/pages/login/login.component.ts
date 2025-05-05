@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { LoginFormComponent } from './login-form/login-form.component';
+import { LoginFormComponent } from '../../shared/login-form/login-form.component';
 // import {
 //   FormGroup,
 //   FormControl,
