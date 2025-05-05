@@ -99,13 +99,9 @@ export class ProfileComponent {
   modifyAllaskereso(user_data: any) {
     if (user_data.email != localStorage.getItem('username'))
       user_data.originalemail = localStorage.getItem('username');
-
     this.http
       .post<any>('http://localhost:3000/allaskereso/api/update', {
-        email: user_data.email,
-        neve: user_data.nev,
-        vegzettseg: user_data.vegzettseg,
-        jelszo: user_data.jelszo,
+        user_data
       })
       .subscribe(
         (response) => {

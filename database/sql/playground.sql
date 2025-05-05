@@ -1,2 +1,1 @@
-SELECT ADOAZONOSITO, NEVE, ERTEKELES, TERULET_ID FROM CEG
-WHERE EMAIL = 'jagerkft@citromail.com';
+SELECT email FROM allaskereso WHERE email = 'jageradmin@gmail.com' AND jelszo = '87ca8329678020d83fe62727da3f3ca89673bbe00bf1e5ddcedfebd166776ae5'
