@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { JobsService } from './jobs.service';
 
 @Injectable({
   providedIn: 'root',
@@ -7,6 +8,7 @@ import { Router } from '@angular/router';
 export class LoginService {
   private key = 'is_logged';
   private router = inject(Router);
+  jobservice = inject(JobsService);
 
   constructor() {
     if (localStorage.getItem(this.key) === null) {
@@ -29,6 +31,7 @@ export class LoginService {
 
   logOut() {
     localStorage.setItem(this.key, JSON.stringify(false));
+    this.jobservice.clearjobs();
     this.router.navigate(["/home"]);
   }
 }

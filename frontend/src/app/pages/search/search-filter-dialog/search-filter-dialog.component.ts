@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, output } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { FormGroup, ReactiveFormsModule, FormControl } from '@angular/forms';
-import { Allas } from '../../../shared/Model/Allas';
+// import { Allas } from '../../../shared/Model/Allas';
 
 @Component({
   selector: 'app-search-filter-dialog',
@@ -11,14 +11,14 @@ import { Allas } from '../../../shared/Model/Allas';
 })
 export class SearchFilterDialogComponent {
   @Output('plus_filter') additional_filter_form_valid = new EventEmitter<{
-    kovetelmeny: string,
+    company: string | null,
     min: number,
     max: number
   }>();
   @Output() show = new EventEmitter<boolean>();
 
   additional_filter_form = new FormGroup({
-    kovetelmeny: new FormControl<string>('', { nonNullable: true }),
+    company: new FormControl<string | null>(''),
     min: new FormControl<number>(0, { nonNullable: true }),
     max: new FormControl<number>(0, { nonNullable: true }),
   });
@@ -32,10 +32,10 @@ export class SearchFilterDialogComponent {
     if (this.additional_filter_form.valid) {
       const form = this.additional_filter_form.getRawValue();
       
-      if( form.max > 0 && form.max > form.min){
+      if((form.max > 0 && form.max > form.min) || (form.max === 0 && form.min === 0)){
         // console.table(form)
         this.additional_filter_form_valid.emit({
-          kovetelmeny: form.kovetelmeny,
+          company: form.company,
           min: form.min,
           max: form.max
         });

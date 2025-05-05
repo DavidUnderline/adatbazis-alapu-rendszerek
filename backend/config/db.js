@@ -1,19 +1,20 @@
 const oracledb = require('oracledb');
 const dbConfig = {
-    user: "system",
+    user: "pepssoo",
     password: "123",
-    connectString: "localhost/FREE",
+    connectString: "localhost/FREEPDB1",
 };
 
 async function executeQuery(sql, params = {}) {
     let connection;
+
     try {
         connection = await oracledb.getConnection(dbConfig);
         const result = await connection.execute(sql, params, {
             outFormat: oracledb.OUT_FORMAT_OBJECT,
             autoCommit: true
         });
-        return result.rows;
+        return result.rows || result.rowsAffected;
         
     } catch (err) {
         console.error(err);

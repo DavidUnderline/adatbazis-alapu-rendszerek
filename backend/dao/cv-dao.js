@@ -33,7 +33,7 @@ class CvDao {
             return true;
         } catch (err) {
             if (connection) await connection.rollback();
-            console.error('Error inserting CV:', err);
+            console.error('\n\nError inserting CV:', err);
             throw err;
         } finally {
             if (connection) await connection.close();
@@ -79,24 +79,6 @@ class CvDao {
             if (connection) await connection.close();
         }
     }
-
-    // Összes CV link lekérdezése
-    // async getAllCvs() {
-    //     let connection;
-    //     try {
-    //         connection = await getConnection();
-    //         const result = await connection.execute(
-    //             `SELECT cv_link FROM cv`
-    //         );
-    //         return result.rows;
-    //     } catch (err) {
-    //         console.error('Error fetching all CVs:', err);
-    //         throw err;
-    //     } finally {
-    //         if (connection) await connection.close();
-    //     }
-    // }
-    
 }
 
 module.exports = new CvDao();

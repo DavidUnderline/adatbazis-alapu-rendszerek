@@ -8,14 +8,18 @@ router.post('/api/searchjob', async (req, res) => {
 
     try {
         const allasok = await allasokDao.getAllasok(data);
+        // console.table(allasok);
+
+        if(!allasok){
+            res.json({ success: false, error: 'Nem található allás' });
+            return;
         
-        if(!allasok)
-            res.json({ error: 'Nem található allás' });
-        else
-            res.json(allasok);
+        } else{
+            res.json({ success: true, allasok });
+        }
         
     } catch (err) {
-        res.status(500).json({ error: 'Hiba az allások lekérdezésekor' });
+        res.json({ error: 'Hiba az allások lekérdezésekor' });
     }
 });
 

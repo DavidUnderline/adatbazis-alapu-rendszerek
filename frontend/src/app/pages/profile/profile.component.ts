@@ -2,9 +2,9 @@ import { Component, inject } from '@angular/core';
 import { Allaskereso } from '../../shared/Model/Allaskereso';
 import { Ceg } from '../../shared/Model/Ceg';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { response } from 'express';
+// import { response } from 'express';
 import { IsCompanyService } from '../../services/is-company.service';
-import { Allas } from '../../shared/Model/Allas';
+// import { Allas } from '../../shared/Model/Allas';
 import { CegFormComponent } from './ceg-form/ceg-form.component';
 import { AllaskeresoFormComponent } from './allaskereso-form/allaskereso-form.component';
 import { MatIcon } from '@angular/material/icon';
@@ -13,6 +13,9 @@ import { CV } from '../../shared/Model/CV';
 import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { WorkListComponent } from './work-list/work-list.component';
+import { JobsService } from '../../services/jobs.service';
+import { SuccessMsgComponent } from '../../shared/success-msg/success-msg.component';
+import { fakeAsync } from '@angular/core/testing';
 @Component({
   selector: 'app-profile',
   imports: [
@@ -22,6 +25,7 @@ import { WorkListComponent } from './work-list/work-list.component';
     MatIcon,
     CvFormComponent,
     ErrorMsgComponent,
+    SuccessMsgComponent,
     DisplayDirective,
     WorkListComponent,
   ],
@@ -33,12 +37,17 @@ export class ProfileComponent {
   user_ceg: Ceg | null = null;
   user_email = localStorage.getItem('username');
   is_company = inject(IsCompanyService);
+  jobservice = inject(JobsService);
+
   show_error = false;
   error_msg: string = '';
+  show_success = false;
+  success_msg = '';
 
   constructor(private http: HttpClient) {
     this.is_company.getIsCompany() ? this.loadCeg() : this.loadAllaskereso();
     this.show_error = false;
+    console.log("applied jobs: ", this.jobservice.getjobs());
   }
 
   loadCeg() {
@@ -59,12 +68,13 @@ export class ProfileComponent {
           };
         },
         (error) => {
-          this.errorHandler(error.error.error);
+          this.errorHandler(error);
         }
       );
   }
 
   loadAllaskereso() {
+    // console.log(this.user_email);
     this.http
       .post<any>('http://localhost:3000/allaskereso/api/get', {
         email: this.user_email,
@@ -81,54 +91,104 @@ export class ProfileComponent {
           };
         },
         (error) => {
-          this.errorHandler(error.error.error);
+          this.errorHandler(error);
         }
       );
   }
 
-  modifyAllaskereso(user_data: {
-    nev: string | null;
-    email: string | null;
-    vegzettseg: string | null;
-    jelszo: string | null;
-  }) {
-    this.http
-      .post('http://localhost:3000/allaskereso/api/update', {
-        email: user_data.email,
-        neve: user_data.nev,
-        vegzettseg: user_data.vegzettseg,
-        jelszo: user_data.jelszo,
-      })
-      .subscribe(
-        (response: any) => {
+  modifyAllaskereso(user_data: any) {
+    // TODO
+    console.table(user_data);
+    this.show_error = false;
+
+    if(!user_data.nev.length && !user_data.email.length && !user_data.vegzettseg.length && !user_data.jelszo.length){
+      this.errorHandler("Nincs frissítendő adat");
+      return;
+    }
+
+    if (user_data.email.length != 0 && user_data.email != localStorage.getItem('username'))
+      user_data.originalemail = localStorage.getItem('username');
+
+    if(user_data.email.length == 0)
+      user_data.email = localStorage.getItem('username');
+    
+    // console.table(user_data);
+    // return;
+    this.http.post<any>('http://localhost:3000/allaskereso/api/update', { user_data })
+      .subscribe((response) => {
+        // console.table(response);
           if (response.success) {
+            this.successHandler(response.message);
+            localStorage.setItem('username', response.email);
+            this.user_email = response.email;
             this.loadAllaskereso();
           } else {
             this.errorHandler(response.message);
           }
         },
         (err) => {
-          this.errorHandler(err.error.error);
+          this.errorHandler(err);
         }
       );
-
-    // Todo
   }
 
-  uploadCVs(cvs: CV[]) {
-    // TODO
-  }
+ 
 
-  modifyCeg(datas: {
-    adoazonosito: string | null;
-    nev: string | null;
-    email: string | null;
-    jelszo: string | null;
-  }) {
-    // Todo
-  }
+  modifyCeg(data: any) {
+    this.show_error = false;
+    if(!data.adoazonosito.length && !data.nev.length && !data.email.length && !data.jelszo.length){
+        this.errorHandler("Nincs frissítendő adat");
+        return;
+    }
 
+    if (data.email.length != 0 && data.email != localStorage.getItem('username'))
+      data.originalemail = localStorage.getItem('username');
+
+    if(data.email.length == 0)
+      data.email = localStorage.getItem('username');
+
+    // console.table(user_data);
+    this.http.post<any>('http://localhost:3000/ceg/api/update', { data })
+      .subscribe((response) => {
+        console.table(response);
+          if (response.success) {
+            this.successHandler(response.message);
+            localStorage.setItem('username', response.email);
+            this.user_email = response.email;
+            this.loadCeg();
+          } else {
+            this.errorHandler(response.message);
+          }
+        },
+        (err) => {
+          this.errorHandler(err);
+        }
+      );
+  }
+  handleMsg(msg: { success: boolean; msg: string }) {
+    this.show_error = false;
+    this.show_success = false;
+    this.error_msg = '';
+    this.success_msg = '';
+
+    console.log('---[ handleMsg ]---');
+    console.table(msg);
+    if(msg.msg === undefined)
+    {
+      return;
+    }
+
+    if (msg.success) {
+      this.successHandler(msg.msg);
+    } else {
+      this.errorHandler(msg.msg);
+    }
+  }
   errorHandler(error: string) {
     (this.show_error = true), (this.error_msg = error);
+  }
+
+  successHandler(success: string) {
+    (this.show_success = true), (this.success_msg = success);
   }
 }

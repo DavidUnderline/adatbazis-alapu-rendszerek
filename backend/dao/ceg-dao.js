@@ -33,32 +33,54 @@ class CegDao {
 
     async updateCeg(ceg) {
         let connection;
+        // console.log(ceg);
+
         try {
             connection = await getConnection();
-            const fields = [];
-            const binds = { taxid: ceg.taxid };
 
-            if (ceg.neve) {
+            const fields = [];
+            const binds = {
+                email: ceg.email
+            };
+
+            if(ceg.adoazonosito){
+                fields.push('adoazonosito = :adoazonosito');
+                binds.adoazonosito = ceg.adoazonosito;
+            }
+
+            if (ceg.nev) {
                 fields.push('neve = :neve');
-                binds.neve = ceg.neve;
+                binds.neve = ceg.nev;
             }
-            if (ceg.email) {
-                fields.push('email = :email');
-                binds.email = ceg.email;
-            }
+            
             if (ceg.jelszo) {
                 fields.push('jelszo = :jelszo');
                 binds.jelszo = ceg.jelszo;
             }
+
+            if (ceg.originalemail) {
+                fields.push('email = :toemail');
+                binds.email = ceg.originalemail;
+                binds.toemail = ceg.email;
+                binds.jelszo = ceg.jelszo;
+            }
+
+            
             if (fields.length === 0) {
                 throw new Error('Nincs frissítendő mező');
             }
 
-            const query = `UPDATE ceg SET ${fields.join(', ')} WHERE adoazonosito = :taxid`;
-            
+            const query = `UPDATE ceg SET ${fields.join(', ')} WHERE email = :email`;
+            // console.log("--- QUERY: \n", query);
+            // console.log("--- BINDS: \n");
+            // console.table(binds);
+            // return;
+
             const result = await connection.execute(query, binds, { autoCommit: true });
+            // console.log("--- RESULT: ", result);
 
             return result.rowsAffected === 1;
+
         } catch (err) {
             console.error('Error updating ceg:', err);
             throw err;

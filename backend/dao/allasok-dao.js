@@ -1,37 +1,63 @@
 const { executeQuery, getConnection } = require('../config/db');
+// const { all } = require('../routes/route-allaskereso');
 
 class Allasok{
     async getAllasok(data){
-        let sql = "";
         const is_accapted = 'true';
 
-        let params = {
+        const binds = {
             is_accepted: is_accapted,
-            location: data.location,
-            company: data.company,
         };
+        const fields = [];
+        const fieldsjoin = [];
+        // console.log("--- FRONTEND DATA ---");
+        // console.table(data);
 
-        if(Object.keys(data).length === 2){
-            sql = "SELECT * FROM allaslehetoseg LEFT JOIN TERULET t ON t.id = terulet_id"+
-            " WHERE is_accepted = :is_accepted"+ 
-            " AND terulet_id = :location"+ 
-            " AND (cim LIKE '%' || :company || '%')";
-            
-        } else{
-            sql = "SELECT * FROM allaslehetoseg LEFT JOIN TERULET t ON t.id = terulet_id"+
-                " WHERE is_accepted = :is_accepted"+ 
-                " AND terulet_id = :location"+ 
-                " AND (cim LIKE '%' || :company || '%')"+
-                " AND kovetelmenyek LIKE '%' || :requirement || '%'"+ 
-                " AND (ber <= :salarymax AND ber >= :salarymin)";
+        const queries = {
+            ceginnerjoin: "inner join ceg c ON c.adoazonosito = a.ceg_adoazonosito",
+            kulcsszoinnerjoin: "inner join allaslehetoseg_kulcsszo_kapcsolat ak on ak.allaslehetoseg_id = a.id",
+            teruletinnerjoin: "inner join terulet t ON t.id = a.terulet_id",
+            likecompany: "AND c.neve LIKE '%' || :company || '%'",
+            likekeyword: "AND ak.kulcsszo_neve LIKE '%' || :keyword || '%'",
+            likelocation: "AND t.varos LIKE '%' || :location || '%'"
+        }
 
-            params.requirement = data.requirement;
-            params.salarymax = data.salarymax;
-            params.salarymin = data.salarymin;
+        if(data.company){
+            fieldsjoin.push(queries.ceginnerjoin);
+            fields.push(queries.likecompany);
+            binds.company = data.company;
+        }
+
+        if(data.keyword){
+            fieldsjoin.push(queries.kulcsszoinnerjoin);
+            fields.push(queries.likekeyword);
+            binds.keyword = data.keyword;
+        }
+
+        if(data.location){
+            fieldsjoin.push(queries.teruletinnerjoin);
+            fields.push(queries.likelocation);
+            binds.location = data.location;
         }
         
-        const result = await executeQuery(sql, params);        
-        return result.length > 0 ? result : null;
+        if(data.salarymax){
+            fields.push("AND ber <= :salarymax");
+            binds.salarymax = data.salarymax;
+            fields.push("AND ber >= :salarymin");
+            binds.salarymin = data.salarymin;
+        }
+
+        const query = `select * from allaslehetoseg a ${fieldsjoin.join(' ')}`+
+        ` where is_accepted = :is_accepted ${fields.join(' ')}`;
+        // console.log("--- QUERY:\n" + query);
+        // console.log("\n--- BINDS:")
+        // console.table(binds);
+        // return;
+
+        const result = await executeQuery(query, binds);   
+        // console.log(result);
+        
+        return result.length > 0 ? result : false;
     }
 };
 

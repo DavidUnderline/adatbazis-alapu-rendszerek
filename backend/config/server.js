@@ -22,4 +22,4 @@ app.use('/auth', authRoute);
 app.use('/allaskereso', allaskereso);
 app.use('/ceg', ceg);
 app.use('/allasok', allasok);
-app.use('/cv', cv)
+app.use('/cv', cv);

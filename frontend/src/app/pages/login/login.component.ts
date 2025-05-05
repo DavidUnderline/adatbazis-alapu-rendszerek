@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { LoginFormComponent } from './login-form/login-form.component';
+import { LoginFormComponent } from '../../shared/login-form/login-form.component';
 // import {
 //   FormGroup,
 //   FormControl,
@@ -16,6 +16,8 @@ import { inject } from '@angular/core';
 import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { SuccessMsgComponent } from "../../shared/success-msg/success-msg.component"; 
+import { json, response } from 'express';
+import { JobsService } from '../../services/jobs.service';
 
 
 @Component({
@@ -34,6 +36,7 @@ export class LoginComponent {
 
   loginservice = inject(LoginService);
   companyservice = inject(IsCompanyService);
+  jobservice = inject(JobsService);
 
   showError: boolean = true;
   error_msg: string = '';
@@ -42,23 +45,21 @@ export class LoginComponent {
   success_msg: string = '';
 
 handle_login(login: { email: string; password: string; }) {
-  const log = {
+  const data = {
     email: login.email,
     password: sha256(sha256(login.password+login.email)),
     tipo: this.companyservice.getIsCompany()
   }
-  // login: { tipo: this.companyservice.getIsCompany() };
-  // console.table(login);
-  console.log("emittelt");
-  // console.log(this.companyservice.getIsCompany());
-
-  // const loginData = { email: login.email, password: login.password };
-  this.http.post<any>('http://localhost:3000/auth/api/login', log).subscribe(
+  
+  // console.log("emittelt");
+  this.http.post<any>('http://localhost:3000/auth/api/login', data).subscribe(
     response => {
-        if (response.success) {
+      console.table(response);
+      if (response.success) {
           this.loginservice.setLoginStatus(true);
           this.companyservice.setIsCompany(false);
           localStorage.setItem('username', response.email); //! kisbetű, allCapssel nem működik gyerekik
+          this.jobservice.setjobs(response.jobs);
           this.router.navigate(['/app']);
 
         } else {

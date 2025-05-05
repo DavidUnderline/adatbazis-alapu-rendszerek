@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { CV } from '../../../shared/Model/CV';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -6,61 +6,100 @@ import { response } from 'express';
 
 @Component({
   selector: 'app-cv-form',
-  imports: [ MatIcon, HttpClientModule ],
+  imports: [MatIcon, HttpClientModule],
   templateUrl: './cv-form.component.html',
-  styleUrl: './cv-form.component.css'
+  styleUrl: './cv-form.component.css',
 })
 export class CvFormComponent {
-  email= localStorage.getItem("username")
+  email = localStorage.getItem('username');
   cvs: CV[] = [];
+  @Output() msg = new EventEmitter<{
+    success: boolean;
+    msg: string;
+  }>();
 
-  constructor(private http: HttpClient){
-    this.http.post('http://localhost:3000/cv/api/CVget', {email: this.email}).subscribe(
-      (response: any) => {
-        console.table(response);
-        for(let i = 0; i < response.length; i++){
-        
-          this.addcv(response[i][0]);
-        };
-      },(error) => {
-
-      }
-    )
+  constructor(private http: HttpClient) {
+    this.http
+      .post<any>('http://localhost:3000/cv/api/CVget', { email: this.email })
+      .subscribe(
+        (response) => {
+          if (response.success) {
+            console.table(response);
+            response.cv_link.map((cv: string) => {
+              if (cv.at(0) !== undefined) {
+                this.showCV({
+                  link: cv.at(0)!,
+                });
+              }
+            });
+          }
+        },
+        (error) => {
+          this.msg.emit({
+            success: false,
+            msg: error.error
+          })
+        }
+      );
   }
 
-  addcv(cv_link: string){
-    if(cv_link.length > 10){
-      
-      this.cvs.push({link: cv_link});
-    }
+  insertCV(cv_link: string) {
+    if(cv_link.length < 10) return;
+
+    this.http.post('http://localhost:3000/cv/api/CVinsert', {cv_link: cv_link, email: this.email}).subscribe(
+      (response: any) => {
+        if( response.success ){
+          this.showCV({link: cv_link})
+          this.msg.emit({
+            success: true,
+            msg: response.message
+          })
+        }else{
+          this.msg.emit({
+            success: false,
+            msg: response.message
+          })
+        }
+      },
+      (error) => {
+        this.msg.emit({
+          success: false,
+          msg: error.error
+        })
+      }
+    )
   }
 
   deleteById(index: number) {
-   let cv = this.cvs.splice(index, 1)[0];
-    this.http.delete('http://localhost:3000/cv/api/CVdelete', { body: { cv_link: cv.link } }).subscribe(
-      (response) => {
-
-      }, (error) => {
-        console.error(error);
+    const deleted_cv: CV = this.cvs.splice(index, 1)[0];
+    console.log(deleted_cv.link)
+    this.http.delete('http://localhost:3000/cv/api/CVdelete', { body: { cv_link: deleted_cv.link } }).subscribe(
+      (response: any) => {
+        if (response.success) {
+          this.msg.emit({
+            success: true,
+            msg: response.message
+          });
+        } else {
+          this.msg.emit({
+            success: false,
+            msg: response.message
+          });
+        }
+      },
+      (error) => {
+        this.msg.emit({
+          success: false,
+          msg: error.error
+        });
       }
-    )
+    );
   }
 
-  updateCVs(){
-    for (let key in this.cvs) {
-      const cv: CV = this.cvs[key];
-      this.http.post('http://localhost:3000/cv/api/CVinsert', {cv_link: cv.link, email: this.email}).subscribe(
-        (response: any) => {
-          console.log(response.success)
-        },(error) => {
-          console.error(error);
-        }
-      )
+  //! Felpusholja a CV-ket lokálba, hogy látható legyen.
+  showCV(cv: CV) {
+    if (cv.link.length >= 10) {
+      this.cvs.push(cv);
     }
   }
-
-
-
 }
-
-
