@@ -11,6 +11,9 @@ class AllaskeresoDao {
             query2 = "select allaslehetoseg_id from jelentkezo where allaskereso_email = :email";
         } else{
             query = "SELECT email FROM ceg WHERE email = :email AND jelszo = :password";
+            // TODO
+            // query2 = "";
+            // !
         } 
         // console.table(query);
         // console.table({email: email, password: password, tipo: tipo});

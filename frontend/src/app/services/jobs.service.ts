@@ -8,12 +8,17 @@ export class JobsService {
   private key = 'jobs';
 
   setjobsid(data: any){
+    const localjobs = this.getjobsid();
+    
     let temp = [];
     for(let i of data){
       temp.push(i.ALLASLEHETOSEG_ID);
     }
 
-    const jobsid = JSON.stringify(temp);
+    const ids = localjobs != null ? temp.concat(localjobs) : temp;
+    console.log(ids);
+    
+    const jobsid = JSON.stringify(ids);
     localStorage.setItem(this.key, jobsid);
   }
 

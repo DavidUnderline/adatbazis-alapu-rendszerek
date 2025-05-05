@@ -16,7 +16,7 @@ import { inject } from '@angular/core';
 import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { SuccessMsgComponent } from "../../shared/success-msg/success-msg.component"; 
-import { json } from 'express';
+import { json, response } from 'express';
 import { JobsService } from '../../services/jobs.service';
 
 
@@ -58,7 +58,8 @@ handle_login(login: { email: string; password: string; }) {
   // const loginData = { email: login.email, password: login.password };
   this.http.post<any>('http://localhost:3000/auth/api/login', log).subscribe(
     response => {
-        if (response.success) {
+      // console.table(response);
+      if (response.success) {
           this.loginservice.setLoginStatus(true);
           this.companyservice.setIsCompany(false);
           localStorage.setItem('username', response.email); //! kisbetű, allCapssel nem működik gyerekik

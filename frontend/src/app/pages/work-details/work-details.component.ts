@@ -37,7 +37,7 @@ export class WorkDetailsComponent implements OnInit {
 
   apply() {
     if(this.isapplied()){
-      console.error("already applied");
+      console.log(this.isapplied());
       return;
     }
 
@@ -47,9 +47,13 @@ export class WorkDetailsComponent implements OnInit {
       // cv_link: localStorage.getItem('active_cv'),
       // ceg_id: this.work.getWork()?.
     }
-    this.http.post<any>('http://localhost:3000/allaskereso/api/applyforjob', { data }).subscribe((response) => {
+    this.http.post<any>('http://localhost:3000/allaskereso/api/applyforjob', { data })
+      .subscribe((response) => {
         if (response.success) {
           console.log(response);
+          // TODO
+          this.jobservice.setjobsid([{ALLASLEHETOSEG_ID: data.job_id}]);
+
         } else {
           console.log(response);
         }
@@ -61,12 +65,16 @@ export class WorkDetailsComponent implements OnInit {
   }
 
   isapplied(){
+    if(this.jobservice.getjobsid() == null){
+      return false;
+    }
+
     for(let i of this.jobservice.getjobsid()){
       if(i == this.work.getWork()?.id){
         return true;
       }
     }
-    
+
     return false;
   }
 
