@@ -7,13 +7,14 @@ export class JobsService {
   // constructor() { }
   private key = 'jobs';
 
-  setjobsid(data: any){
+  setjobs(data: any){
     // console.table(data);
-    const localjobs = this.getjobsid();
+    
+    const localjobs = this.getjobs();
     
     let temp = [];
-    for(let i of data){
-      temp.push(i.ALLASLEHETOSEG_ID);
+    for(let i = 0 ; i < data.length; i++){
+      temp.push(data[i]);
     }
 
     const ids = localjobs != null ? temp.concat(localjobs) : temp;
@@ -23,12 +24,12 @@ export class JobsService {
     localStorage.setItem(this.key, jobsid);
   }
 
-  getjobsid(){
+  getjobs(){
     const jobsid = localStorage.getItem(this.key);
     return jobsid ? JSON.parse(jobsid) : null;
   }
 
-  clearjobsid(){
+  clearjobs(){
     localStorage.removeItem('jobs');
   }
 }

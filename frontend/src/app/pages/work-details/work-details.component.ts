@@ -48,9 +48,9 @@ export class WorkDetailsComponent implements OnInit {
     this.http.post<any>('http://localhost:3000/allaskereso/api/applyforjob', { data })
       .subscribe((response) => {
         if (response.success) {
-          console.log(response);
-          // TODO
-          this.jobservice.setjobsid([{ALLASLEHETOSEG_ID: data.job_id}]);
+          // console.log("-- POST RESPONSE --");
+          // console.table(response);
+          this.jobservice.setjobs(response.jobs);
 
         } else {
           console.log(response);
@@ -63,14 +63,13 @@ export class WorkDetailsComponent implements OnInit {
   }
 
   isapplied(){
-    if(this.jobservice.getjobsid() == null){
+    if(this.jobservice.getjobs() == null){
       return false;
     }
 
-    for(let i of this.jobservice.getjobsid()){
-      if(i == this.work.getWork()?.id){
+    for(const i of this.jobservice.getjobs()){
+      if(i.ID === this.work.getWork()?.id)
         return true;
-      }
     }
 
     return false;

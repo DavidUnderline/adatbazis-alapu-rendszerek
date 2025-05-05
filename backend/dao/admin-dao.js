@@ -2,7 +2,7 @@ const { executeQuery, getConnection } = require('../config/db');
 
 class AdminDao {
   async user(email, password){
-    
+    // console.log(email, password);
     let connection;
     try{
       connection = await getConnection();
