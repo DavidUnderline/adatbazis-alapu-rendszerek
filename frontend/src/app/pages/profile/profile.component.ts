@@ -10,10 +10,10 @@ import { AllaskeresoFormComponent } from './allaskereso-form/allaskereso-form.co
 import { MatIcon } from '@angular/material/icon';
 import { CvFormComponent } from './cv-form/cv-form.component';
 import { CV } from '../../shared/Model/CV';
-import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { WorkListComponent } from './work-list/work-list.component';
 import { JobsService } from '../../services/jobs.service';
+import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { SuccessMsgComponent } from '../../shared/success-msg/success-msg.component';
 import { fakeAsync } from '@angular/core/testing';
 @Component({
