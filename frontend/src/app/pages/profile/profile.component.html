@@ -16,6 +16,7 @@
         <app-allaskereso-datas [allaskereso_data]="user_allas"></app-allaskereso-datas>
         <app-allaskereso-form
           (valid_form)="modifyAllaskereso($event)"
+          (error)="handleMsg($event)"
         ></app-allaskereso-form>
         <app-cv-form class="col-span-2" (msg)="handleMsg($event)"></app-cv-form>    
       }

@@ -143,6 +143,7 @@ export class ProfileComponent {
     // TODO
     console.table(user_data);
     this.show_error = false;
+    this.show_success = false;
 
     if (
       !user_data.nev.length &&
@@ -225,25 +226,23 @@ export class ProfileComponent {
         }
       );
   }
-  handleMsg(msg: { success: boolean; msg: string }) {
+  handleMsg(msg: { success: boolean; message: string }) {
     this.show_error = false;
     this.show_success = false;
     this.error_msg = '';
     this.success_msg = '';
 
-    console.log('---[ handleMsg ]---');
-    console.table(msg);
-    if (msg.msg === undefined) {
+    if (msg.message === undefined) {
       return;
     }
 
     if (msg.success) {
-      this.successHandler(msg.msg);
+      this.successHandler(msg.message);
     } else {
-      this.errorHandler(msg.msg);
+      this.errorHandler(msg.message);
     }
   }
-  errorHandler(error: string) {
+  errorHandler(error: string = "Ismeretlen hiba") {
     (this.show_error = true), (this.error_msg = error);
   }
 
