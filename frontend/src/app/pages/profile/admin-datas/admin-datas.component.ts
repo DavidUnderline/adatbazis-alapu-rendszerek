@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Moderator } from '../../../shared/Model/Moderator';
 
 @Component({
@@ -7,6 +7,10 @@ import { Moderator } from '../../../shared/Model/Moderator';
   templateUrl: './admin-datas.component.html',
   styleUrl: './admin-datas.component.css'
 })
-export class AdminDatasComponent {
-  @Input() admin_data!:  Moderator
+export class AdminDatasComponent implements OnInit{
+  @Input() admin_data:  Moderator | undefined
+  
+  ngOnInit(){
+    console.log(this.admin_data);
+  }
 }

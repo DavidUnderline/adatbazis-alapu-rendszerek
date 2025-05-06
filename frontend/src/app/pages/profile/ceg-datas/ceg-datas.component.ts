@@ -9,5 +9,5 @@ import { Ceg } from '../../../shared/Model/Ceg';
   styleUrl: './ceg-datas.component.css'
 })
 export class CegDatasComponent {
-  @Input() ceg_data!: Ceg
+  @Input() ceg_data: Ceg | undefined
 }

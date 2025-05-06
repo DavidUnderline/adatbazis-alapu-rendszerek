@@ -77,6 +77,23 @@ router.post('/api/get', async (req, res) => {
     }catch(err){
         res.status(500).json({ error: 'Hiba a cég lekérdezésekor'});
     }
-})
+});
+
+router.post('/api/getCegByAdo', async (req, res) => {
+  console.log("---[ getCegByAdo ]---")
+
+  const adoazonosito = req.body.adoazonosito;
+
+  try{
+    const nev = await cegDao.getCegByAdo(adoazonosito);
+    if(!nev){
+      res.status(401).json({})
+    }
+    res.json({success: true, name: nev});
+  }catch(err){
+    console.error(err);
+    throw err;
+  }
+});
 
 module.exports = router;

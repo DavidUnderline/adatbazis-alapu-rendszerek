@@ -10,10 +10,10 @@ import { AllaskeresoFormComponent } from './allaskereso-form/allaskereso-form.co
 import { MatIcon } from '@angular/material/icon';
 import { CvFormComponent } from './cv-form/cv-form.component';
 import { CV } from '../../shared/Model/CV';
-import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { WorkListComponent } from './work-list/work-list.component';
 import { JobsService } from '../../services/jobs.service';
+import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { SuccessMsgComponent } from '../../shared/success-msg/success-msg.component';
 import { fakeAsync } from '@angular/core/testing';
 import { LoginService } from '../../services/login.service';
@@ -27,7 +27,7 @@ import { Moderator } from '../../shared/Model/Moderator';
     HttpClientModule,
     CegFormComponent,
     AllaskeresoFormComponent,
-    MatIcon,
+    // MatIcon,
     CvFormComponent,
     ErrorMsgComponent,
     SuccessMsgComponent,
@@ -132,11 +132,11 @@ export class ProfileComponent {
             neve: response.neve,
             email: response.email
           };
+        }else{
+          this.errorHandler(response.message);
         }
-
       },
       (error)=> {});
-    
   }
 
   modifyAllaskereso(user_data: any) {

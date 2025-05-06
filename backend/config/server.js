@@ -20,6 +20,7 @@ const cv = require('../routes/route-cv')
 const kategoria = require('../routes/route-kategoria')
 const kulcsszo = require('../routes/route-kulcsszo')
 const admin = require('../routes/route-admin')
+const terulet = require('../routes/route-terulet');
 
 app.use('/auth', authRoute);
 app.use('/allaskereso', allaskereso);
@@ -29,3 +30,4 @@ app.use('/cv', cv);
 app.use('/kategoria', kategoria);
 app.use('/kulcsszo', kulcsszo);
 app.use('/admin', admin);
+app.use('/terulet', terulet);
