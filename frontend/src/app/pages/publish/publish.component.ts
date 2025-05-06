@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Allas } from '../../shared/Model/Allas';
 import { MatIcon } from '@angular/material/icon';
@@ -6,6 +6,7 @@ import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { SuccessMsgComponent } from '../../shared/success-msg/success-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AddCityDialogComponent } from "./add-city-dialog/add-city-dialog.component";
 
 
 @Component({
@@ -17,8 +18,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     ErrorMsgComponent,
     SuccessMsgComponent,
     DisplayDirective,
-    HttpClientModule
-  ],
+    HttpClientModule,
+    AddCityDialogComponent
+],
   templateUrl: './publish.component.html',
   styleUrl: './publish.component.css',
 })
@@ -39,6 +41,7 @@ export class PublishComponent implements OnInit {
   error_msg: string = '';
   show_success = false;
   success_msg = '';
+  @Input() showAddCity = false;
   cities: any[] = [];
 
   ngOnInit(): void {

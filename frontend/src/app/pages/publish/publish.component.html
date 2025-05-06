@@ -1,8 +1,10 @@
+<app-add-city-dialog [appDisplay]="showAddCity" (show)="showAddCity = $event"></app-add-city-dialog>
+
 <div
   class="bg-white-50 bg-white-500 dark:bg-dark_blue-500 flex justify-center p-56 pt-32"
 >
 
-  <div class="bg-white-500 p-4 rounded-2xl flex flex-col w-[80%] h-96">
+  <div class="bg-white-500 p-4 rounded-2xl flex flex-col w-[80%]">
     <h1 class="text-dark_blue-500 font-medium text-2xl pb-10">
       Hírdesse meg álláslehetőségét!
     </h1>
@@ -68,13 +70,16 @@
           formControlName="kategoria"
         />
       </fieldset>
-      <fieldset>
-        <select matNativeControl formControlName="varos">
-          <option value="" selected></option>
+      <fieldset class="flex gap-4 items-center">
+        <select matNativeControl formControlName="varos" class="inline-block w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-dark_red-500 focus:border-dark_red-500 ">
+          <option value="" disabled selected hidden>Város</option>
           @for(varos of cities; track varos){
             <option value="{{varos.VAROS}}">{{varos.VAROS}}</option>
           }
         </select>
+        <div class="text-dark_blue-500 hover:text-dark_red-500 flex flex-col align-center items-center">
+        <mat-icon class=" hover:cursor-pointer" (click)="showAddCity = true">add</mat-icon>
+        </div>
       </fieldset>
 
       <div class="pt-10 col-span-2 flex justify-end">
@@ -88,15 +93,15 @@
       
       </div>
     </form>
-    <app-error-msg
-    [error_msg]="error_msg"
-    [appDisplay]="show_error"
-    ></app-error-msg>
-
-    <app-success-msg
-    [success_msg]="success_msg"
-    [appDisplay]="show_success"
-  ></app-success-msg>
   </div>
+  <app-error-msg
+  [error_msg]="error_msg"
+  [appDisplay]="show_error"
+  ></app-error-msg>
+
+  <app-success-msg
+  [success_msg]="success_msg"
+  [appDisplay]="show_success"
+></app-success-msg>
 
 </div>

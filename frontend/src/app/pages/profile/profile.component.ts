@@ -27,7 +27,7 @@ import { Moderator } from '../../shared/Model/Moderator';
     HttpClientModule,
     CegFormComponent,
     AllaskeresoFormComponent,
-    MatIcon,
+    // MatIcon,
     CvFormComponent,
     ErrorMsgComponent,
     SuccessMsgComponent,
