@@ -2,52 +2,67 @@
   class="bg-white-500 dark:bg-dark_blue-500 flex flex-col items-center justify-center p-56 pt-32 gap-10"
 >
   <div class="bg-white-500 rounded-2xl p-4 w-[70%] flex flex-col gap-4">
-    <h1 class="mr-auto ml-auto text-center text-4xl text-dark_blue-500 mb-10">Elfogadásra váró hírdetések.</h1>
-    @for (work of allasok; track $index) {
+    <h1 class="mr-auto ml-auto text-center text-4xl text-dark_blue-500 mb-10">
+      Elfogadásra váró hírdetések.
+    </h1>
+    @if( allasok.length === 0){
+    <h1 class="mr-auto ml-auto text-center text-2xl text-dark_blue-500 mb-10">
+      Nincs semmilyen elfogadásra váró hírdetés. 💁‍♂️
+    </h1>
+    }@else { @for (work of allasok; track $index) {
+    <div
+      class="bg-white-500 rounded-2xl p-5 grid grid-cols-12 gap-4 justify-center align-middle outline-2 outline-dark_blue-500 text-dark_blue-500 relative overflow-hidden"
+    >
+      <img
+        src="assets/images/logos/asus_logo.svg"
+        alt="ide jon a kep"
+        class="float-left w-[7rem] col-span-1"
+      />
+      <div class="col-span-11 flex flex-col">
+        <div class="">
+          <h1 class="font-medium text-3xl text-dark_blue-500">
+            {{ work.cim }}
+            <span
+              class="font-medium outline-2 outline-dark_blue-500 p-1.5 text-xs rounded-2xl"
+              >{{ work.kulcsszo_neve }}</span
+            ><!--TODO Szét kell szedni-->
+          </h1>
+          <h2 class="text-dark_blue-500 font-medium text-2xl">
+            {{ work.terulet_id | lutLocations | async }}
+          </h2>
+          <h2 class="text-dark_blue-500 font-medium text-2xl">
+            {{ work.ceg_adoazonosito | lutCompanyName | async }}
+          </h2>
+
+          <h3 class="text-dark_red-500 font-medium">
+            {{ "Br. " + work.ber + " Ft" }}
+          </h3>
+        </div>
+      </div>
+      <p class="text-dark_blue-500 font-medium text-justify col-span-8">
+        {{ work.leiras }}
+      </p>
       <div
-    class="bg-white-500 rounded-2xl p-5 grid grid-cols-12 gap-4 justify-center align-middle outline-2 outline-dark_blue-500 text-dark_blue-500 relative overflow-hidden"
-  >
-    <img
-      src="assets/images/logos/asus_logo.svg"
-      alt="ide jon a kep"
-      class="float-left w-[7rem] col-span-1"
-    />
-    <div class="col-span-11 flex flex-col">
-      <div class="">
-        <h1 class="font-medium text-3xl text-dark_blue-500">
-          {{ work.cim }}
-          <span
-            class="font-medium outline-2 outline-dark_blue-500 p-1.5 text-xs rounded-2xl"
-            >{{ work.kulcsszo_neve }}</span
-          ><!--TODO Szét kell szedni-->
-        </h1>
-        <h2 class="text-dark_blue-500 font-medium text-2xl">
-          {{ work.terulet_id | lutLocations | async }}
-        </h2>
-        <h2 class="text-dark_blue-500 font-medium text-2xl">
-          {{ work.ceg_adoazonosito| lutCompanyName | async }}
-        </h2>
-        
-        <h3 class="text-dark_red-500 font-medium">
-          {{ "Br. " + work.ber + " Ft" }}
-        </h3>
+        class="absolute top-[0.5lh] right-[0.5lh] col-span-4 flex justify-end align-middle gap-2"
+      >
+        <div class="hover:text-dark_red-500 hover:cursor-pointer">
+          <mat-icon class="" (click)="deleteJob(work.id)">close</mat-icon>
+        </div>
+        <div class="hover:text-green-600 hover:cursor-pointer">
+          <mat-icon class="" (click)="acceptJob(work.id)">check</mat-icon>
+        </div>
       </div>
     </div>
-    <p class="text-dark_blue-500 font-medium text-justify col-span-8">
-      {{ work.leiras }}
-    </p>
-    <div class="absolute top-[0.5lh] right-[0.5lh] col-span-4 flex justify-end align-middle gap-2">
-      <div class="hover:text-dark_red-500 hover:cursor-pointer">
-        <mat-icon class=""
-        
-        >close</mat-icon>
-      </div>
-      <div class="hover:text-green-600 hover:cursor-pointer">
-        <mat-icon class=""
-        
-        >check</mat-icon></div>
-    </div>
+
+    } }
   </div>
-    }
-  </div>
+
+  <app-error-msg
+    [appDisplay]="show_error"
+    [error_msg]="error_msg"
+  ></app-error-msg>
+  <app-success-msg
+    [appDisplay]="show_success"
+    [success_msg]="success_msg"
+  ></app-success-msg>
 </div>
