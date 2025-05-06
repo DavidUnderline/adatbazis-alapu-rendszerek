@@ -10,7 +10,7 @@ class AllaskeresoDao {
             query = "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
             query2 = "select * from allaslehetoseg a "+
             "inner join jelentkezo j on j.allaslehetoseg_id = a.id "+
-            "where j.allaskereso_email = :email"; 
+            "where j.allaskereso_email = :email";
             
         } else{
             query = "SELECT email, adoazonosito FROM ceg WHERE email = :email AND jelszo = :password";

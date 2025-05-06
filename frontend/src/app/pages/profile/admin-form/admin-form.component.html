@@ -1,32 +1,18 @@
-<form class="flex flex-col items-center gap-4 w-full" [formGroup]="register_form" (ngSubmit)="Submit()">
-  <div class="flex gap-4 w-[80%]">
-    <fieldset
-      class="w-[80%] text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
-    >
-      <input
-        type="text"
-        placeholder="Keresztnév"
-        class="h-[1lh] outline-none text-medium focus:outline-0 peer text-dark_blue-500 w-full"
-        minlength="2"
-        formControlName="kereszt_nev"
-        required
-      />
-      
-    </fieldset>
-    <fieldset
-      class="w-[80%] text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
-    >
-      <input
-        type="text"
-        placeholder="Vezetéknév"
-        class="h-[1lh] outline-none text-medium focus:outline-0 peer text-dark_blue-500 w-full"
-        minlength="2"
-        formControlName="vezetek_nev"
-        required
-      />
-    </fieldset>
-  </div>
-
+<form [formGroup]="admin_form" (ngSubmit)="submit()">
+  <fieldset
+    class="w-[80%] text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
+  >
+    <input
+      type="text"
+      placeholder="Név"
+      class="h-[1lh] outline-none pl-8 text-medium focus:outline-0 peer text-dark_blue-500 w-full"
+      minlength="2"
+      formControlName="name"
+    />
+    <mat-icon class="absolute left-1 top-[0.625lh] transform -translate-y-1/2">
+      person
+    </mat-icon>
+  </fieldset>
   <fieldset
     class="w-[80%] text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
   >
@@ -36,7 +22,6 @@
       class="h-[1lh] outline-none pl-8 text-medium focus:outline-0 peer text-dark_blue-500 w-full"
       minlength="2"
       formControlName="email"
-      required
     />
     <mat-icon class="absolute left-1 top-[0.625lh] transform -translate-y-1/2">
       alternate_email
@@ -47,14 +32,14 @@
     class="w-[80%] text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
   >
     <input
-      type="string"
-      placeholder="Végzettség"
+      type="password"
+      placeholder="Jelszó"
       class="h-[1lh] outline-none pl-8 text-medium focus:outline-0 peer text-dark_blue-500 w-full"
       minlength="2"
-      formControlName="vegzettseg"
+      formControlName="password1"
     />
     <mat-icon class="absolute left-1 top-[0.625lh] transform -translate-y-1/2">
-      description
+      lock
     </mat-icon>
   </fieldset>
 
@@ -63,26 +48,10 @@
   >
     <input
       type="password"
-      placeholder="Jelszó"
-      class="h-[1lh] outline-none pl-8 text-medium focus:outline-0 peer text-dark_blue-500 w-full"
-      minlength="6"
-      formControlName="jelszo1"
-      required
-    />
-    <mat-icon class="absolute left-1 top-[0.625lh] transform -translate-y-1/2">
-      lock
-    </mat-icon>
-  </fieldset>
-  <fieldset
-    class="w-[80%] text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
-  >
-    <input
-      type="password"
       placeholder="Jelszó ismét"
       class="h-[1lh] outline-none pl-8 text-medium focus:outline-0 peer text-dark_blue-500 w-full"
-      minlength="6"
-      formControlName="jelszo2"
-      required
+      minlength="2"
+      formControlName="password2"
     />
     <mat-icon class="absolute left-1 top-[0.625lh] transform -translate-y-1/2">
       lock
@@ -93,9 +62,9 @@
     <button
       type="submit"
       class="bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl cursor-pointer flex justify-center gap-1.5"
-    >
+      >
       <mat-icon>done_all</mat-icon>
-      Regisztráció
+      Módosítás
     </button>
   </div>
 </form>

@@ -15,7 +15,7 @@ export class CvFormComponent {
   cvs: CV[] = [];
   @Output() msg = new EventEmitter<{
     success: boolean;
-    msg: string;
+    message: string;
   }>();
 
   constructor(private http: HttpClient) {
@@ -37,7 +37,7 @@ export class CvFormComponent {
         (error) => {
           this.msg.emit({
             success: false,
-            msg: error.error
+            message: error.error
           })
         }
       );
@@ -52,19 +52,19 @@ export class CvFormComponent {
           this.showCV({link: cv_link})
           this.msg.emit({
             success: true,
-            msg: response.message
+            message: response.message
           })
         }else{
           this.msg.emit({
             success: false,
-            msg: response.message
+            message: response.message
           })
         }
       },
       (error) => {
         this.msg.emit({
           success: false,
-          msg: error.error
+          message: error.error
         })
       }
     )
@@ -78,19 +78,19 @@ export class CvFormComponent {
         if (response.success) {
           this.msg.emit({
             success: true,
-            msg: response.message
+            message: response.message
           });
         } else {
           this.msg.emit({
             success: false,
-            msg: response.message
+            message: response.message
           });
         }
       },
       (error) => {
         this.msg.emit({
           success: false,
-          msg: error.error
+          message: error.error
         });
       }
     );
