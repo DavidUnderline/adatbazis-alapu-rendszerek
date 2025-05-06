@@ -21,6 +21,7 @@ import { AdminDatasComponent } from "./admin-datas/admin-datas.component";
 import { CegDatasComponent } from "./ceg-datas/ceg-datas.component";
 import { AllaskeresoDatasComponent } from "./allaskereso-datas/allaskereso-datas.component";
 import { Moderator } from '../../shared/Model/Moderator';
+import { AdminFormComponent } from "./admin-form/admin-form.component";
 @Component({
   selector: 'app-profile',
   imports: [
@@ -35,7 +36,8 @@ import { Moderator } from '../../shared/Model/Moderator';
     WorkListComponent,
     AdminDatasComponent,
     CegDatasComponent,
-    AllaskeresoDatasComponent
+    AllaskeresoDatasComponent,
+    AdminFormComponent
 ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
@@ -225,6 +227,10 @@ export class ProfileComponent {
           this.errorHandler(err);
         }
       );
+  }
+
+  modifyAdmin(data: {name: string, email: string, password: string}){
+    
   }
   handleMsg(msg: { success: boolean; message: string }) {
     this.show_error = false;

@@ -23,6 +23,10 @@
 
       @case ("admin") {
         <app-admin-datas [admin_data]="user_moderator"></app-admin-datas>
+        <app-admin-form  
+        (error)="handleMsg($event)"
+        (valid_admin_form)="modifyAdmin($event)"
+        ></app-admin-form>
       }
 
       @default {
