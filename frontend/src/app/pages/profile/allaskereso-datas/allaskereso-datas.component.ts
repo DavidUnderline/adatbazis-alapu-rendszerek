@@ -9,5 +9,5 @@ import { Allaskereso } from '../../../shared/Model/Allaskereso';
   styleUrl: './allaskereso-datas.component.css'
 })
 export class AllaskeresoDatasComponent {
-  @Input() allaskereso_data!: Allaskereso
+  @Input() allaskereso_data: Allaskereso | undefined
 }

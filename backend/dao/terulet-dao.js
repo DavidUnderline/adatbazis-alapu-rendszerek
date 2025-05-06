@@ -6,7 +6,7 @@ class Terulet {
         // console.log("inside terulet dao");
 
         const result = await executeQuery(query, {});
-        // console.log(result);
+        console.log(result);
         return result;
     }
 }

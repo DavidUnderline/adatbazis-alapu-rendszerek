@@ -16,7 +16,6 @@ class AdminDao {
   }
 
   async get(email){
-    console.log("---[ admin-dao.get ]---")
     let connection
     try{
       connection = await getConnection();
@@ -25,7 +24,8 @@ class AdminDao {
       // console.log(result);
       return result.rows;
     }catch(err){
-
+      console.error("Error getting admins attributes: "+err);
+      throw err;
     }
   }
 }

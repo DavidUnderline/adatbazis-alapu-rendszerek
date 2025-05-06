@@ -137,7 +137,6 @@ export class ProfileComponent {
         }
       },
       (error)=> {});
-    
   }
 
   modifyAllaskereso(user_data: any) {

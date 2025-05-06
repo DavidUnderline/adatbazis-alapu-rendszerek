@@ -115,7 +115,7 @@ export class PublishComponent implements OnInit {
           }
         },
         (err) => {
-          this.errorHandler(err);
+          this.errorHandler(err.error);
         }
       );
     
