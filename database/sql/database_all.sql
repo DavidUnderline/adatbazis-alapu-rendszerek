@@ -273,11 +273,11 @@ END;
 /
 
 CREATE OR REPLACE TRIGGER allaskereso_inactive_trigger
-    BEFORE UPDATE OF utolso_bejelentkezes ON allaskereso
-    FOR EACH ROW
+    AFTER LOGON ON DATABASE
     BEGIN
-        IF :OLD.utolso_bejelentkezes IS NOT NULL AND :OLD.utolso_bejelentkezes < SYSDATE - 90 THEN
-            :NEW.statusz := FALSE; -- Passzív státusz
+        IF allaskereso.utolso_bejelentkezes - SYSDATE >= 90
+        THEN
+        allaskereso.statusz := FALSE;
         END IF;
     END;
 /
