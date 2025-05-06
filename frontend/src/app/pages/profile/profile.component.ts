@@ -132,8 +132,9 @@ export class ProfileComponent {
             neve: response.neve,
             email: response.email
           };
+        }else{
+          this.errorHandler(response.message);
         }
-
       },
       (error)=> {});
     
