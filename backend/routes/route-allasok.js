@@ -23,4 +23,22 @@ router.post('/api/searchjob', async (req, res) => {
     }
 });
 
+router.post('/api/insert', async (req, res) => {
+    const data = req.body.allaslehetoseg;
+    
+    try {
+        const success = await allasokDao.insertAllas(data);
+        console.log(success);
+
+        if (!success) {
+            res.json({ success : false, message: 'Sikertelen állásfeltöltés!' });
+            return;
+        }
+        res.json({ success : true, message: 'Sikeres állásfeltöltés, jóváhagyás alatt!' });
+        
+    } catch (err) {
+        res.json({ error: 'Hiba a regisztráció során' });
+    }
+});
+
 module.exports = router;

@@ -68,6 +68,14 @@
           formControlName="kategoria"
         />
       </fieldset>
+      <fieldset>
+        <select matNativeControl formControlName="varos">
+          <option value="" selected></option>
+          @for(varos of cities; track varos){
+            <option value="{{varos.VAROS}}">{{varos.VAROS}}</option>
+          }
+        </select>
+      </fieldset>
 
       <div class="pt-10 col-span-2 flex justify-end">
         <button
@@ -80,6 +88,15 @@
       
       </div>
     </form>
+    <app-error-msg
+    [error_msg]="error_msg"
+    [appDisplay]="show_error"
+    ></app-error-msg>
+
+    <app-success-msg
+    [success_msg]="success_msg"
+    [appDisplay]="show_success"
+  ></app-success-msg>
   </div>
 
 </div>
