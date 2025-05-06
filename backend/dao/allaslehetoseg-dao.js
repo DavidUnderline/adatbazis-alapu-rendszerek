@@ -125,7 +125,7 @@ class AllaslehetosegDao{
         try {
             connection = await getConnection();
             const result = await connection.execute(
-                `UPDATE allasheletoseg SET is_accapted = true WHERE id = :id`,
+                `UPDATE allaslehetoseg SET is_accepted = true WHERE id = :id`,
                 { id },
                 { autoCommit: true }
             );
