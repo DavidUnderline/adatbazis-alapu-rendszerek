@@ -10,23 +10,15 @@ class CvDao {
             //Cv beszuraas tablaba
             console.table(cv);
             const result = await connection.execute(
-                `INSERT INTO cv (cv_link) VALUES (:cv_link)`,
-                { cv_link: cv.cv_link },
+                `INSERT INTO cv (cv_link, allaskereso_email) VALUES (:cv_link, :email)`,
+                { cv_link: cv.cv_link, 
+                    email: cv.email
+                },
                 { autoCommit: false }
+                
             );
             if (result.rowsAffected != 1) {
                 throw new Error('CV beszúrása sikertelen');
-            }
-
-            //kapcsolat beszurasa
-            const kapcsolatResult = await connection.execute(
-                `INSERT INTO allaskereso_cv_kapcsolat (email, cv_link) VALUES (:email, :cvLink)`,
-                { email: cv.email, cvLink: cv.cv_link },
-                { autoCommit: false }
-            );
-
-            if (kapcsolatResult.rowsAffected !== 1) {
-                throw new Error('Kapcsolat beszúrása sikertelen');
             }            
 
             await connection.commit();
@@ -47,9 +39,10 @@ class CvDao {
 
             connection = await getConnection();
             console.log("\n\n"+email+"\n\n")
-            const query = `SELECT cv_link FROM ALLASKERESO_CV_KAPCSOLAT
-               WHERE email = :email`; //Todo kapcsolat tábla where?????
-            const result = await connection.execute(query, { email: email });
+            const result = await connection.execute(
+                `SELECT cv_link FROM cv WHERE allaskereso_email = :email`,
+                { email: email }
+            );
 
             return result.rows.length > 0 ? result.rows : null;
 

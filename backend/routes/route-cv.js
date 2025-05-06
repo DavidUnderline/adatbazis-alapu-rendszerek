@@ -9,8 +9,8 @@ const cvDao = require('../dao/cv-dao');
 router.post('/api/CVinsert', async (req, res) => {
     try {
       console.table(req.body);
-        const cv = {cv_link, email } = req.body;
-        const success = await cvDao.insertCv(cv);
+        const cv_data = {cv_link, email } = req.body;
+        const success = await cvDao.insertCv(cv_data);
 
         if (!success) {
           res.json({ error: 'CV feltöltés sikertelen', success: false });
@@ -27,10 +27,9 @@ router.post('/api/CVinsert', async (req, res) => {
 
 // CV link lekérdezése email alapján
 router.post('/api/CVget', async (req, res) => {
-
     try {
-        const email = req.body;
-        const cv_link = await cvDao.getCv(email.email);
+        const cv = req.body;
+        const cv_link = await cvDao.getCv(cv.email);
 
       if (cv_link) {
         res.json({ success: true, cv_link });

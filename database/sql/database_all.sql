@@ -45,22 +45,6 @@ CREATE TABLE ceg(
     CONSTRAINT foreign_key_terulet FOREIGN KEY (terulet_id) REFERENCES terulet(id) ON DELETE SET NULL--mert a cég létezhet terület nélkül
 );
 
--------------------- cv tabla
-
-BEGIN
-    EXECUTE IMMEDIATE 'DROP TABLE cv CASCADE CONSTRAINTS PURGE';
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
-        NULL;
-END;
-/
-
-CREATE TABLE cv(
-  cv_link VARCHAR2(255) PRIMARY KEY NOT NULL
-);
-
 -------------------- allaskereso tabla
 
 BEGIN
@@ -82,11 +66,10 @@ CREATE TABLE allaskereso (
    statusz              boolean
 );
 
--------------------- Allaskereso es CV kapcsolat tabla
---Hogy egy allaskeresohoz tobb CV is tartozhasson. Ez a legkevesbe redundans megoldas
+-------------------- cv tabla
 
 BEGIN
-    EXECUTE IMMEDIATE 'DROP TABLE allaskereso_cv_kapcsolat CASCADE CONSTRAINTS PURGE';
+    EXECUTE IMMEDIATE 'DROP TABLE cv CASCADE CONSTRAINTS PURGE';
 EXCEPTION
     WHEN OTHERS THEN
         -- Ha a tabla nem letezik semmi nincs
@@ -95,12 +78,10 @@ EXCEPTION
 END;
 /
 
-CREATE TABLE allaskereso_cv_kapcsolat (
-    email VARCHAR2(255),
-    cv_link VARCHAR2(255),
-    PRIMARY KEY (email, cv_link),
-    FOREIGN KEY (email) REFERENCES allaskereso(email) ON DELETE CASCADE,--Álláskereső törlésekor a CV-kapcsolatai is törlődjenek
-    FOREIGN KEY (cv_link) REFERENCES cv(cv_link) ON DELETE CASCADE --CV törlésekor a kapcsolatai is törlődjenek
+CREATE TABLE cv(
+  cv_link VARCHAR2(255) PRIMARY KEY NOT NULL,
+  allaskereso_email VARCHAR(255),
+  CONSTRAINT foreign_key_allaskereso_cv FOREIGN KEY (allaskereso_email) REFERENCES allaskereso(email) ON DELETE CASCADE
 );
 
 -------------------- cegertekeles tabla
@@ -122,39 +103,6 @@ CREATE TABLE cegertekeles(
     allaskereso_email  VARCHAR(255),
     CONSTRAINT foreign_key_ceg FOREIGN KEY (ceg_adoazonosito) REFERENCES ceg(adoazonosito) ON DELETE CASCADE,--Cég törlésekor az értékelései is törlődjenek
     CONSTRAINT foreign_key_allaskereso FOREIGN KEY (allaskereso_email) REFERENCES allaskereso(email) ON DELETE CASCADE --Álláskereső törlésekor az általa adott értékelések is törlődjenek
-);
-
-
--------------------- kategoria tabla
-
-BEGIN
-    EXECUTE IMMEDIATE 'DROP TABLE kategoria CASCADE CONSTRAINTS PURGE';
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
-        NULL;
-END;
-/
-
-CREATE TABLE kategoria (
-   neve VARCHAR2(255) PRIMARY KEY NOT NULL
-);
-
--------------------- kulcsszo tabla
-
-BEGIN
-    EXECUTE IMMEDIATE 'DROP TABLE kulcsszo CASCADE CONSTRAINTS PURGE';
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
-        NULL;
-END;
-/
-
-CREATE TABLE kulcsszo(
-  neve VARCHAR2(255) PRIMARY KEY NOT NULL
 );
 
 -------------------- allaslehetoseg tabla
@@ -183,6 +131,22 @@ CREATE TABLE allaslehetoseg (
    CONSTRAINT foreign_key_ceg_allaslehetoseg FOREIGN KEY (ceg_adoazonosito) REFERENCES ceg(adoazonosito) ON DELETE CASCADE -- Cég törlésekor az álláslehetőségei is törlődjenek
 );
 
+-------------------- kulcsszo tabla
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE kulcsszo CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE kulcsszo(
+  neve VARCHAR2(255) PRIMARY KEY NOT NULL
+);
+
 -------------------- allaslehetoseg es kulcsszo kapcsolat tabla
 --Hogy egy allaslehetoseghez tobb kulcsszo is tartozhasson. Ez a legkevesbe redundans megoldas
 
@@ -201,27 +165,25 @@ CREATE TABLE allaslehetoseg_kulcsszo_kapcsolat (
     kulcsszo_neve VARCHAR2(255),
     PRIMARY KEY (allaslehetoseg_id, kulcsszo_neve),
     FOREIGN KEY (allaslehetoseg_id) REFERENCES allaslehetoseg(id) ON DELETE CASCADE, -- Álláslehetőség törlésekor a kulcsszó-kapcsolatai is törlődjenek
-    FOREIGN KEY (kulcsszo_neve) REFERENCES kulcsszo(neve)
+    FOREIGN KEY (kulcsszo_neve) REFERENCES kulcsszo(neve) ON DELETE CASCADE
 );
 
--------------------- allaslehetoseg es kategoria kapcsolat tabla
---Hogy egy allaslehetoseg tobb kategoria is tartozhasson. Ez a legkevesbe redundans megoldas
+-------------------- kategoria tabla
 
 BEGIN
-    EXECUTE IMMEDIATE 'DROP TABLE allaslehetoseg_kategoria_kapcsolat CASCADE CONSTRAINTS PURGE';
+    EXECUTE IMMEDIATE 'DROP TABLE kategoria CASCADE CONSTRAINTS PURGE';
 EXCEPTION
     WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
         DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
         NULL;
 END;
 /
 
-CREATE TABLE allaslehetoseg_kategoria_kapcsolat (
-    allaslehetoseg_id INT,
-    kategoria_neve VARCHAR2(255),
-    PRIMARY KEY (allaslehetoseg_id, kategoria_neve),
-    FOREIGN KEY (allaslehetoseg_id) REFERENCES allaslehetoseg(id)ON DELETE CASCADE, -- Álláslehetőség törlésekor a kulcsszó-kapcsolatai is törlődjenek
-    FOREIGN KEY (kategoria_neve) REFERENCES kategoria(neve)
+CREATE TABLE kategoria (
+   neve VARCHAR2(255) PRIMARY KEY NOT NULL,
+   allaslehetoseg_id INT,
+   FOREIGN KEY (allaslehetoseg_id) REFERENCES allaslehetoseg(id) ON DELETE CASCADE
 );
 
 -------------------- moderator tabla
@@ -264,17 +226,17 @@ CREATE TABLE jelentkezo(
 
 ---------------------------------------- TRIGGEREK ----------------------------------------
 -------------------- allaskereso_cv_kapcsolat (email) tabla frissito trigger
-CREATE OR REPLACE TRIGGER update_child_email
-BEFORE UPDATE OF email ON allaskereso
-FOR EACH ROW
-BEGIN
-    IF :NEW.email <> :OLD.email THEN
-        UPDATE allaskereso_cv_kapcsolat
-        SET email = :NEW.email
-        WHERE email = :OLD.email;
-    END IF;
-END;
-/
+-- CREATE OR REPLACE TRIGGER update_child_email
+-- BEFORE UPDATE OF email ON allaskereso
+-- FOR EACH ROW
+-- BEGIN
+--     IF :NEW.email <> :OLD.email THEN
+--         UPDATE allaskereso_cv_kapcsolat
+--         SET email = :NEW.email
+--         WHERE email = :OLD.email;
+--     END IF;
+-- END;
+-- /
 
 -------------------- cegertekeles atlag frissito trigger
 BEGIN
@@ -311,11 +273,11 @@ END;
 /
 
 CREATE OR REPLACE TRIGGER allaskereso_inactive_trigger
-    BEFORE UPDATE OF utolso_bejelentkezes ON allaskereso
-    FOR EACH ROW
+    AFTER LOGON ON DATABASE
     BEGIN
-        IF :OLD.utolso_bejelentkezes IS NOT NULL AND :OLD.utolso_bejelentkezes < SYSDATE - 90 THEN
-            :NEW.statusz := FALSE; -- Passzív státusz
+        IF allaskereso.utolso_bejelentkezes - SYSDATE >= 90
+        THEN
+        allaskereso.statusz := FALSE;
         END IF;
     END;
 /
