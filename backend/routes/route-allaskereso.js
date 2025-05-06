@@ -27,11 +27,8 @@ router.post('/api/update', async (req, res) => {
   const data = req.body.user_data;
   const allaskereso = { email: data.email };
   
-  console.log("data: ", data);
 
   if (data.nev && data.nev.trim() != '') allaskereso.neve = data.nev;
-  console.log("data.nev:", data.nev)
-  console.log("allaskereso.nev:", allaskereso.nev)
   if (data.originalemail !== data.email) {
     allaskereso.originalemail = data.originalemail;
     allaskereso.jelszo2 = data.jelszo;
