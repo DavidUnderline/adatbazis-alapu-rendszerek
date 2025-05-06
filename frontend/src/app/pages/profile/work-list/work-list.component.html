@@ -1,40 +1,42 @@
-@for (work of allasok; track $index) {
-<div
-  class="bg-white-500 rounded-2xl p-5 grid grid-cols-12 gap-4 justify-center align-middle outline-2 outline-dark_blue-500 text-dark_blue-500"
->
-  <img
-    src="assets/images/logos/asus_logo.svg"
-    alt="ide jon a kep"
-    class="float-left w-[7rem] col-span-1"
-  />
-  <div class="col-span-11 flex flex-col">
-    <div class="">
-      <h1 class="font-medium text-3xl text-dark_blue-500">
-        {{ work.cim }}
-        <span
-          class="font-medium outline-2 outline-dark_blue-500 p-1.5 text-xs rounded-2xl"
-          >{{ work.kulcsszo_neve }}</span
-        ><!--TODO Szét kell szedni-->
-      </h1>
-      <h2 class="text-dark_blue-500 font-medium text-2xl">
-        {{ work.terulet_id }}
-        <!--TODO Pipeot írni ehez a szépséghez-->
-      </h2>
-      <h3 class="text-dark_red-500 font-medium">
-        {{ "Br. " + work.ber + " Ft" }}
-      </h3>
-    </div>
-  </div>
-  <p class="text-dark_blue-500 font-medium text-justify col-span-8">
-    {{ work.leiras }}
-  </p>
-  <div class="col-span-4 flex justify-end align-middle">
-    <button
-      class="bg-dark_red-500 text-white-500 font-medium text-xl rounded-xl cursor-pointer p-5 pl-20 pr-20"
+<div class="flex flex-col gap-4">
+  @for (work of allasok; track $index) {
+    <div
+      class="bg-white-500 rounded-2xl p-5 grid grid-cols-12 gap-4 justify-center align-middle outline-2 outline-dark_blue-500 text-dark_blue-500"
     >
-      Info
-    </button>
-    <mat-icon class="absolute top-[0.5lh] right-[0.5lh]">close</mat-icon>
-  </div>
+      <img
+        src="assets/images/logos/asus_logo.svg"
+        alt="ide jon a kep"
+        class="float-left w-[7rem] col-span-1"
+      />
+      <div class="col-span-11 flex flex-col">
+        <div class="">
+          <h1 class="font-medium text-3xl text-dark_blue-500">
+            {{ work.cim }}
+            <span
+              class="font-medium outline-2 outline-dark_blue-500 p-1.5 text-xs rounded-2xl"
+              >{{ work.kulcsszo_neve }}</span
+            ><!--TODO Szét kell szedni-->
+          </h1>
+          <h2 class="text-dark_blue-500 font-medium text-2xl">
+            {{ work.terulet_id | lutLocations | async }}
+            <!--TODO Pipeot írni ehez a szépséghez-->
+          </h2>
+          <h3 class="text-dark_red-500 font-medium">
+            {{ "Br. " + work.ber + " Ft" }}
+          </h3>
+        </div>
+      </div>
+      <p class="text-dark_blue-500 font-medium text-justify col-span-8">
+        {{ work.leiras }}
+      </p>
+      <div class="col-span-4 flex justify-end align-middle">
+        <button
+          class="bg-dark_red-500 text-white-500 font-medium text-xl rounded-xl cursor-pointer p-5 pl-20 pr-20"
+        >
+          Info
+        </button>
+        <mat-icon class="absolute top-[0.5lh] right-[0.5lh]">close</mat-icon>
+      </div>
+    </div>
+    }
 </div>
-}

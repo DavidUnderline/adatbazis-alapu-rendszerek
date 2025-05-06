@@ -20,4 +20,19 @@ router.get('/api/getcities', async (req, res) => {
     }
 });
 
+router.post('/api/getCityById', async(req, res) => {
+    let id = req.body.id
+    try{
+        const city = await teruletdao.getVarosById(id);
+        if(!city){
+            res.json({success: false, city: "Ismeretlen"});
+            return;
+        }
+        res.json({success: true, city: city});
+    }catch(err){
+        res.status(500).json({error: err});
+        throw err;
+    }
+});
+
 module.exports = router;

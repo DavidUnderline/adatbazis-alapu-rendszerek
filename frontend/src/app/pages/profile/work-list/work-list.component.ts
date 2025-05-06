@@ -1,12 +1,14 @@
 import { Component, inject, Input } from '@angular/core';
 import { Allas } from '../../../shared/Model/Allas';
 import { MatIcon } from '@angular/material/icon';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+// import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 import { JobsService } from '../../../services/jobs.service';
+import { LutLocationsPipe } from '../../../pipes/lut-locations.pipe';
 
 @Component({
   selector: 'app-work-list',
-  imports: [MatIcon],
+  imports: [MatIcon, LutLocationsPipe, CommonModule],
   templateUrl: './work-list.component.html',
   styleUrl: './work-list.component.css',
 })
