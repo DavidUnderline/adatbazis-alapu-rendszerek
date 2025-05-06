@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, Input, inject } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Allas } from '../../shared/Model/Allas';
 import { MatIcon } from '@angular/material/icon';
@@ -7,6 +7,7 @@ import { SuccessMsgComponent } from '../../shared/success-msg/success-msg.compon
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AddCityDialogComponent } from "./add-city-dialog/add-city-dialog.component";
+import { JobsService } from '../../services/jobs.service';
 
 
 @Component({
@@ -43,6 +44,8 @@ export class PublishComponent implements OnInit {
   success_msg = '';
   @Input() showAddCity = false;
   cities: any[] = [];
+
+  jobservice = inject(JobsService);
 
   ngOnInit(): void {
     // console.log("cities: ", localStorage.getItem("cities"));
@@ -110,6 +113,7 @@ export class PublishComponent implements OnInit {
         console.table(response);
           if (response.success) {
             this.successHandler(response.message);
+            this.jobservice.setjobs([allaslehetoseg]);
           } else {
             this.errorHandler(response.message);
           }
