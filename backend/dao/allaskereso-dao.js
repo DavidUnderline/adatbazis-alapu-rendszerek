@@ -162,24 +162,6 @@ class AllaskeresoDao {
         return data;
     }
     
-    // Utolsó bejelentkezés frissítése
-    // async updateLastLogin(email) {
-    //     let connection;
-    //     try {
-    //         // connection = await getConnection();
-    //         const result = await connection.execute(
-    //             `UPDATE allaskereso SET utolso_bejelentkezes = SYSDATE WHERE email = :email`,
-    //             { email },
-    //             { autoCommit: true }
-    //         );
-    //         return result.rowsAffected === 1;
-    //     } catch (err) {
-    //         console.error('Error updating last login:', err);
-    //         throw err;
-    //     } finally {
-    //         if (connection) await connection.close();
-    //     }
-    // }
 
     // Álláskereső törlése (kapcsolatok automatikusan törlődnek CASCADE miatt)
     // async deleteAllaskereso(email) {

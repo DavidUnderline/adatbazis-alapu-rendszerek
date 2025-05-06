@@ -56,4 +56,36 @@ router.post('/api/searchPending', async(req, res) => {
     }
 });
 
+router.post('/api/deletePending', async(req, res) => {
+    console.log('---[ route-allaslehetoseg-delete ]---');
+    try{
+        const jobs = await allasokDao.deletePendingAllasokById();
+        if(!jobs){
+            res.json({success: false, jobs: 'Hiba az álláslehetőség törlése során'});
+            return
+        }
+        res.json({ success: true, message: 'Álláslehetőség sikeresen törölve' });
+    }catch(err){
+        console.error(err);
+        res.json({success: false, jobs: 'Hiba az álláslehetőség törlése során'});
+        throw err;
+    }
+});
+
+router.post('/api/acceptPending', async(req, res) => {
+    console.log('---[ route-allaslehetoseg-delete ]---');
+    try{
+        const jobs = await allasokDao.acceptPendingAllasokById();
+        if(!jobs){
+            res.json({success: false, jobs: 'Hiba az álláslehetőség elfogadása során'});
+            return
+        }
+        res.json({ success: true, message: 'Álláslehetőség sikeresen elfogadva' });
+    }catch(err){
+        console.error(err);
+        res.json({success: false, jobs: 'Hiba az álláslehetőség elfogadása során'});
+        throw err;
+    }
+});
+
 module.exports = router;

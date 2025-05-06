@@ -1,7 +1,7 @@
 const { executeQuery, getConnection } = require('../config/db');
 // const { all } = require('../routes/route-allaskereso');
 
-class Allasok{
+class AllaslehetosegDao{
     async getAllasok(data){
         const is_accapted = 'true';
 
@@ -101,6 +101,42 @@ class Allasok{
             throw err;
         }
     }
+
+    async deletePendingAllasokById(id){
+        let connection;
+        try {
+            connection = await getConnection();
+            const result = await connection.execute(
+                `DELETE FROM allaslehetoseg WHERE id = :id`,
+                { id },
+                { autoCommit: true }
+            );
+            return result.rowsAffected === 1;
+        } catch (err) {
+            console.error('Error deleting Allaslehetoseg:', err);
+            throw err;
+        } finally {
+            if (connection) await connection.close();
+        }
+    }
+
+    async acceptPendingAllasokById(id){
+        let connection;
+        try {
+            connection = await getConnection();
+            const result = await connection.execute(
+                `UPDATE allasheletoseg SET is_accapted = true WHERE id = :id`,
+                { id },
+                { autoCommit: true }
+            );
+            return result.rowsAffected === 1;
+        } catch (err) {
+            console.error('Error deleting Allaslehetoseg:', err);
+            throw err;
+        } finally {
+            if (connection) await connection.close();
+        }
+    }
 };
 
-module.exports = new Allasok();
+module.exports = new AllaslehetosegDao();
