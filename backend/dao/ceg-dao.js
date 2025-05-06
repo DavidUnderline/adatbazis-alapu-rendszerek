@@ -104,6 +104,19 @@ class CegDao {
             throw err;
         }
     }
+
+    async getCegByAdo(adoazonosito){
+        let connection;
+        try{
+            connection = await getConnection();
+            const query = 'SELECT neve FROM CEG WHERE ADOAZONOSITO = :adoazonosito';
+            const name = await connection.execute(query, {adoazonosito: adoazonosito});
+
+            return name.rows[0][0];
+        }catch(err){
+            console.error("Hiba a ceg nevének lekérdezése folyamán: ",err);
+        }
+    }
 }
 
 module.exports = new CegDao();

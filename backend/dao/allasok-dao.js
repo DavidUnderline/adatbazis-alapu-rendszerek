@@ -88,6 +88,19 @@ class Allasok{
         
         return await executeQuery(insert_query, insert_binds);
     }
+
+    async getPendingAllasok(){
+        let connection;
+        let query = 'SELECT * FROM ALLASLEHETOSEG WHERE IS_ACCEPTED = FALSE';
+        try{
+            connection = await getConnection();
+            const jobs = await connection.execute(query);
+            return jobs;
+        }catch(err){
+            console.error(err);
+            throw err;
+        }
+    }
 };
 
 module.exports = new Allasok();

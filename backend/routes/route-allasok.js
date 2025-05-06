@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const allasokDao = require('../dao/allasok-dao');
 
-// Allások lekérdezése
+// Allások lekérdezése Álláskereső filterezése alapján
 router.post('/api/searchjob', async (req, res) => {
     const data = req.body;
 
@@ -38,6 +38,21 @@ router.post('/api/insert', async (req, res) => {
         
     } catch (err) {
         res.json({ error: 'Hiba a regisztráció során' });
+    }
+});
+
+router.post('/api/searchPending', async(req, res) => {
+    console.log('---[ route-allasok ]---');
+    try{
+        const jobs = await allasokDao.getPendingAllasok();
+        if(!jobs){
+            res.json({success: false, jobs: undefined});
+            return
+        }
+        res.json({success: true, jobs: jobs.rows});
+    }catch(err){
+        console.error(err);
+        throw err;
     }
 });
 

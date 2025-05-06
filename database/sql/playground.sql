@@ -1,1 +1,1 @@
-select varos from terulet where ID = 3
+SELECT neve FROM CEG WHERE ADOAZONOSITO = 123123123;
