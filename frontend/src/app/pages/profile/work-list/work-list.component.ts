@@ -5,10 +5,11 @@ import { MatIcon } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { JobsService } from '../../../services/jobs.service';
 import { LutLocationsPipe } from '../../../pipes/lut-locations.pipe';
+import { DisplayDirective } from '../../../shared/directives/display.directive';
 
 @Component({
   selector: 'app-work-list',
-  imports: [MatIcon, LutLocationsPipe, CommonModule],
+  imports: [MatIcon, LutLocationsPipe, CommonModule, DisplayDirective],
   templateUrl: './work-list.component.html',
   styleUrl: './work-list.component.css',
 })
