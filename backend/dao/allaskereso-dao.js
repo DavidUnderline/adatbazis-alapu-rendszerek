@@ -69,7 +69,7 @@ class AllaskeresoDao {
             connection = await getConnection();
             const fields = [];
             const binds = { email: allaskereso.email };
-            if (allaskereso.neve != " ") {
+            if (allaskereso.neve && allaskereso.neve != '') {
                 fields.push('neve = :neve');
                 binds.neve = allaskereso.neve;
             }

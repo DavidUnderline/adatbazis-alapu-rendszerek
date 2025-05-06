@@ -1,0 +1,79 @@
+const express = require('express');
+const router = express.Router();
+const teruletDao = require('../dao/terulet-dao');
+
+// Terület beszúrása
+router.post('/api/insert', async (req, res) => {
+    const terulet = req.body;
+    try {
+        const success = await teruletDao.insertTerulet(terulet);
+        if (!success) {
+            res.json({ success: false, message: 'Terület beszúrása sikertelen' });
+            return;
+        }
+        res.json({ success: true, message: 'Terület sikeresen beszúrva' });
+    } catch (err) {
+        res.status(500).json({ error: 'Hiba a terület beszúrása során' });
+    }
+});
+
+// Terület lekérdezése ID alapján
+router.post('/api/getById', async (req, res) => {
+    const { id } = req.body;
+    try {
+        const terulet = await teruletDao.getTeruletById(id);
+        if (!terulet) {
+            res.json({ success: false, message: 'Terület nem található' });
+            return;
+        }
+        res.json({ success: true, terulet });
+    } catch (err) {
+        res.status(500).json({ error: 'Hiba a terület lekérdezése során' });
+    }
+});
+
+// Összes terület lekérdezése
+router.get('/api/getAll', async (req, res) => {
+    try {
+        const teruletek = await teruletDao.getAllTerulet();
+        if (teruletek.length === 0) {
+            res.json({ success: false, message: 'Nincs terület az adatbázisban' });
+            return;
+        }
+        res.json({ success: true, teruletek });
+    } catch (err) {
+        res.status(500).json({ error: 'Hiba a területek lekérdezése során' });
+    }
+});
+
+// Terület frissítése
+router.post('/api/update', async (req, res) => {
+    const terulet = req.body;
+    try {
+        const success = await teruletDao.updateTerulet(terulet);
+        if (!success) {
+            res.json({ success: false, message: 'Terület frissítése sikertelen' });
+            return;
+        }
+        res.json({ success: true, message: 'Terület sikeresen frissítve' });
+    } catch (err) {
+        res.status(500).json({ error: 'Hiba a terület frissítése során' });
+    }
+});
+
+// Terület törlése
+router.post('/api/delete', async (req, res) => {
+    const { id } = req.body;
+    try {
+        const success = await teruletDao.deleteTerulet(id);
+        if (!success) {
+            res.json({ success: false, message: 'Terület törlése sikertelen' });
+            return;
+        }
+        res.json({ success: true, message: 'Terület sikeresen törölve' });
+    } catch (err) {
+        res.status(500).json({ error: 'Hiba a terület törlése során' });
+    }
+});
+
+module.exports = router; 

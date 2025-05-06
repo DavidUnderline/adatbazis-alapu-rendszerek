@@ -77,7 +77,8 @@ class CegDao {
             // return;
 
             const result = await connection.execute(query, binds, { autoCommit: true });
-            // console.log("--- RESULT: ", result);
+            console.log("asdasdasdasdasdasd")
+            console.log("--- RESULT: ", result);
 
             return result.rowsAffected === 1;
 

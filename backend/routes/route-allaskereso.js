@@ -27,13 +27,17 @@ router.post('/api/update', async (req, res) => {
   const data = req.body.user_data;
   const allaskereso = { email: data.email };
   
-  if (data.nev) allaskereso.neve = data.nev;
+  console.log("data: ", data);
+
+  if (data.nev && data.nev.trim() != '') allaskereso.neve = data.nev;
+  console.log("data.nev:", data.nev)
+  console.log("allaskereso.nev:", allaskereso.nev)
   if (data.originalemail !== data.email) {
     allaskereso.originalemail = data.originalemail;
     allaskereso.jelszo2 = data.jelszo;
   }
-  if (data.vegzettseg) allaskereso.vegzettseg = data.vegzettseg;
-  if (data.jelszo) allaskereso.jelszo = data.jelszo;
+  if (data.vegzettseg && data.vegzettseg.trim() != '') allaskereso.vegzettseg = data.vegzettseg;
+  if (data.jelszo && data.jelszo.trim() != '') allaskereso.jelszo = data.jelszo;
 
   try {
     // if (!updates.taxid) {
