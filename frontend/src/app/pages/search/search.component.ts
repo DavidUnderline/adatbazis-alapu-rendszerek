@@ -7,6 +7,9 @@ import { Router } from '@angular/router';
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
+import { LutCompanyNamePipe } from '../../pipes/lut-company-name.pipe';
+import { LutLocationsPipe } from '../../pipes/lut-locations.pipe';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
@@ -16,6 +19,9 @@ import { HttpClientModule } from '@angular/common/http';
     SearchFilterDialogComponent,
     DisplayDirective,
     HttpClientModule,
+    LutCompanyNamePipe,
+    LutLocationsPipe,
+    CommonModule
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css',

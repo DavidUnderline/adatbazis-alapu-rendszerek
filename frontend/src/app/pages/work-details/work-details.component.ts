@@ -7,11 +7,18 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ErrorMsgComponent } from '../../shared/error-msg/error-msg.component';
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { JobsService } from '../../services/jobs.service';
+import { LutLocationsPipe } from '../../pipes/lut-locations.pipe';
+import { CommonModule } from '@angular/common';
+import { LutCompanyNamePipe } from '../../pipes/lut-company-name.pipe';
+
 
 @Component({
   selector: 'app-work-details',
   imports: [
     HttpClientModule,
+    LutLocationsPipe,
+    LutCompanyNamePipe,
+    CommonModule
   ],
   templateUrl: './work-details.component.html',
   styleUrl: './work-details.component.css',

@@ -33,8 +33,11 @@
             ><!--TODO Szét kell szedni-->
           </h1>
           <h2 class="text-dark_blue-500 font-medium text-2xl">
-            
+            {{work.ceg_adoazonosito | lutCompanyName | async}}
             <!--TODO Pipeot írni ehez a szépséghez-->
+          </h2>
+          <h2 class="text-dark_blue-500 font-medium text-2xl">
+            {{ work.terulet_id | lutLocations | async}}
           </h2>
           <h3 class="text-dark_red-500 font-medium">
             {{ "Br. " + work.ber + " Ft" }}
