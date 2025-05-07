@@ -10,7 +10,7 @@ import { response } from 'express';
 
 @Component({
   selector: 'app-allaskereso-jobs',
-  imports: [MatIcon, LutLocationsPipe, CommonModule, LutCompanyNamePipe, HttpClientModule],
+  imports: [ LutLocationsPipe, CommonModule, LutCompanyNamePipe, HttpClientModule],
   templateUrl: './allaskereso-jobs.component.html',
   styleUrl: './allaskereso-jobs.component.css'
 })

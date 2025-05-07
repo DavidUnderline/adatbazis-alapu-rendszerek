@@ -14,10 +14,10 @@ import { catchError, map, of } from 'rxjs';
 })
 export class ApplicantsDialogComponent implements OnChanges {
 
-  jelentkezok?: {
+  jelentkezok: {
     data: Allaskereso,
     cvk: CV[]
-  }[];
+  }[] = [];
   @Output() show = new EventEmitter<boolean>();
   @Input() job_id: number | undefined;
   constructor(private http: HttpClient, ) {}

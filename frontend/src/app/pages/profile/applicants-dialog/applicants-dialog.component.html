@@ -6,7 +6,7 @@
     </button>
     <h1 class="text-center text-dark_blue-500 font-medium text-2xl pb-4">Jelentkezők:</h1>
     @if (jelentkezok){
-      <h1 class="text-dark-gray-500 font-medium text-center">Jelentkezők száma: <span class="text-dark_red-500">{{` ${jelentkezok?.length}`}}</span></h1>
+      <h1 class="text-dark-gray-500 font-medium text-center">Jelentkezők száma: <span class="text-dark_red-500">{{` ${jelentkezok.length}`}}</span></h1>
       <div class="grid grid-cols-2 gap-4">
         
       @for (jelentkezo of jelentkezok; track $index) {
