@@ -98,9 +98,10 @@ class AllaskeresoDao {
             // console.log("--- QUERY: \n", query);
             // console.log("--- BINDS: \n");
             // console.table(binds);
-            // return;
+            // return;        
 
-            const result = await connection.execute(query, binds);
+            const result = await connection.execute(query, binds, { autoCommit: false });
+
             await connection.execute('COMMIT');
             
             return {

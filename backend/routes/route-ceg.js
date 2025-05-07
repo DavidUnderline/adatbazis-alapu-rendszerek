@@ -35,13 +35,13 @@ router.post('/api/update', async (req, res) => {
 
 //   console.log(req.body.data);
 
-  if(req.body.data.adoazonosito) 
+  if(req.body.data.adoazonosito && req.body.data.adoazonosito.trim() != '')
     ceg.adoazonosito = req.body.data.adoazonosito;
 
-  if(req.body.data.nev) 
+  if(req.body.data.nev && req.body.data.nev.trim() != '') 
     ceg.nev = req.body.data.nev;
 
-  if(req.body.data.jelszo) 
+  if(req.body.data.jelszo)
     ceg.jelszo = req.body.data.jelszo;
 
   if(req.body.data.originalemail)
