@@ -216,7 +216,7 @@ EXCEPTION
 END;
 /
 
-CREATE TABLE jelentkezo(
+CREATE TABLE jelentkezo( --Ez is csak egy kapcsolotabla
   allaskereso_email VARCHAR(255) NOT NULL,
   allaslehetoseg_id NUMBER NOT NULL,
 
@@ -225,6 +225,28 @@ CREATE TABLE jelentkezo(
 );
 
 ---------------------------------------- TRIGGEREK ----------------------------------------
+-------------------- jelentkezo (allaslehetoseg_allaskereso_kapcsolat) tabla frissito trigger
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TRIGGER update_child_email';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE OR REPLACE TRIGGER update_child_email
+BEFORE UPDATE OF email ON allaskereso
+FOR EACH ROW
+BEGIN
+    IF :NEW.email <> :OLD.email THEN
+    UPDATE jelentkezo
+    SET allaskereso_email = :NEW.email
+    WHERE allaskereso_email = :OLD.email;
+    END IF;
+END;
+/
 
 -------------------- cegertekeles atlag frissito trigger
 BEGIN
