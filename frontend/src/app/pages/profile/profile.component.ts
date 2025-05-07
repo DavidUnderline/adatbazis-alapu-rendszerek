@@ -24,6 +24,7 @@ import { Moderator } from '../../shared/Model/Moderator';
 import { AdminFormComponent } from "./admin-form/admin-form.component";
 import { AllaskeresoJobsComponent } from './allaskereso-jobs/allaskereso-jobs.component';
 import { CommonModule } from '@angular/common';
+import { ApplicantsDialogComponent } from './applicants-dialog/applicants-dialog.component';
 
 @Component({
   selector: 'app-profile',
@@ -42,6 +43,7 @@ import { CommonModule } from '@angular/common';
     AllaskeresoDatasComponent,
     AdminFormComponent,
     AllaskeresoJobsComponent,
+    ApplicantsDialogComponent
 ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
@@ -59,6 +61,9 @@ export class ProfileComponent {
   error_msg: string = '';
   show_success = false;
   success_msg = '';
+
+  show_applicant = false;
+  applicant_job_id: number = 0;
 
   constructor(private http: HttpClient) {
     switch (this.login_service.getRole()) {
@@ -84,7 +89,7 @@ export class ProfileComponent {
   loadCeg() {
     this.http
       .post<any>('http://localhost:3000/ceg/api/get', {
-        email: this.user_email,
+        email: this.user_email
       })
       .subscribe(
         (response) => {

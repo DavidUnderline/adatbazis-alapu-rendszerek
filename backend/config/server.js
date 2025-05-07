@@ -21,6 +21,7 @@ const kategoria = require('../routes/route-kategoria')
 const kulcsszo = require('../routes/route-kulcsszo')
 const admin = require('../routes/route-admin')
 const terulet = require('../routes/route-terulet');
+const jelentkezo = require('../routes/route-jelentkezo');
 
 app.use('/auth', authRoute);
 app.use('/allaskereso', allaskereso);
@@ -31,3 +32,4 @@ app.use('/kategoria', kategoria);
 app.use('/kulcsszo', kulcsszo);
 app.use('/admin', admin);
 app.use('/terulet', terulet);
+app.use('/jelentkezo', jelentkezo)

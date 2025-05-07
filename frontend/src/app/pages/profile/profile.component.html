@@ -1,7 +1,10 @@
 <div
   class="bg-white-50 bg-white-500 dark:bg-dark_blue-500 flex flex-col items-center justify-center gap-8 p-56 pt-32"
 >
-  <!-- @if ( ) { -->
+@if (login_service.getRole() === 'ceg') {
+  <app-applicants-dialog (show)="show_applicant = $event" [appDisplay]="show_applicant" [job_id]="applicant_job_id"></app-applicants-dialog>
+}
+
   <div
     class="bg-white-500 p-8 rounded-2xl grid grid-col-2 gap-x-4 gap-y-8 w-[80%]"
   >
@@ -9,7 +12,7 @@
       @case ("ceg") {
         <app-ceg-datas [ceg_data]="user_ceg"></app-ceg-datas>
         <app-ceg-form (valid_form)="modifyCeg($event)"></app-ceg-form>
-        <app-work-list class="col-span-2"></app-work-list>
+        <app-work-list class="col-span-2" (show_applicant)="show_applicant = $event.show" (show_applicant)="applicant_job_id = $event.job_id"></app-work-list>
       }
 
       @case ("allaskereso") {
@@ -23,9 +26,9 @@
       }
 
       @case ("admin") {
-        <app-admin-datas [admin_data]="user_moderator" class="w-[40%] outline-1"></app-admin-datas>
+        <app-admin-datas [admin_data]="user_moderator" class="w-[40%] outline-1 col-span-1"></app-admin-datas>
         <app-admin-form 
-        class="w-[40%] outline-1" 
+        class="w-[40%] outline-1 col-span-1" 
         (error)="handleMsg($event)"
         (valid_admin_form)="modifyAdmin($event)"
         ></app-admin-form>
@@ -45,5 +48,5 @@
     [success_msg]="success_msg"
     [appDisplay]="show_success"
   ></app-success-msg>
-  <!-- } -->
+  
 </div>

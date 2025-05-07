@@ -29,7 +29,7 @@ export class AllaskeresoJobsComponent {
   
   load(){
     this.jobs = [];
-    this.job_service.clearjobs()
+    // this.job_service.clearjobs()
     this.job_service.getjobs().map((work: any ) => {
         
       console.table(work);

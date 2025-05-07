@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Allas } from '../../../shared/Model/Allas';
 import { MatIcon } from '@angular/material/icon';
 // import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -15,11 +15,19 @@ import { DisplayDirective } from '../../../shared/directives/display.directive';
 })
 export class WorkListComponent {
   job_service = inject(JobsService);
-  allasok: Allas[] = [];
+  allasok: (Allas & {id: number})[] = [];
+
+  @Output() show_applicant = new EventEmitter<{
+    show: boolean,
+    job_id: number
+  }>();
+
+  
   constructor() {
     console.log('job_service:', this.job_service.getjobs());
     this.job_service.getjobs().map((work: any) => {
-      let temp_allas: Allas = {
+      console.table(work);
+      let temp_allas: Allas & {id: number} = {
         cim: work.CIM,
         leiras: work.LEIRAS,
         kovetelmenyek: work.KOVETELMENYEK,
@@ -30,8 +38,16 @@ export class WorkListComponent {
         ceg_adoazonosito: work.ADOAZONOSITO,
         kulcsszo_neve: "string",
         kategoria_neve: "string",
+        id: work.ID
       };
       this.allasok.push(temp_allas);
+    });
+  }
+
+  open_applicants(job_id: number){
+    this.show_applicant.emit({
+      show: true,
+      job_id: job_id
     });
   }
 }
