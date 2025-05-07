@@ -164,6 +164,27 @@ class AllaskeresoDao {
     }
     
 
+    async unsubscribeJob(email, job_id){
+        console.log("---[ unsubscribeJob ]---")
+        console.table({email: email, job_id: job_id});
+        let connection
+        const query = 'DELETE FROM JELENTKEZO '+
+                            'WHERE '+
+                            'ALLASKERESO_EMAIL = :email '+
+                            'AND '+
+                            'ALLASLEHETOSEG_ID = :job_id';
+        console.log(query);
+        try{
+            connection = await getConnection();
+            const res = await connection.execute(query, {email, job_id}, {autoCommit: true});
+            console.table(res);
+            return res.rowsAffected === 1;
+        }catch(err){
+            console.error(err);
+            throw err;
+        }
+    }
+
     // Álláskereső törlése (kapcsolatok automatikusan törlődnek CASCADE miatt)
     // async deleteAllaskereso(email) {
     //     let connection;

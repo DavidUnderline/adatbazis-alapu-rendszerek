@@ -18,7 +18,8 @@
           (valid_form)="modifyAllaskereso($event)"
           (error)="handleMsg($event)"
         ></app-allaskereso-form>
-        <app-cv-form class="col-span-2" (msg)="handleMsg($event)"></app-cv-form>    
+        <app-cv-form class="col-span-2" (msg)="handleMsg($event)"></app-cv-form>
+        <app-allaskereso-jobs class="col-span-2" (msg)="handleMsg($event)"></app-allaskereso-jobs>
       }
 
       @case ("admin") {

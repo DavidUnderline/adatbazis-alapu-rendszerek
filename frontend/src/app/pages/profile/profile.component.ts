@@ -22,6 +22,9 @@ import { CegDatasComponent } from "./ceg-datas/ceg-datas.component";
 import { AllaskeresoDatasComponent } from "./allaskereso-datas/allaskereso-datas.component";
 import { Moderator } from '../../shared/Model/Moderator';
 import { AdminFormComponent } from "./admin-form/admin-form.component";
+import { AllaskeresoJobsComponent } from './allaskereso-jobs/allaskereso-jobs.component';
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-profile',
   imports: [
@@ -37,7 +40,8 @@ import { AdminFormComponent } from "./admin-form/admin-form.component";
     AdminDatasComponent,
     CegDatasComponent,
     AllaskeresoDatasComponent,
-    AdminFormComponent
+    AdminFormComponent,
+    AllaskeresoJobsComponent,
 ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',

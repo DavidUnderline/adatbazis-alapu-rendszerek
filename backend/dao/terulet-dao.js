@@ -103,10 +103,12 @@ class TeruletDao {
     }
 
     async getVarosById(id){
-        const query = 'select varos from terulet where ID =: id';
+        const query = 'SELECT VAROS FROM TERULET WHERE ID =: id';
         
         try{
             const city = await executeQuery(query, {id: id});
+            // console.log("\t\tgetVarosById: ", city[0].VAROS);
+            
             return city[0].VAROS;
         }catch(err){
             console.error(err);

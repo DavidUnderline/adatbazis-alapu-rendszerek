@@ -93,6 +93,23 @@ router.post('/api/get', async (req, res) => {
       res.json({ error: 'Hiba a jelentkezés során' });
     }
   });
+
+  router.post('/api/unsubscribeJob', async (req, res) => {
+    const {email, job_id} = req.body;
+    console.log({email, job_id});
+
+    try{
+      const success = await allaskeresoDao.unsubscribeJob(email, job_id);
+      console.log(success);
+      if(!success){
+        res.json({ success: success, message: "Nem sikerült leiratkozni a munkáról." });
+        return;
+      }
+      res.json({success: success, message: "Sikeresen leiratkoztál a munkáról!"});
+    }catch(err){
+      res.json({success: false, message: "Hiba a leiratkozás során: " + err.error});
+    }
+  })
   
 // // Álláskereső törlése (admin vagy saját maga)
 // router.delete('/:email', userAuth(['ROLE_USER', 'ROLE_ADMIN']), async (req, res) => {

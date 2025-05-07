@@ -1,0 +1,14 @@
+	C(reate)   	U(pdate)	 D(elete)
+terulet 	x	x	x
+ceg C 	c	x	x
+cv	c	!	d
+allaskereso	c	u	x
+Allaskereso es CV kapcsolat	c	!	d
+cegertekeles	x	x	x
+kategoria	x	!	x
+kulcsszo	x	x	x
+allaslehetoseg	c	x	d
+allaslehetoseg es kulcsszo kapcsolat 	x	x	x
+allaslehetoseg es kategoria kapcsolat	x	x	x
+moderator	x	x	x
+jelentkezo	c	!	x

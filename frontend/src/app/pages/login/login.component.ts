@@ -57,7 +57,7 @@ handle_login(login: { email: string; password: string; }) {
       if (response.success) {
           this.loginservice.setLoginStatus(true);
           localStorage.setItem('username', response.email); //! kisbetű, allCapssel nem működik gyerekik
-          this.jobservice.setjobs(response.jobs);
+          this.jobservice.setjobs(response.jobs); //TODO kiszervezni telljesen jobservicebe.
           this.router.navigate(['/app']);
 
         } else {
