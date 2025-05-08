@@ -42,8 +42,8 @@ router.post('/api/login', async (req, res) => {
 
             res.json({ 
                 success : true, 
-                email: allaskereso.user[0].EMAIL, 
-                jobs: allaskereso.jobs
+                email: allaskereso[0].EMAIL,
+                adoid: allaskereso[0].ADOAZONOSITO
             });
 
         } catch (err) {

@@ -113,7 +113,6 @@ export class PublishComponent implements OnInit {
         console.table(response);
           if (response.success) {
             this.successHandler(response.message);
-            this.jobservice.setjobs([allaslehetoseg]);
           } else {
             this.errorHandler(response.message);
           }

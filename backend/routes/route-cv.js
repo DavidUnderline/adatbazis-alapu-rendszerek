@@ -27,6 +27,8 @@ router.post('/api/CVinsert', async (req, res) => {
 
 // CV link lekérdezése email alapján
 router.post('/api/CVget', async (req, res) => {
+  console.log("--- inside CVget ---");
+
     try {
         const cv = req.body;
         const cv_link = await cvDao.getCv(cv.email);

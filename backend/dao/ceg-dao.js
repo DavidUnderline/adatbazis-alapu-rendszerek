@@ -105,6 +105,8 @@ class CegDao {
     }
 
     async getCegByAdo(adoazonosito){
+        // console.log(adoazonosito)
+        // return;
         let connection;
         try{
             connection = await getConnection();
@@ -113,7 +115,7 @@ class CegDao {
 
             return name.rows[0][0];
         }catch(err){
-            console.error("Hiba a ceg nevének lekérdezése folyamán: ",err);
+            console.log("\n\n--- Nincs a munkához rendelve cég (adóazonosító) ---\n\n", err);
         }
     }
 }

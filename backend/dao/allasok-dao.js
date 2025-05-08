@@ -1,7 +1,7 @@
 const { executeQuery, getConnection } = require('../config/db');
 // const { all } = require('../routes/route-allaskereso');
 
-class AllaslehetosegDao{
+class Allasok{
     async getAllasok(data){
         const is_accapted = 'true';
 
@@ -56,7 +56,7 @@ class AllaslehetosegDao{
 
         const result = await executeQuery(query, binds);   
         // console.log(result);
-        
+
         return result.length > 0 ? result : false;
     }
 
@@ -89,62 +89,11 @@ class AllaslehetosegDao{
         return await executeQuery(insert_query, insert_binds);
     }
 
-    async getPendingAllasok(){
-        let connection;
-        let query = 'SELECT * FROM ALLASLEHETOSEG WHERE IS_ACCEPTED = FALSE';
-        try{
-            connection = await getConnection();
-            const jobs = await connection.execute(query);
-            return jobs;
-        }catch(err){
-            console.error(err);
-            throw err;
-        }
-    }
-
-    async deletePendingAllasokById(id){
-        let connection;
-        try {
-            connection = await getConnection();
-            const result = await connection.execute(
-                `DELETE FROM allaslehetoseg WHERE id = :id`,
-                { id },
-                { autoCommit: true }
-            );
-            return result.rowsAffected === 1;
-        } catch (err) {
-            console.error('Error deleting Allaslehetoseg:', err);
-            throw err;
-        } finally {
-            if (connection) await connection.close();
-        }
-    }
-
-    async acceptPendingAllasokById(id){
-        let connection;
-        try {
-            connection = await getConnection();
-            const result = await connection.execute(
-                `UPDATE allaslehetoseg SET is_accepted = true WHERE id = :id`,
-                { id },
-                { autoCommit: true }
-            );
-            return result.rowsAffected === 1;
-        } catch (err) {
-            console.error('Error deleting Allaslehetoseg:', err);
-            throw err;
-        } finally {
-            if (connection) await connection.close();
-        }
-    }
-
     async getUserJobs(data){
         console.log("inside allasok dao getUserJobs");
-        console.table(data);
-        // return;
-    
         let query = "";
-        if(data.tipo === "allaskereso"){
+
+        if(tipo === "allaskereso"){
             query = "select * from allaslehetoseg a "+
             "inner join jelentkezo j on j.allaslehetoseg_id = a.id "+
             "where j.allaskereso_email = :email";
@@ -155,11 +104,9 @@ class AllaslehetosegDao{
 
         // console.table(query);
         // console.table({email: email, password: password, tipo: tipo});
-        const jobs = await executeQuery(query, data.tipo === 'ceg' ? { adoazonosito: data.adoazonosito } : {email: data.email});
-        // console.table(jobs);
-
-        return jobs;
+        const jobs = await executeQuery(query, tipo === 'ceg' ? {adoazonosito: user ? user[0].ADOAZONOSITO : null} : {email: email});
+        console.table(jobs);
     }
 };
 
-module.exports = new AllaslehetosegDao();
+module.exports = new Allasok();

@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { JobsService } from '../../../services/jobs.service';
 import { LutLocationsPipe } from '../../../pipes/lut-locations.pipe';
 import { DisplayDirective } from '../../../shared/directives/display.directive';
+import { of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-work-list',
@@ -24,23 +26,50 @@ export class WorkListComponent {
 
   
   constructor() {
-    console.log('job_service:', this.job_service.getjobs());
-    this.job_service.getjobs().map((work: any) => {
-      console.table(work);
-      let temp_allas: Allas & {id: number} = {
-        cim: work.CIM,
-        leiras: work.LEIRAS,
-        kovetelmenyek: work.KOVETELMENYEK,
-        mikor: work.MIKOR,
-        ber: work.BER,
-        is_accepted: work.IS_ACCEPTED,
-        terulet_id: work.TERULET_ID,
-        ceg_adoazonosito: work.ADOAZONOSITO,
-        kulcsszo_neve: "string",
-        kategoria_neve: "string",
-        id: work.ID
-      };
-      this.allasok.push(temp_allas);
+    // console.table(localStorage);
+    const data = {
+      tipo: "ceg",
+      adoazonosito: localStorage.getItem('adoazonosito')
+    }
+    // console.log(data);
+    // return;
+
+    this.job_service.getjobs(data).pipe(
+      map((response: any) => {
+        // any[] = []
+        const allasArray: (Allas & { id: number })[] = [];
+
+        if (response && response.jobs) {
+          response.jobs.forEach((work: any) => {
+            allasArray.push({
+              id: work.ID,
+              cim: work.CIM,
+              leiras: work.LEIRAS,
+              kovetelmenyek: work.KOVETELMENYEK,
+              mikor: work.MIKOR,
+              ber: work.BER,
+              is_accepted: work.IS_ACCEPTED,
+              terulet_id: work.TERULET_ID,
+              ceg_adoazonosito: work.ADOAZONOSITO,
+              kulcsszo_neve: "string",
+              kategoria_neve: "string",
+            });
+          });
+          return allasArray;
+        }
+
+        return [];
+      }), // map
+
+      catchError(error => {
+        console.error(error);
+        return of([]);
+      })
+    ) // pipe
+
+    .subscribe(allasok => {
+      this.allasok = allasok;
+      // console.log(this.allasok);
     });
   }
 
