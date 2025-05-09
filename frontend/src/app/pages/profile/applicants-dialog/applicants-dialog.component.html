@@ -8,7 +8,7 @@
     >
       <mat-icon>close</mat-icon>
     </button>
-    <h1 class="text-center text-dark_blue-500 font-medium text-2xl pb-4">
+    <h1 class="text-center text-dark_blue-500 font-medium text-2xl">
       Jelentkezők:
     </h1>
     @if (jelentkezok){
@@ -16,7 +16,7 @@
       Jelentkezők száma:
       <span class="text-dark_red-500">{{` ${jelentkezok.length}`}}</span>
     </h1>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-2 gap-4 mt-4">
       @for (jelentkezo of jelentkezok; track $index) {
       <div
         class="text-base border-2 border-dark_blue-500 rounded-2xl p-4 flex flex-col gap-4 h-96 overflow-y-scroll"
