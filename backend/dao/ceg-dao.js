@@ -90,12 +90,14 @@ class CegDao {
     
 
     async getCegByEmail(email){
+        console.log(email);
+
         let connection;
         try{
             connection = await getConnection();
             const query = `SELECT ADOAZONOSITO, NEVE, ERTEKELES, TERULET_ID FROM CEG
-            WHERE EMAIL =: email`;
-            const result = await connection.execute(query, [email]);
+            WHERE EMAIL = :email`;
+            const result = await connection.execute(query, {email: email});
     
             return result.rows.length === 1 ? result.rows[0] : null;
         }catch(err){

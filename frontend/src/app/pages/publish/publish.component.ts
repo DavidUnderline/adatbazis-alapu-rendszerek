@@ -9,7 +9,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AddCityDialogComponent } from "./add-city-dialog/add-city-dialog.component";
 import { JobsService } from '../../services/jobs.service';
 
-
 @Component({
   selector: 'app-publish',
   imports: [
@@ -48,27 +47,24 @@ export class PublishComponent implements OnInit {
   jobservice = inject(JobsService);
 
   ngOnInit(): void {
-    // console.log("cities: ", localStorage.getItem("cities"));
-    // localStorage.removeItem("cities");
-
-    if(localStorage.getItem("cities") == null){
-      this.http.get<any>('http://localhost:3000/terulet/api/getcities')
-      .subscribe((response) => {
-        console.table(response);
-        if(response.success){
-          this.cities = response.cities;
-          localStorage.setItem("cities", JSON.stringify(response.cities));
-          // this.successHandler(response.message);
-          // console.log(this.cities)
-        
-        } else{
-          this.errorHandler(response.message);
-        }
-      });
-    } else{
-      this.cities = JSON.parse(localStorage.getItem("cities")!);
-    }
-  }
+    // console.log("get cities");
+    localStorage.removeItem("cities");
+    
+    this.http.get<any>('http://localhost:3000/terulet/api/getcities')
+    .subscribe((response) => {
+      // console.log("--- get cities ---");
+      // console.table(response);
+      if(response.success){
+        this.cities = response.cities;
+        localStorage.setItem("cities", JSON.stringify(response.cities));
+        // this.successHandler(response.message);
+        // console.log(this.cities)
+      
+      } else{
+        this.errorHandler(response.message);
+      }
+    });
+}
 
   submit() {
     this.show_error = false;
@@ -90,8 +86,6 @@ export class PublishComponent implements OnInit {
           return;
       }
 
-
-      //TODO feltölteni databasebe.
       const allaslehetoseg = {
         cim: form.cim,
         kovetelmenyek: form.kovetelmenyek,
