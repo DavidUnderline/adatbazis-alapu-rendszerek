@@ -9,6 +9,8 @@ import { LutCompanyNamePipe } from '../../../pipes/lut-company-name.pipe';
 import { ErrorMsgComponent } from '../../../shared/error-msg/error-msg.component';
 import { SuccessMsgComponent } from '../../../shared/success-msg/success-msg.component';
 import { DisplayDirective } from '../../../shared/directives/display.directive';
+import { AddAdminFormComponent } from "./add-admin-form/add-admin-form.component";
+import { DeleteUserFormComponent } from "./delete-user-form/delete-user-form.component";
 
 @Component({
   selector: 'app-main-page',
@@ -21,7 +23,9 @@ import { DisplayDirective } from '../../../shared/directives/display.directive';
     ErrorMsgComponent,
     SuccessMsgComponent,
     DisplayDirective,
-  ],
+    AddAdminFormComponent,
+    DeleteUserFormComponent
+],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.css',
 })
