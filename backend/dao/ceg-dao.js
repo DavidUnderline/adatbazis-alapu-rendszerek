@@ -114,8 +114,10 @@ class CegDao {
             connection = await getConnection();
             const query = 'SELECT neve FROM CEG WHERE ADOAZONOSITO = :adoazonosito';
             const name = await connection.execute(query, {adoazonosito: adoazonosito});
-
-            return name.rows[0][0];
+            if (!name) {
+                return res.status(404).json({ message: "Nincs találat" });
+            }
+            return name.rows[0];
         }catch(err){
             console.log("\n\n--- Nincs a munkához rendelve cég (adóazonosító) ---\n\n", err);
         }

@@ -90,9 +90,9 @@ router.post('/api/getCegByAdo', async (req, res) => {
   try{
     const nev = await cegDao.getCegByAdo(adoazonosito);
     if(!nev){
-      res.status(401).json({})
+      return res.status(401).json({})
     }
-    res.json({success: true, name: nev});
+    return res.json({success: true, name: nev});
   }catch(err){
     console.error(err);
     throw err;
