@@ -34,7 +34,7 @@ router.post('/api/login', async (req, res) => {
     }
     else{
         try {
-            const allaskereso = await allaskeresoDao.user(email, password, tipo);
+            const allaskereso = await allaskeresoDao.user(email, password);
 
             if (!allaskereso) {
                 return res.json({ success : false, error: 'Érvénytelen email vagy jelszó' });

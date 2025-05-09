@@ -3,17 +3,11 @@ const { executeQuery, getConnection } = require('../config/db');
 
 class AllaskeresoDao {
     // Álláskereső lekérdezése email alapján jelszó nélkül (bejelentkezéshez)
-    async user(email, password, tipo) {
+    async user(email, password) {
         // console.log("--- inside dao - user ---");
         // console.table({email: email, password: password, tipo: tipo});
-        let query = "";
-        if(tipo === "allaskereso"){
-            query = "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
+        const query = "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
 
-            
-        } else{
-            query = "SELECT email, adoazonosito FROM ceg WHERE email = :email AND jelszo = :password";
-       } 
         // console.table(query);
         // console.table({email: email, password: password, tipo: tipo});
         const user = await executeQuery(query,{email: email, password: password});
