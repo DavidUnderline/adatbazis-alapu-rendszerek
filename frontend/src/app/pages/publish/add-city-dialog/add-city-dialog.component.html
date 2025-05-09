@@ -29,4 +29,13 @@
       <input type="submit" (click)="apply()" value="Hozzáad" class="col-span-2 focus:outline-0 hover:cursor-pointer w-fit ml-auto mr-auto bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl">
     </form>
   </div>
+
+  <app-error-msg
+    [error_msg]="error_msg"
+    [appDisplay]="showError"
+  ></app-error-msg>
+  <app-success-msg
+    [success_msg]="success_msg"
+    [appDisplay]="showSuccess"
+  ></app-success-msg>
 </div>
