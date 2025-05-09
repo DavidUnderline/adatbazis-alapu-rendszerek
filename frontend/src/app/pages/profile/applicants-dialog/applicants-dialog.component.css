@@ -1,0 +1,15 @@
+::-webkit-scrollbar {
+  width: 10px;
+  background: transparent; /* scrollbar háttér */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.5); /* félig áttetsző szürke */
+  border-radius: 10px; /* lekerekített fej */
+  border: 2px solid transparent; /* hogy ne tapadjon a track-hez */
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}

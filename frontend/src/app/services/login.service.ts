@@ -43,7 +43,6 @@ export class LoginService {
   getRole(): "allaskereso" | "ceg" | "admin" {
     const role = localStorage.getItem(this._role)?.replaceAll("\"", "") as "allaskereso" | "ceg" | "admin";
 
-
     return role;
   }
 
