@@ -5,6 +5,12 @@ const dbConfig = {
     connectString: "localhost/FREEPDB1",
 };
 
+// const dbConfig = {
+//     user: "system",
+//     password: "123",
+//     connectString: "localhost:1521/FREE"
+// };
+
 async function executeQuery(sql, params = {}) {
     let connection;
 
