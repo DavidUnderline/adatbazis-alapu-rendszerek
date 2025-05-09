@@ -9,6 +9,8 @@ import { LutCompanyNamePipe } from '../../../pipes/lut-company-name.pipe';
 import { ErrorMsgComponent } from '../../../shared/error-msg/error-msg.component';
 import { SuccessMsgComponent } from '../../../shared/success-msg/success-msg.component';
 import { DisplayDirective } from '../../../shared/directives/display.directive';
+import { AddAdminFormComponent } from "./add-admin-form/add-admin-form.component";
+import { DeleteUserFormComponent } from "./delete-user-form/delete-user-form.component";
 
 @Component({
   selector: 'app-main-page',
@@ -21,7 +23,9 @@ import { DisplayDirective } from '../../../shared/directives/display.directive';
     ErrorMsgComponent,
     SuccessMsgComponent,
     DisplayDirective,
-  ],
+    AddAdminFormComponent,
+    DeleteUserFormComponent
+],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.css',
 })
@@ -108,12 +112,22 @@ export class MainPageComponent implements OnInit {
     )
   }
 
-  errorHandler(message: string) {
+  msgHandler(message: {success: boolean, message: string}){
+    this.show_error = false;
+    this.show_success = false;
+    if(message.success){
+      this.successHandler(message.message)
+    }else{
+      this.errorHandler(message.message)
+    }
+  }
+
+  private errorHandler(message: string) {
     this.show_error = true;
     this.error_msg = message;
   }
 
-  successHandler(message: string) {
+  private successHandler(message: string) {
     this.show_success = true;
     this.success_msg = message;
   }

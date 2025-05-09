@@ -19,7 +19,7 @@ class AdminDao {
     let connection
     try{
       connection = await getConnection();
-      let query = "SELECT email, neve FROM MODERATOR WHERE email =: email";
+      const query = "SELECT email, neve FROM MODERATOR WHERE email =: email";
       const result = await connection.execute(query, {email: email});
       // console.log(result);
       return result.rows;
@@ -28,6 +28,28 @@ class AdminDao {
       throw err;
     }
   }
+
+  async insert(data){
+    console.log("---[ admin-dao.insert ]---")
+    console.log(data)
+    let connection
+    try{
+      connection = await getConnection();
+      const query = 'INSERT INTO moderator (email,neve, jelszo) VALUES (:email, :neve, :jelszo)';
+      let result = await connection.execute(query, {
+        email:data.email,
+        neve:data.name,
+        jelszo:data.password
+      }, {autoCommit: true});
+      return result.rowsAffected == 1;
+    }catch(error){
+      console.error(error);
+      throw error;
+    }
+  }
+
 }
+
+
 
 module.exports = new AdminDao
