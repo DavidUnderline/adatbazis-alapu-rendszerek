@@ -231,7 +231,7 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('Nem létezik nincs semmi: ' || SQLERRM);
         NULL;
 END;
 /
@@ -254,7 +254,7 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('Nem létezik nincs semmi: ' || SQLERRM);
         NULL;
 END;
 /
@@ -277,7 +277,7 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('Nem létezik nincs semmi: ' || SQLERRM);
         NULL;
 END;
 /
@@ -336,48 +336,19 @@ INSERT INTO terulet (orszag, megye, varos) VALUES
 
 ---------- Pelda rekordok ceg tabla
 
-INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles, terulet_id) VALUES
-(35903957804, 'Cég A', 'cega@email.com', 'jelszo123', NULL, NULL), 
-(13907287593, 'Cég B', 'cegb@email.com', 'jelszo456', NULL, NULL),
-(13478097449, 'Cég C', 'cegc@email.com', 'jelszo789', NULL, NULL),
-(40560285869, 'Cég D', 'cegd@email.com', 'jelszo012', NULL, NULL),
-(79613553671, 'Cég E', 'cege@email.com', 'jelszo345', NULL, NULL);
-
 ---------- Pelda rekordok allaskereso tabla
 
-INSERT INTO allaskereso (email, neve, jelszo, utolso_bejelentkezes, vegzettseg, statusz)VALUES 
-('john.doe@example.com', 'John Doe', 'password123', TO_DATE('2023-01-01', 'YYYY-MM-DD'), 'Bachelor', 1),
-('jane.smith@example.com', 'Jane Smith', 'securepass', TO_DATE('2023-02-15', 'YYYY-MM-DD'), 'Master', 0),
-('alice.wonderland@example.com', 'Alice Wonderland', 'alice2023', TO_DATE('2023-03-10', 'YYYY-MM-DD'), 'PhD', 1),
-('bob.builder@example.com', 'Bob Builder', 'buildit', TO_DATE('2023-04-20', 'YYYY-MM-DD'), 'Diploma', 0),
-('charlie.brown@example.com', 'Charlie Brown', 'charlie123', TO_DATE('2023-05-05', 'YYYY-MM-DD'), 'High School', 1);
-
----------- Pelda rekordok cv tabla
-
-INSERT INTO cv (cv_link, allaskereso_email) VALUES
-('http://example.com/cv1', 'john.doe@example.com'),
-('http://example.com/cv2', 'john.doe@example.com'),
-('http://example.com/cv3', 'john.doe@example.com'),
-('http://example.com/cv4', 'alice.wonderland@example.com'),
-('http://example.com/cv5', 'alice.wonderland@example.com');
 
 ---------- Pelda rekordok cegertekeles tabla
-
-INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_email) VALUES
-(DEFAULT, 35903957804, 'john.doe@example.com'),
-(DEFAULT, 13907287593, 'jane.smith@example.com'),
-(DEFAULT, 13478097449, 'alice.wonderland@example.com'),
-(DEFAULT, 40560285869, 'bob.builder@example.com'),
-(DEFAULT, 79613553671, 'charlie.brown@example.com');
 
 ---------- Pelda rekordok allaslehetoseg tabla
 
 INSERT INTO allaslehetoseg (cim, leiras, kovetelmenyek, mikor, ber, is_accepted, terulet_id, ceg_adoazonosito) VALUES
-('Heggesztés', 'Óriási Munkalehetőség Heggesztő úraknak és hölgyeknek egyaránt.', 'Tudjá heggeszeni.', sysdate, 500000, 1, 1, 35903957804),
-('Villanyszerelés', 'Kiváló lehetőség tapasztalt villanyszerelők számára.', 'Villanyszerelői végzettség és tapasztalat.', sysdate, 450000, 1, 2, 13907287593),
-('Programozás', 'Junior programozói pozíció kezdőknek.', 'Alapvető programozási ismeretek.', sysdate, 600000, 0, 3, 13478097449),
-('Építésvezetés', 'Építkezési projektek vezetésére keresünk szakembert.', 'Építészmérnöki diploma és vezetői tapasztalat.', sysdate, 700000, 1, 4, 40560285869),
-('Grafikai tervezés', 'Kreatív grafikusokat keresünk hosszú távra.', 'Grafikai szoftverek ismerete és kreativitás.', sysdate, 550000, 0, 5, 79613553671);
+('Heggesztés', 'Óriási Munkalehetőség Heggesztő úraknak és hölgyeknek egyaránt.', 'Tudjá heggeszeni.', sysdate, 500000, 1, 1, null),
+('Villanyszerelés', 'Kiváló lehetőség tapasztalt villanyszerelők számára.', 'Villanyszerelői végzettség és tapasztalat.', sysdate, 450000, 1, 2, null),
+('Programozás', 'Junior programozói pozíció kezdőknek.', 'Alapvető programozási ismeretek.', sysdate, 600000, 0, 3, null),
+('Építésvezetés', 'Építkezési projektek vezetésére keresünk szakembert.', 'Építészmérnöki diploma és vezetői tapasztalat.', sysdate, 700000, 1, 4, null),
+('Grafikai tervezés', 'Kreatív grafikusokat keresünk hosszú távra.', 'Grafikai szoftverek ismerete és kreativitás.', sysdate, 550000, 0, 5, null);
 
 ---------- Pelda rekordok kategoria tabla
 
@@ -406,22 +377,3 @@ INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve)
 (4, 'Üzlet kulcsszo'),
 (5, 'Programozás kulcsszo'), -- Grafikai allashoz ket kulcsszo
 (5, 'Művészet kulcsszo');
-
----------- Pelda rekordok moderator tabla
-
-INSERT INTO moderator VALUES
-('examolemoderator1@moderator.com', 'mod_1', 'kiscica1'),
-('examolemoderator2@moderator.com', 'mod_2', 'kiscica2'),
-('examolemoderator3@moderator.com', 'mod_3', 'kiscica3'),
-('examolemoderator4@moderator.com', 'mod_4', 'kiscica4'),
-('examolemoderator5@moderator.com', 'mod_5', 'kiscica5');
-
----------- Pelda rekordok jelentkezo tabla
---Tulajdonképpen ez is egy kapcsolattabla
-
-INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES
-('john.doe@example.com', 1),
-('jane.smith@example.com', 2),
-('alice.wonderland@example.com', 3),
-('bob.builder@example.com', 4),
-('charlie.brown@example.com', 5);

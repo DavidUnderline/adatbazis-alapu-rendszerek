@@ -67,6 +67,7 @@ router.post('/api/update', async (req, res) => {
 // ceg lekerdezese email alapjan
 router.post('/api/get', async (req, res) => {
     const email = req.body.email;
+    console.log("---[ getCegByEmail ]---");
 
     try{
         const ceg = await cegDao.getCegByEmail(email);
@@ -81,6 +82,7 @@ router.post('/api/get', async (req, res) => {
 
 router.post('/api/getCegByAdo', async (req, res) => {
   console.log("---[ getCegByAdo ]---")
+  console.log(req.body)
 
   const adoazonosito = req.body.adoazonosito;
 

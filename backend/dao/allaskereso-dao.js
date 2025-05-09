@@ -4,30 +4,23 @@ const { executeQuery, getConnection } = require('../config/db');
 class AllaskeresoDao {
     // Álláskereső lekérdezése email alapján jelszó nélkül (bejelentkezéshez)
     async user(email, password, tipo) {
+        // console.log("--- inside dao - user ---");
+        // console.table({email: email, password: password, tipo: tipo});
         let query = "";
-        let query2 = "";
         if(tipo === "allaskereso"){
             query = "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
-            query2 = "select * from allaslehetoseg a "+
-            "inner join jelentkezo j on j.allaslehetoseg_id = a.id "+
-            "where j.allaskereso_email = :email";
+
             
         } else{
             query = "SELECT email, adoazonosito FROM ceg WHERE email = :email AND jelszo = :password";
-            query2 = "select * from allaslehetoseg where ceg_adoazonosito = :adoazonosito";
-        } 
+       } 
         // console.table(query);
         // console.table({email: email, password: password, tipo: tipo});
         const user = await executeQuery(query,{email: email, password: password});
-        const jobs = await executeQuery(query2, tipo === 'ceg' ? {adoazonosito: user ? user[0].ADOAZONOSITO : null} : {email: email});
-        console.table(jobs);
+        // console.log("--- result ---");
+        // console.table(user);
 
-        const resp = {
-            user: user,
-            jobs: jobs
-        };
-
-        return resp.user.length > 0 ? resp : null;
+        return user.length > 0 ? user : null;
     }
 
     // Új álláskereső regisztrálása

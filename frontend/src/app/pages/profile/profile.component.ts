@@ -81,9 +81,14 @@ export class ProfileComponent {
         //Ez kizárt dolog, mert nem tudom.
         break;
     }
-
+    // !
     this.show_error = false;
-    console.log('applied jobs: ', this.jobservice.getjobs());
+    const temp = {
+      email: localStorage.getItem('username'),
+      tipo: this.login_service.getRole()
+    }
+    console.log('applied jobs: ', this.jobservice.getjobs(temp));
+    // !
   }
 
   loadCeg() {
