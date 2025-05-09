@@ -154,9 +154,9 @@ class AllaslehetosegDao{
         }
 
         // console.table(query);
-        // console.table({email: email, password: password, tipo: tipo});
+        // console.table(data);
         const jobs = await executeQuery(query, data.tipo === 'ceg' ? { adoazonosito: data.adoazonosito } : {email: data.email});
-        // console.table(jobs);
+        console.table(jobs);
 
         return jobs;
     }

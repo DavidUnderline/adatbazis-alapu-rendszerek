@@ -96,12 +96,12 @@ router.post('/api/getjobsforuser', async (req, res) => {
 
     try{
         const jobs = await allaslehetosegdao.getUserJobs(req.body);
-
+        console.log(jobs)
         if(!jobs){
             return res.json({success: false, message: 'Nem található munka!', jobs: undefined});
         }
 
-        res.json({success: true, message: 'Még nincs rögzített munka!', jobs: jobs});
+        return res.json({success: true, message: 'Még nincs rögzített munka!', jobs: jobs});
     }catch(err){
         console.error(err);
         throw err;

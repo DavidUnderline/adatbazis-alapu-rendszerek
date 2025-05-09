@@ -66,17 +66,18 @@ router.post('/api/update', async (req, res) => {
 
 // ceg lekerdezese email alapjan
 router.post('/api/get', async (req, res) => {
+  console.log("---[ getCegByEmail ]---");
+  // console.log(req.body);
     const email = req.body.email;
-    console.log("---[ getCegByEmail ]---");
 
     try{
         const ceg = await cegDao.getCegByEmail(email);
         if(!ceg){
-            res.status(401).json({error: 'Cég nem található'});
+            return res.json({error: 'Cég nem található'});
         }
-        res.json({success: true, ceg: ceg});
+        return res.json({success: true, ceg: ceg});
     }catch(err){
-        res.status(500).json({ error: 'Hiba a cég lekérdezésekor'});
+        res.json({ error: 'Hiba a cég lekérdezésekor'});
     }
 });
 
