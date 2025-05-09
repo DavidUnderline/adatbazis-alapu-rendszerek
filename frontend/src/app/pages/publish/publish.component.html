@@ -26,7 +26,7 @@
       </fieldset>
       
       <fieldset
-        class="w-full text-dark_blue-500 p-1 relative group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end row-span-4 outline-dark_blue-500 outline-2 rounded-2xl"
+        class="w-full text-dark_blue-500 p-1 relative group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end row-span-5 outline-dark_blue-500 outline-2 rounded-2xl"
       >
         <textarea 
           placeholder="Leírás"
@@ -70,7 +70,9 @@
           formControlName="kategoria"
         />
       </fieldset>
-      <fieldset class="flex gap-4 items-center">
+      <app-key-word-form (final_key_words)="key_words=$event"></app-key-word-form>
+
+      <fieldset class="flex gap-4 items-center col-start-2">
         <select matNativeControl formControlName="varos" class="inline-block w-full px-4 py-2 text-sm text-dark_blue-500 border-2 border-dark_blue-500 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-dark_red-500 focus:border-dark_red-500 outline-dark_blue-500 focus:outline-0">
           <option value="" disabled selected hidden>Város</option>
           @for(varos of cities; track varos){
@@ -81,6 +83,7 @@
         <mat-icon class=" hover:cursor-pointer" (click)="showAddCity = true">add</mat-icon>
         </div>
       </fieldset>
+
 
       <div class="pt-10 col-span-2 flex justify-end">
         <button
