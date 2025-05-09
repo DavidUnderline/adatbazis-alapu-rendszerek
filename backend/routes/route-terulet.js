@@ -35,4 +35,22 @@ router.post('/api/getCityById', async(req, res) => {
     }
 });
 
+router.post('/api/addCity', async(req, res) => {
+    console.log("---[ addCity ]---");
+    // console.log(req.body);
+    // return;
+    try{
+        const success = await teruletdao.insertTerulet(req.body);
+        if(!success){
+            return res.json({success: false, message: 'Hiba a terület hozzáadása során / Létező terület'});
+        }
+
+        return res.json({success: true, message: 'Terület sikeresen hozzáadva'});
+
+    } catch(err){
+        res.json({error: err});
+        throw err;
+    }
+});
+
 module.exports = router;
