@@ -62,11 +62,12 @@ export class PublishComponent implements OnInit {
         localStorage.setItem("cities", JSON.stringify(response.cities));
         // this.successHandler(response.message);
         // console.log(this.cities)
-      
+    
       } else{
         this.errorHandler(response.message);
       }
     });
+
 }
 
   submit() {
