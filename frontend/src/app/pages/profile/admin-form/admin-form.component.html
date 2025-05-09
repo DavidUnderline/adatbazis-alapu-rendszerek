@@ -1,6 +1,6 @@
-<form [formGroup]="admin_form" (ngSubmit)="submit()">
+<form [formGroup]="admin_form" (ngSubmit)="submit()" class="w-4/5 flex flex-col gap-2">
   <fieldset
-    class="w-[80%] text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
+    class=" text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
   >
     <input
       type="text"
@@ -14,7 +14,7 @@
     </mat-icon>
   </fieldset>
   <fieldset
-    class="w-[80%] text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
+    class=" text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
   >
     <input
       type="email"
@@ -29,7 +29,7 @@
   </fieldset>
 
   <fieldset
-    class="w-[80%] text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
+    class=" text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
   >
     <input
       type="password"
@@ -44,7 +44,7 @@
   </fieldset>
 
   <fieldset
-    class="w-[80%] text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
+    class=" text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
   >
     <input
       type="password"
@@ -58,7 +58,7 @@
     </mat-icon>
   </fieldset>
 
-  <div class="pt-10">
+  <div class="pt-10 flex justify-center">
     <button
       type="submit"
       class="bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl cursor-pointer flex justify-center gap-1.5"

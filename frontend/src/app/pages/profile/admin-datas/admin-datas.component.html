@@ -1,9 +1,16 @@
-<div class="bg-white-500 rounded-2xl">
-  <h1 class="text-dark_blue-500 font-medium">
-    Email cím: <span class="text-dark_red-500">{{ admin_data?.email }}</span>
-  </h1>
-  <h1 class="text-dark_blue-500 font-medium">
-    Moderátor neve:
-    <span class="text-dark_red-500">{{ admin_data?.neve }}</span>
-  </h1>
+<div class="bg-white-500 rounded-2xl flex flex-col">
+  <mat-icon
+    class="text-dark_blue-500 fill-dark_blue-500 scale-[200%]  ml-2 z-2"
+    >account_circle</mat-icon
+  >
+
+  <div class="text-base pt-5">
+    <h1 class="text-dark_blue-500 font-medium">
+      Email cím: <span class="text-dark_red-500">{{ admin_data?.email }}</span>
+    </h1>
+    <h1 class="text-dark_blue-500 font-medium">
+      Moderátor neve:
+      <span class="text-dark_red-500">{{ admin_data?.neve }}</span>
+    </h1>
+  </div>
 </div>

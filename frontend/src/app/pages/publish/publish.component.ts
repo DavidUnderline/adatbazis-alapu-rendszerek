@@ -50,26 +50,29 @@ export class PublishComponent implements OnInit {
   jobservice = inject(JobsService);
 
   ngOnInit(): void {
-    // console.log("get cities");
-    localStorage.removeItem("cities");
-    
-    this.http.get<any>('http://localhost:3000/terulet/api/getcities')
-    .subscribe((response) => {
-      // console.log("--- get cities ---");
-      // console.table(response);
-      if(response.success){
-        this.cities = response.cities;
-        localStorage.setItem("cities", JSON.stringify(response.cities));
-        // this.successHandler(response.message);
-        // console.log(this.cities)
-    
-      } else{
-        this.errorHandler(response.message);
-      }
-    });
+    this.load()
+  }
 
-}
 
+  load(){
+     // console.log("get cities");
+     localStorage.removeItem("cities");
+    
+     this.http.get<any>('http://localhost:3000/terulet/api/getcities')
+     .subscribe((response) => {
+       // console.log("--- get cities ---");
+       // console.table(response);
+       if(response.success){
+         this.cities = response.cities;
+         localStorage.setItem("cities", JSON.stringify(response.cities));
+         // this.successHandler(response.message);
+         // console.log(this.cities)
+     
+       } else{
+         this.errorHandler(response.message);
+       }
+     });
+  }
   submit() {
     this.show_error = false;
     

@@ -6,7 +6,7 @@
 }
 
   <div
-    class="bg-white-500 p-8 rounded-2xl grid grid-col-2 gap-x-4 gap-y-8 w-[80%]"
+    class="bg-white-500 p-8 rounded-2xl grid grid-cols-2 gap-x-4 gap-y-8 w-2/3"
   >
     @switch (login_service.getRole()) {
       @case ("ceg") {
@@ -26,9 +26,10 @@
       }
 
       @case ("admin") {
-        <app-admin-datas [admin_data]="user_moderator" class="w-[40%] outline-1 col-span-1"></app-admin-datas>
+        <app-admin-datas [admin_data]="user_moderator" class=""></app-admin-datas>
+        
         <app-admin-form 
-        class="w-[40%] outline-1 col-span-1" 
+        class="" 
         (error)="handleMsg($event)"
         (valid_admin_form)="modifyAdmin($event)"
         ></app-admin-form>
