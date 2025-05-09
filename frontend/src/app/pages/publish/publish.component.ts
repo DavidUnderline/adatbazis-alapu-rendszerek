@@ -8,6 +8,7 @@ import { DisplayDirective } from '../../shared/directives/display.directive';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AddCityDialogComponent } from "./add-city-dialog/add-city-dialog.component";
 import { JobsService } from '../../services/jobs.service';
+import { KeyWordFormComponent } from "./key-word-form/key-word-form.component";
 
 @Component({
   selector: 'app-publish',
@@ -19,7 +20,8 @@ import { JobsService } from '../../services/jobs.service';
     SuccessMsgComponent,
     DisplayDirective,
     HttpClientModule,
-    AddCityDialogComponent
+    AddCityDialogComponent,
+    KeyWordFormComponent
 ],
   templateUrl: './publish.component.html',
   styleUrl: './publish.component.css',
@@ -27,6 +29,7 @@ import { JobsService } from '../../services/jobs.service';
 export class PublishComponent implements OnInit {
   constructor(private http: HttpClient) {}
   disableSelect = new FormControl(false);
+  key_words: string[] = [];
 
   ad_form = new FormGroup({
     cim: new FormControl<string>('', { nonNullable: true }),

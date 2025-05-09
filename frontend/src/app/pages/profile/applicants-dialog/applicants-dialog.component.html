@@ -1,54 +1,68 @@
-<div class="fixed inset-0 bg-dark_blue-500/80 bg-opacity-50 z-[1000] ">
-  <div class="absolute p-10 bg-white-500 top-[50%] left-[50%] -translate-[50%] z-100 opacity-100 rounded-2xl h-2/3 w-1/2 overflow-y-scroll">
-    <button class="absolute top-3 right-3 text-dark_blue-500 hover:text-dark_red-500 hover:cursor-pointer"
-    (click)="close()">
+<div class="fixed inset-0 bg-dark_blue-500/80 bg-opacity-50 z-[1000]">
+  <div
+    class="absolute p-10 bg-white-500 top-[50%] left-[50%] -translate-[50%] z-100 opacity-100 rounded-2xl h-2/3 w-1/2 overflow-y-scroll"
+  >
+    <button
+      class="absolute top-3 right-3 text-dark_blue-500 hover:text-dark_red-500 hover:cursor-pointer"
+      (click)="close()"
+    >
       <mat-icon>close</mat-icon>
     </button>
-    <h1 class="text-center text-dark_blue-500 font-medium text-2xl pb-4">Jelentkezők:</h1>
+    <h1 class="text-center text-dark_blue-500 font-medium text-2xl">
+      Jelentkezők:
+    </h1>
     @if (jelentkezok){
-      <h1 class="text-dark-gray-500 font-medium text-center">Jelentkezők száma: <span class="text-dark_red-500">{{` ${jelentkezok.length}`}}</span></h1>
-      <div class="grid grid-cols-2 gap-4">
-        
+    <h1 class="text-dark-gray-500 font-medium text-center">
+      Jelentkezők száma:
+      <span class="text-dark_red-500">{{` ${jelentkezok.length}`}}</span>
+    </h1>
+    <div class="grid grid-cols-2 gap-4 mt-4">
       @for (jelentkezo of jelentkezok; track $index) {
-        <div class="text-base border-2 border-dark_blue-500 rounded-2xl p-4 flex flex-col gap-4 h-[50%] overflow-y-scroll">
-          <div class="flex flex-col">
-            <h1 class="text-dark_blue-500 font-medium">
-              Email cím: <span class="text-dark_red-500">{{ jelentkezo.data.email }}</span>
-            </h1>
-            <h1 class="text-dark_blue-500 font-medium">
-              Felhasználó neve:
-              <span class="text-dark_red-500">{{ jelentkezo.data.nev }}</span>
-            </h1>
-            <h2 class="text-dark_blue-500 font-medium">
-              Végzettség:
-              <span class="text-dark_red-500">{{ jelentkezo.data.vegzettseg }}</span>
-            </h2>
-            <p class="text-dark_blue-500 font-medium">
-              Státusz:
-              <span class="text-dark_red-500">{{ jelentkezo.data.statusz }}</span>
-            </p>
-          </div>
-          <div class="flex flex-col gap-4">
-            @if (jelentkezo.cvk.length < 1) {
-              <h1 class="text-dark_blue-500 font-medium">Nem található CV.</h1>
-            } @else{
-              @for (cv of jelentkezo.cvk; track $index) {
-                <div class="relative   p-4 outline-2 outline-dark_blue-500 rounded-2xl flex gap-2 group hover:cursor-pointer hover:text-white-500 hover:bg-dark_blue-500 overflow-x-scroll">
-                  <mat-icon>link</mat-icon>
-                  <div class="flex flex-col">
-                    <h1>cv {{ $index }}</h1>
-                    <p>{{ cv.link }}</p>
-                  </div>
-                </div>
-              }
-            }
-          </div>
+      <div
+        class="text-base border-2 border-dark_blue-500 rounded-2xl p-4 flex flex-col gap-4 h-96 overflow-y-scroll"
+      >
+        <div class="flex flex-col">
+          <h1 class="text-dark_blue-500 font-medium">
+            Felhasználó neve:
+            <span class="text-dark_red-500">{{ jelentkezo.data.nev }}</span>
+          </h1>
+          <h1 class="text-dark_blue-500 font-medium">
+            Email cím:
+            <span class="text-dark_red-500">{{ jelentkezo.data.email }}</span>
+          </h1>
+          <h2 class="text-dark_blue-500 font-medium">
+            Végzettség:
+            <span class="text-dark_red-500">{{
+              jelentkezo.data.vegzettseg
+            }}</span>
+          </h2>
+          <p class="text-dark_blue-500 font-medium">
+            Státusz:
+            <span class="text-dark_red-500">{{ jelentkezo.data.statusz }}</span>
+          </p>
         </div>
-      }
+        <div class="flex flex-col gap-4">
+          @if (jelentkezo.cvk.length < 1) {
+          <h1 class="text-dark_blue-500 font-medium">Nem található CV.</h1>
+          } @else{ @for (cv of jelentkezo.cvk; track $index) {
+          <div
+            class="relative p-4 outline-2 outline-dark_blue-500 rounded-2xl flex gap-2 group hover:cursor-pointer hover:text-white-500 hover:bg-dark_blue-500 overflow-x-scroll"
+          >
+            <mat-icon>link</mat-icon>
+            <div class="flex flex-col">
+              <h1>cv {{ $index }}</h1>
+              <p>{{ cv.link }}</p>
+            </div>
+          </div>
+          } }
+        </div>
       </div>
+      }
+    </div>
     }@else {
-      <h1 class="text-dark_blue-500 font-normal text-xl">Még nincs érdeklődő . . .</h1>
+    <h1 class="text-dark_blue-500 font-normal text-xl">
+      Még nincs érdeklődő . . .
+    </h1>
     }
-    
   </div>
 </div>

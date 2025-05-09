@@ -173,23 +173,23 @@ class AllaskeresoDao {
     }
 
     // Álláskereső törlése (kapcsolatok automatikusan törlődnek CASCADE miatt)
-    // async deleteAllaskereso(email) {
-    //     let connection;
-    //     try {
-    //         // connection = await getConnection();
-    //         const result = await connection.execute(
-    //             `DELETE FROM allaskereso WHERE email = :email`,
-    //             { email },
-    //             { autoCommit: true }
-    //         );
-    //         return result.rowsAffected === 1;
-    //     } catch (err) {
-    //         console.error('Error deleting allaskereso:', err);
-    //         throw err;
-    //     } finally {
-    //         if (connection) await connection.close();
-    //     }
-    // }
+    async deleteAllaskereso(email) {
+        let connection;
+        try {
+            // connection = await getConnection();
+            const result = await connection.execute(
+                `DELETE FROM allaskereso WHERE email = :email`,
+                { email },
+                { autoCommit: true }
+            );
+            return result.rowsAffected === 1;
+        } catch (err) {
+            console.error('Error deleting allaskereso:', err);
+            throw err;
+        } finally {
+            if (connection) await connection.close();
+        }
+    }
 }
 
 module.exports = new AllaskeresoDao();

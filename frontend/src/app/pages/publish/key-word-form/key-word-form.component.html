@@ -1,0 +1,23 @@
+<fieldset class="text-dark_blue-500 flex items-end">
+  <input
+    type="text"
+    [formControl]="key_word_form"
+    class="w-full text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end outline-0"
+    placeholder="Kulcs szó"
+    #key_word
+  />
+  <div
+    class="text-dark_blue-500 hover:text-dark_red-500 flex flex-col items-center justify-end h-full"
+  >
+    <mat-icon class="hover:cursor-pointer" (click)="add(key_word.value)"
+      >add</mat-icon
+    >
+  </div>
+</fieldset>
+<div class="flex gap-2 p-4 pl-0 pr-0">
+  @for (key_word of key_words; track $index) {
+  <span
+    class="font-medium outline-2 outline-dark_blue-500 p-1.5 pb-0.5 pt-0.5 text-xs rounded-2xl hover:bg-dark_blue-500 hover:text-white-500 hover:cursor-pointer"
+    (click)="delete($index)">{{ key_word }}</span>
+  }
+</div>

@@ -57,6 +57,8 @@ export class WorkDetailsComponent implements OnInit {
   }
 
   apply() {
+    this.showError = false;
+    this.showSuccess = false;
     this.isapplied().subscribe(isApplied => {
       if (isApplied) {
         this.errorHandler("Az adott állást már megpályáztad!")

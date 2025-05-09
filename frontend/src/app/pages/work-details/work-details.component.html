@@ -1,7 +1,7 @@
 <div
-  class="bg-white-50 bg-white-500 dark:bg-dark_blue-500 flex justify-between p-56 pt-32 gap-10"
+  class="bg-white-50 bg-white-500 dark:bg-dark_blue-500 grid grid-cols-6 p-56 pt-32 gap-10"
 >
-  <div class="bg-white-500 rounded-2xl p-5 grid grid-cols-12 gap-4 justify-center align-middle">
+  <div class="bg-white-500 rounded-2xl p-5 grid grid-cols-12 gap-4 justify-center align-middle col-span-4">
     
     <img
       src="assets/images/logos/asus_logo.svg"
@@ -38,7 +38,7 @@
     </p>
   </div>
 
-  <div class="bg-white-500 w-[50%] flex flex-col gap-4 items-center rounded-2xl p-10">
+  <div class="bg-white-500 flex flex-col gap-4 items-center rounded-2xl p-10 col-span-2 ">
     <h2 class="text-dark_red-500 font-medium text-2xl">
       {{ "Br. " + work.getWork()?.ber + " Ft" }}
     </h2>
@@ -60,9 +60,11 @@
   <app-error-msg
     [error_msg]="error_msg"
     [appDisplay]="showError"
+    class="col-span-2 col-start-3"
   ></app-error-msg>
   <app-success-msg
     [success_msg]="success_msg"
     [appDisplay]="showSuccess"
+    class="col-span-2 col-start-3"
   ></app-success-msg>
 </div>
