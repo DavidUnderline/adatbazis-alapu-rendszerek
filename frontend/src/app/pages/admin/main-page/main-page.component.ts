@@ -112,12 +112,22 @@ export class MainPageComponent implements OnInit {
     )
   }
 
-  errorHandler(message: string) {
+  msgHandler(message: {success: boolean, message: string}){
+    this.show_error = false;
+    this.show_success = false;
+    if(message.success){
+      this.successHandler(message.message)
+    }else{
+      this.errorHandler(message.message)
+    }
+  }
+
+  private errorHandler(message: string) {
     this.show_error = true;
     this.error_msg = message;
   }
 
-  successHandler(message: string) {
+  private successHandler(message: string) {
     this.show_success = true;
     this.success_msg = message;
   }

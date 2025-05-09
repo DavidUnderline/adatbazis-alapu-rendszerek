@@ -17,6 +17,29 @@ router.post('/api/get', async (req, res) => {
   }
 });
 
+router.post('/api/insert', async (req, res) => {
+  console.log("\n\n---[ route-admin ]---")
+  const admin_data = req.body
+  console.table(admin_data)
+  try{
+    result = await adminDao.insert(admin_data);
+    if(!result){
+      res.json({success: result, message: "Nem lehet regisztrálni az új moderátort."});
+      return;
+    }
+    res.json({success: result, message: "Sikeres regisztráció."});
+  }catch(err){
+    switch(err.errorNum){
+      case 1: 
+        res.json({success: false, message: "Ezen az emailen már létezik admin."});
+        break;
+      default:
+         console.error(err);
+        break
+    }
+  }
+})
+
 
 
 module.exports = router;

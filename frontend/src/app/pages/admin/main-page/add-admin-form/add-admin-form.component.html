@@ -2,7 +2,7 @@
   <h1 class="mr-auto ml-auto text-center text-2xl text-dark_blue-500 font-medium">
     Admin kolléga hozzáadása
   </h1>
-  <form action="" class="flex flex-col gap-4 items-center">
+  <form action="" class="flex flex-col gap-4 items-center" [formGroup]="new_admin_data" (ngSubmit)="add()">
     <fieldset
       class="w-[80%] text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
     >
@@ -11,7 +11,7 @@
         placeholder="Név"
         class="h-[1lh] outline-none pl-8 text-medium focus:outline-0 peer text-dark_blue-500 w-full"
         minlength="2"
-        formControlName="email"
+        formControlName="name"
       />
       <mat-icon
         class="absolute left-1 top-[0.625lh] transform -translate-y-1/2"
@@ -23,7 +23,7 @@
       class="w-[80%] text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
     >
       <input
-        type="text"
+        type="email"
         placeholder="Email"
         class="h-[1lh] outline-none pl-8 text-medium focus:outline-0 peer text-dark_blue-500 w-full"
         minlength="2"
@@ -44,7 +44,7 @@
         placeholder="Jelszó"
         class="h-[1lh] outline-none pl-8 text-medium focus:outline-0 peer text-dark_blue-500 w-full"
         minlength="2"
-        formControlName="email"
+        formControlName="password"
       />
       <mat-icon
         class="absolute left-1 top-[0.625lh] transform -translate-y-1/2"
