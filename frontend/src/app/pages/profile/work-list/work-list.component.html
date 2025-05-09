@@ -7,7 +7,11 @@
       class="absolute inset-0 bg-dark-gray-500/80 flex justify-center items-center"
       [appDisplay]="!work.is_accepted"
     >
-      <h1 class="bg-white-500 text-dark_blue-500 text-center text-2xl mt-20 p-4 w-fit ml-auto mr-auto rounded-2xl">Elbírálás alatt. . . </h1>
+      <h1
+        class="bg-white-500 text-dark_blue-500 text-center text-2xl mt-20 p-4 w-fit ml-auto mr-auto rounded-2xl"
+      >
+        Elbírálás alatt. . .
+      </h1>
     </div>
     <img
       src="assets/images/logos/asus_logo.svg"
@@ -16,10 +20,12 @@
     />
     <div class="col-span-11 flex flex-col">
       <div class="">
-        <h1 class="font-medium text-3xl text-dark_blue-500 flex items-center gap-2">
+        <h1
+          class="font-medium text-3xl text-dark_blue-500 flex items-center gap-2"
+        >
           {{ work.cim }}
           <span
-            class="font-medium outline-2 outline-dark_blue-500 p-1.5 pt-0.5 pb-0.5 text-xs rounded-2xl "
+            class="font-medium outline-2 outline-dark_blue-500 p-1.5 pt-0.5 pb-0.5 text-xs rounded-2xl"
             >{{ work.kulcsszo_neve }}</span
           ><!--TODO Szét kell szedni-->
         </h1>
@@ -41,7 +47,13 @@
       >
         Info
       </button>
-      <mat-icon class="absolute top-[0.5lh] right-[0.5lh]">close</mat-icon>
+      <div class="hover:text-dark_red-500">
+        <mat-icon
+          class="absolute top-[0.5lh] right-[0.5lh] hover:cursor-pointer hover:text-dark_red-500 z-10"
+          (click)="delete(work.id)"
+          >close</mat-icon
+        >
+      </div>
     </div>
   </div>
   }

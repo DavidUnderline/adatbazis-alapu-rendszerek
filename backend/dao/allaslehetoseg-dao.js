@@ -102,7 +102,7 @@ class AllaslehetosegDao{
         }
     }
 
-    async deletePendingAllasokById(id){
+    async deleteAllasokById(id){
         let connection;
         try {
             connection = await getConnection();
