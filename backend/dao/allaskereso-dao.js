@@ -3,11 +3,16 @@ const { executeQuery, getConnection } = require('../config/db');
 
 class AllaskeresoDao {
     // Álláskereső lekérdezése email alapján jelszó nélkül (bejelentkezéshez)
-    async user(email, password) {
+    async user(email, password, tipo) {
         // console.log("--- inside dao - user ---");
         // console.table({email: email, password: password, tipo: tipo});
-        const query = "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
-
+        let query = "";
+        if(tipo === "allaskereso"){
+            query = "SELECT email FROM allaskereso WHERE email = :email AND jelszo = :password";
+            
+        } else{
+            query = "SELECT email, adoazonosito FROM ceg WHERE email = :email AND jelszo = :password";
+       } 
         // console.table(query);
         // console.table({email: email, password: password, tipo: tipo});
         const user = await executeQuery(query,{email: email, password: password});
@@ -173,23 +178,23 @@ class AllaskeresoDao {
     }
 
     // Álláskereső törlése (kapcsolatok automatikusan törlődnek CASCADE miatt)
-    async deleteAllaskereso(email) {
-        let connection;
-        try {
-            // connection = await getConnection();
-            const result = await connection.execute(
-                `DELETE FROM allaskereso WHERE email = :email`,
-                { email },
-                { autoCommit: true }
-            );
-            return result.rowsAffected === 1;
-        } catch (err) {
-            console.error('Error deleting allaskereso:', err);
-            throw err;
-        } finally {
-            if (connection) await connection.close();
-        }
-    }
+    // async deleteAllaskereso(email) {
+    //     let connection;
+    //     try {
+    //         // connection = await getConnection();
+    //         const result = await connection.execute(
+    //             `DELETE FROM allaskereso WHERE email = :email`,
+    //             { email },
+    //             { autoCommit: true }
+    //         );
+    //         return result.rowsAffected === 1;
+    //     } catch (err) {
+    //         console.error('Error deleting allaskereso:', err);
+    //         throw err;
+    //     } finally {
+    //         if (connection) await connection.close();
+    //     }
+    // }
 }
 
 module.exports = new AllaskeresoDao();
