@@ -1,4 +1,3 @@
-
 SET SERVEROUTPUT ON
 
 ---------------------------------------- TABLAK ----------------------------------------
@@ -105,6 +104,22 @@ CREATE TABLE cegertekeles(
     CONSTRAINT foreign_key_allaskereso FOREIGN KEY (allaskereso_email) REFERENCES allaskereso(email) ON DELETE CASCADE --Álláskereső törlésekor az általa adott értékelések is törlődjenek
 );
 
+-------------------- kategoria tabla
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE kategoria CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
+        NULL;
+END;
+/
+
+CREATE TABLE kategoria (
+   neve VARCHAR2(255) PRIMARY KEY NOT NULL
+);
+
 -------------------- allaslehetoseg tabla
 
 BEGIN
@@ -127,8 +142,10 @@ CREATE TABLE allaslehetoseg (
    is_accepted   boolean,
    terulet_id    NUMBER,
    ceg_adoazonosito NUMBER,
+   kategoria_neve VARCHAR2(255),
    CONSTRAINT foreign_key_teruletek FOREIGN KEY (terulet_id) REFERENCES terulet(id) ON DELETE SET NULL,--mert az álláslehetőség létezhet terület nélkül
-   CONSTRAINT foreign_key_ceg_allaslehetoseg FOREIGN KEY (ceg_adoazonosito) REFERENCES ceg(adoazonosito) ON DELETE CASCADE -- Cég törlésekor az álláslehetőségei is törlődjenek
+   CONSTRAINT foreign_key_ceg_allaslehetoseg FOREIGN KEY (ceg_adoazonosito) REFERENCES ceg(adoazonosito) ON DELETE CASCADE, -- Cég törlésekor az álláslehetőségei is törlődjenek
+   CONSTRAINT foreign_key_kategoria FOREIGN KEY (kategoria_neve) REFERENCES kategoria(neve) ON DELETE SET NULL --Kategória törlésekor a Null érték kerül az alaslehetoseg tablaba
 );
 
 -------------------- kulcsszo tabla
@@ -166,24 +183,6 @@ CREATE TABLE allaslehetoseg_kulcsszo_kapcsolat (
     PRIMARY KEY (allaslehetoseg_id, kulcsszo_neve),
     FOREIGN KEY (allaslehetoseg_id) REFERENCES allaslehetoseg(id) ON DELETE CASCADE, -- Álláslehetőség törlésekor a kulcsszó-kapcsolatai is törlődjenek
     FOREIGN KEY (kulcsszo_neve) REFERENCES kulcsszo(neve) ON DELETE CASCADE
-);
-
--------------------- kategoria tabla
-
-BEGIN
-    EXECUTE IMMEDIATE 'DROP TABLE kategoria CASCADE CONSTRAINTS PURGE';
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Hiba történt: ' || SQLERRM);
-        NULL;
-END;
-/
-
-CREATE TABLE kategoria (
-   neve VARCHAR2(255) PRIMARY KEY NOT NULL,
-   allaslehetoseg_id INT,
-   FOREIGN KEY (allaslehetoseg_id) REFERENCES allaslehetoseg(id) ON DELETE CASCADE
 );
 
 -------------------- moderator tabla
@@ -226,16 +225,6 @@ CREATE TABLE jelentkezo( --Ez is csak egy kapcsolotabla
 
 ---------------------------------------- TRIGGEREK ----------------------------------------
 -------------------- jelentkezo (allaslehetoseg_allaskereso_kapcsolat) tabla frissito trigger
-BEGIN
-    EXECUTE IMMEDIATE 'DROP TRIGGER update_child_email';
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Nem létezik nincs semmi: ' || SQLERRM);
-        NULL;
-END;
-/
-
 CREATE OR REPLACE TRIGGER ceg_adoazonosito_update
 BEFORE UPDATE OF adoazonosito ON ceg
 FOR EACH ROW
@@ -245,6 +234,16 @@ BEGIN
         SET ceg_adoazonosito = :NEW.adoazonosito
         WHERE ceg_adoazonosito = :OLD.adoazonosito;
     END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TRIGGER update_child_email';
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Ha a tabla nem letezik semmi nincs
+        DBMS_OUTPUT.PUT_LINE('Nem létezik nincs semmi: ' || SQLERRM);
+        NULL;
 END;
 /
 
@@ -350,26 +349,26 @@ INSERT INTO terulet (orszag, megye, varos) VALUES
 
 ---------- Pelda rekordok allaskereso tabla
 
-
 ---------- Pelda rekordok cegertekeles tabla
-
----------- Pelda rekordok allaslehetoseg tabla
-
-INSERT INTO allaslehetoseg (cim, leiras, kovetelmenyek, mikor, ber, is_accepted, terulet_id, ceg_adoazonosito) VALUES
-('Heggesztés', 'Óriási Munkalehetőség Heggesztő úraknak és hölgyeknek egyaránt.', 'Tudjá heggeszeni.', sysdate, 500000, 1, 1, null),
-('Villanyszerelés', 'Kiváló lehetőség tapasztalt villanyszerelők számára.', 'Villanyszerelői végzettség és tapasztalat.', sysdate, 450000, 1, 2, null),
-('Programozás', 'Junior programozói pozíció kezdőknek.', 'Alapvető programozási ismeretek.', sysdate, 600000, 0, 3, null),
-('Építésvezetés', 'Építkezési projektek vezetésére keresünk szakembert.', 'Építészmérnöki diploma és vezetői tapasztalat.', sysdate, 700000, 1, 4, null),
-('Grafikai tervezés', 'Kreatív grafikusokat keresünk hosszú távra.', 'Grafikai szoftverek ismerete és kreativitás.', sysdate, 550000, 0, 5, null);
 
 ---------- Pelda rekordok kategoria tabla
 
-INSERT INTO kategoria (neve, allaslehetoseg_id) VALUES
-('Hegesztés kategoria', 1),
-('Gépészet kategoria', 1),
-('Informatika kategoria', 3),
-('Művészet kategoria', 5),
-('Üzlet kategoria', 4);
+INSERT INTO kategoria (neve) VALUES
+('Hegesztés kategoria'),
+('Gépészet kategoria'),
+('Informatika kategoria'),
+('Művészet kategoria'),
+('Üzlet kategoria');
+
+---------- Pelda rekordok allaslehetoseg tabla
+
+--INSERT INTO allaslehetoseg (cim, leiras, kovetelmenyek, mikor, ber, is_accepted, terulet_id, ceg_adoazonosito, kategoria_neve) VALUES
+--('Heggesztés', 'Óriási Munkalehetőség Heggesztő úraknak és hölgyeknek egyaránt.', 'Tudjá heggeszeni.', sysdate, 500000, 1, 1, null, 'Hegesztés kategoria'),
+--('Villanyszerelés', 'Kiváló lehetőség tapasztalt villanyszerelők számára.', 'Villanyszerelői végzettség és tapasztalat.', sysdate, 450000, 1, 2, null, 'Gépészet kategoria'),
+--('Programozás', 'Junior programozói pozíció kezdőknek.', 'Alapvető programozási ismeretek.', sysdate, 600000, 0, 3, null, 'Informatika kategoria'),
+--('Építésvezetés', 'Építkezési projektek vezetésére keresünk szakembert.', 'Építészmérnöki diploma és vezetői tapasztalat.', sysdate, 700000, 1, 4, null, 'Gépészet kategoria'),
+--('Grafikai tervezés', 'Kreatív grafikusokat keresünk hosszú távra.', 'Grafikai szoftverek ismerete és kreativitás.', sysdate, 550000, 0, 5, null, 'Művészet kategoria');
+
 
 ---------- Pelda rekordok kulcsszo tabla
 
@@ -389,3 +388,4 @@ INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve)
 (4, 'Üzlet kulcsszo'),
 (5, 'Programozás kulcsszo'), -- Grafikai allashoz ket kulcsszo
 (5, 'Művészet kulcsszo');
+
