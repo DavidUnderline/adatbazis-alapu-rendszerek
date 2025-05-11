@@ -19,6 +19,9 @@ router.post('/api/login', async (req, res) => {
         return res.json({ error: 'Email és jelszó kötelező' });
     }
     if(tipo === 'admin'){
+        console.table(
+            {email:email, password:password, tipo:tipo}
+        );
         try{
             const isLogged = await adminDao.user(email, password);
             if(!isLogged){

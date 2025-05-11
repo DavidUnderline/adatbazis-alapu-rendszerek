@@ -243,12 +243,9 @@ export class ProfileComponent {
   }
 
   modifyAdmin(data: any) {
-    this.show_error = false;
+    // console.table(data);
     if(data.originalemail === data.email)
       data.originalemail = localStorage.getItem('username');
-    
-    // console.table(data);
-    // return;
 
     this.http.post<any>('http://localhost:3000/admin/api/updateAdmin', data)
     .subscribe((response) => {

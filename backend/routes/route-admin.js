@@ -43,6 +43,7 @@ router.post('/api/insert', async (req, res) => {
 router.post('/api/updateAdmin', async(req, res)=>{
   console.log("\n\n---[ route-admin update ]---");
   const data = req.body
+  console.log(data);
   try {
         const result = await adminDao.updateAdmin(data);
         // console.log("res", result);

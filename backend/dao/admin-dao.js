@@ -56,7 +56,11 @@ class AdminDao {
     const binds = { email: data.originalemail };
 
     if(data.email){
+<<<<<<< HEAD
       console.log("uj email")
+=======
+      binds.email = data.originalemail;
+>>>>>>> origin/frontend
       binds.toemail = data.email;
       fields.push('email = :toemail');
     }
