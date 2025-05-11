@@ -38,7 +38,26 @@ router.post('/api/insert', async (req, res) => {
         break
     }
   }
-})
+});
+
+router.post('/api/updateAdmin', async(req, res)=>{
+  console.log("\n\n---[ route-admin update ]---");
+  const data = req.body
+  try {
+        const result = await adminDao.updateAdmin(data);
+        // console.log("res", result);
+
+        if (!result.success) {
+           return res.json({ success : false, message: 'Sikertelen módosítás!' });
+            
+        }
+        return res.json({ success : true, email: result.emailt, message: 'Sikeres módosítás!' });
+        
+    } catch (err) {
+        return res.json({ error: 'Hiba a módosítás során!' });
+    }
+  return;
+});
 
 
 

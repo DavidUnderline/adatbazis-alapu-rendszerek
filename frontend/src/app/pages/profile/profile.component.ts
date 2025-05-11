@@ -25,6 +25,7 @@ import { AdminFormComponent } from "./admin-form/admin-form.component";
 import { AllaskeresoJobsComponent } from './allaskereso-jobs/allaskereso-jobs.component';
 import { CommonModule } from '@angular/common';
 import { ApplicantsDialogComponent } from './applicants-dialog/applicants-dialog.component';
+import { response } from 'express';
 
 @Component({
   selector: 'app-profile',
@@ -223,10 +224,8 @@ export class ProfileComponent {
     if (data.email.length == 0) data.email = localStorage.getItem('username');
 
     // console.table(user_data);
-    this.http
-      .post<any>('http://localhost:3000/ceg/api/update', { data })
-      .subscribe(
-        (response) => {
+    this.http.post<any>('http://localhost:3000/ceg/api/update', { data })
+      .subscribe((response) => {
           console.table(response);
           if (response.success) {
             this.successHandler(response.message);
@@ -243,9 +242,32 @@ export class ProfileComponent {
       );
   }
 
-  modifyAdmin(data: {name: string, email: string, password: string}){
-    
+  modifyAdmin(data: any) {
+    this.show_error = false;
+    // console.table(data);
+
+    this.http.post<any>('http://localhost:3000/admin/api/updateAdmin', data)
+    .subscribe((response) => {
+      console.table(response);
+      
+      if(response.success){
+        this.user_email = response.email;
+        localStorage.setItem('username', response.email);
+        this.successHandler(response.message);
+      
+      } else{
+        this.errorHandler(response.message);
+      }
+    },
+
+    (err) => {
+      this.errorHandler(err);
+    }
+  );
+
+    console.table(data);
   }
+
   handleMsg(msg: { success: boolean; message: string }) {
     this.show_error = false;
     this.show_success = false;
@@ -262,6 +284,7 @@ export class ProfileComponent {
       this.errorHandler(msg.message);
     }
   }
+
   errorHandler(error: string = "Ismeretlen hiba") {
     (this.show_error = true), (this.error_msg = error);
   }

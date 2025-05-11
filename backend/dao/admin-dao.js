@@ -48,6 +48,42 @@ class AdminDao {
     }
   }
 
+  async updateAdmin(data){
+    // console.table(data);
+    // console.log(data.originalemail);
+    console.log("--- update admin dao ---");
+    const fields = [];
+    const binds = { email: data.originalemail };
+
+    if(data.email.length){
+      binds.email = data.originalemail;
+      binds.toemail = data.email;
+      fields.push('email = :toemail');
+    }
+
+    if(data.name.length){
+      fields.push('neve = :name');
+      binds.name = data.name;
+    }
+
+    if(data.password.length){
+      fields.push('jelszo = :password');
+      binds.password = data.password;
+    }
+
+    const query = "UPDATE MODERATOR SET "+fields.join(', ')+" WHERE email = :email";
+    // console.table(binds)
+    // console.log(query);
+
+    const res = await executeQuery(query, binds);
+    // await connection.execute('COMMIT');
+    
+    return {
+        success: res === 1,
+        email: binds.toemail ? binds.toemail : binds.email
+    };
+  }
+
 }
 
 
