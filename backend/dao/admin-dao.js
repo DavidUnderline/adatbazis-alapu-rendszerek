@@ -55,7 +55,7 @@ class AdminDao {
     const fields = [];
     const binds = { email: data.originalemail };
 
-    if(data.email.length){
+    if(data.email){
       binds.email = data.originalemail;
       binds.toemail = data.email;
       fields.push('email = :toemail');

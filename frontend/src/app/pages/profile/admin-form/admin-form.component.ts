@@ -11,17 +11,17 @@ import { sha256 } from 'js-sha256';
 })
 export class AdminFormComponent {
   admin_form = new FormGroup({
-    name: new FormControl<string>('', {nonNullable: true}),
-    email: new FormControl<string>('', {nonNullable: true}),
-    password1: new FormControl<string>('', {nonNullable: true}),
-    password2: new FormControl<string>('', {nonNullable: true}),
+    name: new FormControl<string>('', { nonNullable: true }),
+    email: new FormControl<string>('', { nonNullable: true }),
+    password1: new FormControl<string>('', { nonNullable: true }),
+    password2: new FormControl<string>('', { nonNullable: true }),
   });
 
   @Output() valid_admin_form = new EventEmitter<{
-    name: string,
-    email: string,
-    originalemail: string,
-    password: string
+    name: string;
+    email: string;
+    originalemail: string;
+    password: string;
   }>();
 
   @Output() error = new EventEmitter<{
@@ -29,13 +29,10 @@ export class AdminFormComponent {
     message: string;
   }>();
 
-  current_email = localStorage.getItem("username");
+  current_email = localStorage.getItem('username');
 
   submit() {
-    if (
-      this.admin_form.invalid && 
-      this.admin_form.untouched
-    ) return;
+    if (this.admin_form.invalid && this.admin_form.untouched) return;
 
     let temp_form = this.admin_form.getRawValue();
 
@@ -43,16 +40,17 @@ export class AdminFormComponent {
       temp_form.email === '' &&
       temp_form.name == '' &&
       temp_form.password1 == ''
-    ) return;
+    )
+      return;
 
     console.log(this.admin_form.getRawValue());
     console.log(temp_form);
 
     if (
-        temp_form.email.length != 0 &&
-        ((temp_form.password1 ?? '').length < 3 ||
+      temp_form.email.length != 0 &&
+      ((temp_form.password1 ?? '').length < 3 ||
         (temp_form.password2 ?? '').length < 3)
-    ){
+    ) {
       this.error.emit({
         success: false,
         message: 'Email megválasztáshoz jelszó is szükségeltetik.',
@@ -72,7 +70,15 @@ export class AdminFormComponent {
       email: temp_form.email ?? '',
       originalemail: this.current_email ?? '',
       name: temp_form.name ?? '',
-      password: temp_form.password1 != '' ? sha256(sha256(temp_form.password1 + temp_form.email)) : '',
+      password:
+        temp_form.password1 != ''
+          ? sha256(
+              sha256(
+                temp_form.password1 +
+                  (temp_form.email ? temp_form.email : this.current_email)
+              )
+            )
+          : '',
     });
   }
 }
