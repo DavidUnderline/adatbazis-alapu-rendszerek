@@ -37,8 +37,8 @@ class TeruletDao {
         const query = 'select varos from terulet';
 
         const result = await executeQuery(query, {});
-        console.log(result);
-        
+        // console.log(result);
+
         return result;
     }
 

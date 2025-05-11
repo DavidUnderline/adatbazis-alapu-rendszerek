@@ -7,16 +7,13 @@ router.get('/api/getcities', async (req, res) => {
     try{
         const cities = await teruletdao.getvarosok();
         if(!cities){
-            res.json({ success: false, message: 'Nem található város' });
-            return;
+            return res.json({ success: false, message: 'Nem található város' });
         }
         
-        res.json({ success: true, message: 'Városok lekérdezése sikeres', cities: cities });
-    }
-    catch(err){
-        res.json({ error: 'Hiba a városok lekérdezésekor' });
-        console.error(err);
-        throw err;
+        return res.json({ success: true, message: 'Városok lekérdezése sikeres', cities: cities });
+    
+    } catch(err){
+        return res.json({ error: 'Hiba a városok lekérdezésekor' });
     }
 });
 
@@ -25,13 +22,13 @@ router.post('/api/getCityById', async(req, res) => {
     try{
         const city = await teruletdao.getVarosById(id);
         if(!city){
-            res.json({success: false, city: "Ismeretlen"});
-            return;
+            return res.json({success: false, city: "Ismeretlen"});
         }
-        res.json({success: true, city: city});
-    }catch(err){
-        res.status(500).json({error: err});
-        throw err;
+
+        return res.json({success: true, city: city});
+    
+    } catch(err){
+        return res.status(500).json({error: err});
     }
 });
 
@@ -48,8 +45,7 @@ router.post('/api/addCity', async(req, res) => {
         return res.json({success: true, message: 'Terület sikeresen hozzáadva'});
 
     } catch(err){
-        res.json({error: err});
-        throw err;
+        return res.json({error: err});
     }
 });
 

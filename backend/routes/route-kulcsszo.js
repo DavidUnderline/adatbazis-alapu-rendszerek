@@ -24,12 +24,12 @@ router.post('/api/addkeyword', async (req, res) => {
 
 // Kulcsszó lekérdezése név alapján
 router.get('/api/getkeywords', async (req, res) => {
-    // console.log('--- get keywords ---');
+    console.log('--- get keywords route ---');
     // console.log(req.body)
 
     try {
         const keywords = await kulcsszoDao.getkeywords();
-        console.log(keywords);
+        // console.log(keywords);
 
         if (keywords.length === 0) {
             res.json({ success: false, message: 'Nincs kulcsszó az adatbázisban' });

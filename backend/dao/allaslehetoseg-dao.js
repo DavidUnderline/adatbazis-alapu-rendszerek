@@ -1,4 +1,6 @@
 const { executeQuery, getConnection } = require('../config/db');
+const { keywordDao } = require('../dao/kulcsszo-dao');
+// const { all } = require('../routes/route-terulet');
 // const { all } = require('../routes/route-allaskereso');
 
 class AllaslehetosegDao{
@@ -61,7 +63,9 @@ class AllaslehetosegDao{
     }
 
     async insertAllas(allas){
-        // console.log(allas);
+        console.log("--- inside insert allas dao ---");
+        // console.table(allas);
+        // return;
 
         const query_terulet_id = "select id from terulet where varos = :varos";
         const terulet_id = await executeQuery(query_terulet_id, {varos: allas.varos});
@@ -78,15 +82,37 @@ class AllaslehetosegDao{
             is_accepted: allas.is_accepted,
             terulet_id: terulet_id[0].ID,
             adoazonosotito: ceg_adoid[0].ADOAZONOSITO,
+            kategoria: allas.kategoria,
         }
         // console.table(insert_binds);
         // return;
 
         const insert_query = "insert into allaslehetoseg "+
-        "(cim, leiras, kovetelmenyek, mikor, ber, is_accepted, terulet_id, ceg_adoazonosito) "+
-        `values (:cim, :leiras, :kovetelmenyek, TO_TIMESTAMP(:mikor, 'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"'), :ber, :is_accepted, :terulet_id, :adoazonosotito)`;
+        "(cim, leiras, kovetelmenyek, mikor, ber, is_accepted, terulet_id, ceg_adoazonosito, kategoria_neve) "+
+        `values (:cim, :leiras, :kovetelmenyek, TO_TIMESTAMP(:mikor, 'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"'), :ber, :is_accepted, :terulet_id, :adoazonosotito, :kategoria)`;
         
-        return await executeQuery(insert_query, insert_binds);
+        const result = await executeQuery(insert_query, insert_binds);
+        if(!result) return 0;
+
+        const job_id = await this.getmaxid();
+
+        await this.keyword_job_switchboard_insert({
+            allaslehetoseg_id: job_id[0].ID,
+            kulcsszo_neve: allas.kulcsszo
+        });
+        
+        return result;
+    }
+    
+    // allaslehetoseg_kulcsszo_kapcstablaba insert
+    async keyword_job_switchboard_insert(data){
+        const query = `INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve) VALUES (:allaslehetoseg_id, :kulcsszo_neve)`;
+        return await executeQuery(query, data);
+    }
+
+    async getmaxid(){
+        const query = "select max(id) as id from allaslehetoseg";
+        return await executeQuery(query, {});
     }
 
     async getPendingAllasok(){
@@ -102,7 +128,32 @@ class AllaslehetosegDao{
         }
     }
 
+    async getUserJobs(data){
+        console.log("inside allasok dao getUserJobs");
+        console.table(data);
+        // return;
+    
+        let query = "";
+        if(data.tipo === "allaskereso"){
+            query = "select * from allaslehetoseg a "+
+            "inner join jelentkezo j on j.allaslehetoseg_id = a.id "+
+            "where j.allaskereso_email = :email";
+            
+        } else{
+            query = "select * from allaslehetoseg where ceg_adoazonosito = :adoazonosito";
+        }
+
+        // console.table(query);
+        // console.table(data);
+        const jobs = await executeQuery(query, data.tipo === 'ceg' ? { adoazonosito: data.adoazonosito } : {email: data.email});
+        console.table(jobs);
+
+        return jobs;
+    }
+
     async deleteAllasokById(id){
+        console.log("--- inside delete allas dao ---");
+
         let connection;
         try {
             connection = await getConnection();
@@ -138,28 +189,6 @@ class AllaslehetosegDao{
         }
     }
 
-    async getUserJobs(data){
-        console.log("inside allasok dao getUserJobs");
-        console.table(data);
-        // return;
-    
-        let query = "";
-        if(data.tipo === "allaskereso"){
-            query = "select * from allaslehetoseg a "+
-            "inner join jelentkezo j on j.allaslehetoseg_id = a.id "+
-            "where j.allaskereso_email = :email";
-            
-        } else{
-            query = "select * from allaslehetoseg where ceg_adoazonosito = :adoazonosito";
-        }
-
-        // console.table(query);
-        // console.table(data);
-        const jobs = await executeQuery(query, data.tipo === 'ceg' ? { adoazonosito: data.adoazonosito } : {email: data.email});
-        console.table(jobs);
-
-        return jobs;
-    }
 };
 
 module.exports = new AllaslehetosegDao();

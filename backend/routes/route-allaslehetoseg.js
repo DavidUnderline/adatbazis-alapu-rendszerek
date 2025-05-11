@@ -11,33 +11,35 @@ router.post('/api/searchjob', async (req, res) => {
         // console.table(allasok);
 
         if(!allasok){
-            res.json({ success: false, error: 'Nem található allás' });
-            return;
+            return res.json({ success: false, error: 'Nem található allás' });
         
         } else{
-            res.json({ success: true, allasok });
+            return res.json({ success: true, allasok });
         }
         
     } catch (err) {
-        res.json({ error: 'Hiba az allások lekérdezésekor' });
+        return res.json({ error: 'Hiba az allások lekérdezésekor' });
     }
 });
 
 router.post('/api/insert', async (req, res) => {
+    console.log("---[ route-allaslehetoseg-insert ]---");
+    // console.log(req.body);
+    // return;
     const data = req.body.allaslehetoseg;
-    
+
     try {
         const success = await allaslehetosegdao.insertAllas(data);
-        console.log(success);
+        // console.log(success);
 
         if (!success) {
-            res.json({ success : false, message: 'Sikertelen állásfeltöltés!' });
-            return;
+           return res.json({ success : false, message: 'Sikertelen állásfeltöltés!' });
+            
         }
-        res.json({ success : true, message: 'Sikeres állásfeltöltés, jóváhagyás alatt!' });
+        return res.json({ success : true, message: 'Sikeres állásfeltöltés, jóváhagyás alatt!' });
         
     } catch (err) {
-        res.json({ error: 'Hiba a regisztráció során' });
+        return res.json({ error: 'Hiba a regisztráció során' });
     }
 });
 

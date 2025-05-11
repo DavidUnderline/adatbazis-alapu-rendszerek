@@ -37,6 +37,7 @@ export class PublishComponent implements OnInit {
     kovetelmenyek: new FormControl<string>('', { nonNullable: true }),
     ber: new FormControl<string>('', { nonNullable: true }),
     kategoria: new FormControl<string>('', { nonNullable: true }),
+    kulcsszo: new FormControl<string>('', { nonNullable: true }),
     varos: new FormControl<string>('', { nonNullable: true })
   });
 
@@ -86,8 +87,6 @@ export class PublishComponent implements OnInit {
        // console.table(response);
        if(response.success){
          this.keywords = response.keywords;
-         // this.successHandler(response.message);
-         // console.log(this.cities)
      
        } else{
          this.errorHandler(response.message);
@@ -97,27 +96,26 @@ export class PublishComponent implements OnInit {
   submit() {
     this.show_error = false;
     
-    if(this.ad_form.getRawValue().ber == null || parseInt(this.ad_form.getRawValue().ber) < 0){
+    if(this.ad_form.getRawValue().ber.length == 0 || parseInt(this.ad_form.getRawValue().ber) <= 0){
       this.errorHandler("Bérezées mező nem megfelelő!");
       return;
     }
 
     if (this.ad_form.valid) {
       const form = this.ad_form.getRawValue();
-      
+
       if(!form.cim.length || 
          !form.kovetelmenyek.length ||
-        //  parseInt(this.ad_form.getRawValue().ber) < 0 ||
          !form.varos.length ||
-         !form.kategoria.length){
-          this.errorHandler("Üres mező / mezők nem szabályosak - üresek!");
+         !form.kulcsszo.length){
+          this.errorHandler("Üres mező / mezők, helytelen formátum!");
           return;
       }
 
       const allaslehetoseg = {
         cim: form.cim,
         kovetelmenyek: form.kovetelmenyek,
-        ber: Number(form.ber),
+        ber: form.ber,
         // kategoria_neve: form.kategoria,
         leiras: form.leiras,
         varos: form.varos,
@@ -125,7 +123,7 @@ export class PublishComponent implements OnInit {
         is_accepted: false,
         // terulet_id: ceg.terulet_id,
         // ceg_adoazonosito: ceg.adoazonosito,
-        kulcsszo_neve: '',
+        kulcsszo: form.kulcsszo,
         email: localStorage.getItem('username')
       };
       console.table(allaslehetoseg);
