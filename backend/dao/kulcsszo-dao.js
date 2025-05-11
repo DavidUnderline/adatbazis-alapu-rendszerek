@@ -1,62 +1,42 @@
 const { executeQuery, getConnection } = require('../config/db');
 
 class KulcsszoDao {
+    async getkeywords() {
+        console.log("--- get keywords dao---");
+
+        const query = "select neve from kulcsszo";
+        const result = await executeQuery(query);
+        // console.log(result);
+
+        return result;
+    }
+
+    async getkeyword(data) {
+        console.log("--- get (1) keyword dao---");
+        const query = "select neve from kulcsszo where neve = :keyword";
+        return await executeQuery(query, { keyword: data.keyword });
+    }
+
     // Új kulcsszó beszúrása
-    async insertKulcsszo(kulcsszo) {
-        // kulcsszoban benne kell legyen az allaslehetoseg id es a neve
-        let connection;
-        try {
-            connection = await getConnection();
-            //tablaba inster
-            const result = await connection.execute(
-                `INSERT INTO kulcsszo (neve) VALUES (:neve)`,
-                { neve: kulcsszo.neve },
-                { autoCommit: false }
-            );
-            
-            if (result.rowsAffected != 1) {
-                throw new Error('Kulcsszó beszúrása sikertelen');
-            }
+    async insertkeyword(data) {
+        console.log("--- insert keyword dao ---");
+        // console.log(data);
+        // return 0;
 
-            //kapcstablaba inster
-            const kapcsolatResult = await connection.execute(
-                `INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve) VALUES (:allaslehetoseg_id, :neve)`,
-                { neve: kulcsszo.neve, allaslehetoseg_id: kulcsszo.allaslehetoseg_id },
-                { autoCommit: false }
-            );
+        const isduplicate = await this.getkeyword(data);
+        if (isduplicate.length > 0) return false;
 
-            if (kapcsolatResult.rowsAffected !== 1) {
-                throw new Error('Kapcsolat beszúrása sikertelen');
-            }            
-            // utolagos commit
-            await connection.commit();
-            return true;
-        } catch (err) {
-            console.error('Error inserting kulcsszo:', err);
-            throw err;
-        } finally {
-            if (connection) await connection.close();
-        }
+        const query = `INSERT INTO kulcsszo (neve) VALUES (:keyword)`;
+        
+        return await executeQuery(query, { keyword: data.keyword });
     }
-
-    // Kulcsszó lekérdezése név alapján
-    async getKulcsszoByNev(kulcsszo) {
-        let connection;
-        try {
-            connection = await getConnection();
-            const result = await connection.execute(
-                `SELECT * FROM kulcsszo WHERE neve = :neve`,
-                { neve: kulcsszo.neve }
-            );
-            // Itt listat adunk vissza, mert egy kulcsszohoz tobb allaslehetoseg tartozhat
-            return result.rows;
-        } catch (err) {
-            console.error('Error fetching kulcsszo by neve:', err);
-            throw err;
-        } finally {
-            if (connection) await connection.close();
-        }
-    }
+    
+    // //kapcstablaba inster
+    // const kapcsolatResult = await connection.execute(
+    //     `INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve) VALUES (:allaslehetoseg_id, :neve)`,
+    //     { neve: kulcsszo.neve, allaslehetoseg_id: kulcsszo.allaslehetoseg_id },
+    //     { autoCommit: false }
+    // );
 
     // Kulcsszavak lekérdezése egy adott álláslehetőséghez
     async getKulcsszoByAllaslehetosegId(kulcsszo) {
@@ -123,23 +103,23 @@ class KulcsszoDao {
     // }
 
     // Kulcsszó törlése
-    async deleteKulcsszo(kulcsszo) {
-        let connection;
-        try {
-            connection = await getConnection();
-            const result = await connection.execute(
-                `DELETE FROM kulcsszo WHERE neve = :neve`,
-                { neve: kulcsszo.neve },
-                { autoCommit: true }
-            );
-            return result.rowsAffected === 1;
-        } catch (err) {
-            console.error('Error deleting kulcsszo:', err);
-            throw err;
-        } finally {
-            if (connection) await connection.close();
-        }
-    }
+    // async deleteKulcsszo(kulcsszo) {
+    //     let connection;
+    //     try {
+    //         connection = await getConnection();
+    //         const result = await connection.execute(
+    //             `DELETE FROM kulcsszo WHERE neve = :neve`,
+    //             { neve: kulcsszo.neve },
+    //             { autoCommit: true }
+    //         );
+    //         return result.rowsAffected === 1;
+    //     } catch (err) {
+    //         console.error('Error deleting kulcsszo:', err);
+    //         throw err;
+    //     } finally {
+    //         if (connection) await connection.close();
+    //     }
+    // }
 }
 
 module.exports = new KulcsszoDao();

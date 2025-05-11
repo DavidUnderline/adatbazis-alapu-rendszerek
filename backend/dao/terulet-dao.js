@@ -33,11 +33,12 @@ class TeruletDao {
     }
     
     async getvarosok() {
+        console.log("--- inside getcites dao");
         const query = 'select varos from terulet';
-        // console.log("inside terulet dao");
 
         const result = await executeQuery(query, {});
         console.log(result);
+        
         return result;
     }
 

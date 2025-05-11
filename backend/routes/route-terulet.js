@@ -3,7 +3,7 @@ const router = express.Router();
 const teruletdao = require('../dao/terulet-dao');
 
 router.get('/api/getcities', async (req, res) => {
-    // console.log("--- getcities")
+    console.log("--- getcities route")
     try{
         const cities = await teruletdao.getvarosok();
         if(!cities){

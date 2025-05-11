@@ -3,34 +3,42 @@ const router = express.Router();
 const kulcsszoDao = require('../dao/kulcsszo-dao');
 
 // Kulcsszó beszúrása
-router.post('/api/kulcsszoinsert', async (req, res) => {
-    // kulcsszoban benne kell legyen az allaslehetoseg id es a neve
-    const kulcsszo = req.body;
+router.post('/api/addkeyword', async (req, res) => {
+    // console.log(req.body);
+    // return;
+
+    const keyword = req.body;
+
     try {
-        const success = await kulcsszoDao.insertKulcsszo(kulcsszo);
+        const success = await kulcsszoDao.insertkeyword(keyword);
         if (!success) {
-            res.json({ success: false, message: 'Kulcsszó beszúrása sikertelen' });
-            return;
+            return res.json({ success: false, message: 'Létező kulcsszó!' });
         }
-        res.json({ success: true, message: 'Kulcsszó sikeresen beszúrva' });
+
+        return res.json({ success: true, message: 'Kulcsszó sikeresen hozzáadva!' });
+
     } catch (err) {
-        res.status(500).json({ error: 'Hiba a kulcsszó beszúrása során' });
+        return res.json({ success: false, message: 'Hiba a kulcsszó beszúrása során!' });
     }
 });
 
 // Kulcsszó lekérdezése név alapján
-router.post('/api/getByNev', async (req, res) => {
-    // kulcsszoban benne kell legyen a neve
-    const kulcsszo = req.body;
+router.get('/api/getkeywords', async (req, res) => {
+    // console.log('--- get keywords ---');
+    // console.log(req.body)
+
     try {
-        const result = await kulcsszoDao.getKulcsszoByNev(kulcsszo);
-        if (!result) {
-            res.json({ success: false, message: 'Kulcsszó nem található' });
+        const keywords = await kulcsszoDao.getkeywords();
+        console.log(keywords);
+
+        if (keywords.length === 0) {
+            res.json({ success: false, message: 'Nincs kulcsszó az adatbázisban' });
             return;
         }
-        res.json({ success: true, kulcsszo: result });
+
+        return res.json({ success: true, keywords: keywords });
     } catch (err) {
-        res.status(500).json({ error: 'Hiba a kulcsszó lekérdezése során' });
+        res.json({ error: 'Hiba a kulcsszó lekérdezése során' });
     }
 });
 

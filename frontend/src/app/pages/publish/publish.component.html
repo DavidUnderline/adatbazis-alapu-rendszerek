@@ -1,4 +1,5 @@
-<app-add-city-dialog [appDisplay]="showAddCity" (show)="showAddCity = $event" (load)="load()"></app-add-city-dialog>
+<app-add-city-dialog [appDisplay]="showAddCity" (show)="showAddCity = $event" (load)="loadcities()"></app-add-city-dialog>
+<app-key-word-form [appDisplay]="showAddKeyWord" (show)="showAddKeyWord = $event" (load)="loadkeywords()"></app-key-word-form>
 
 <div
   class="bg-white-50 bg-white-500 dark:bg-dark_blue-500 flex flex-col items-center gap-8 justify-center p-56 pt-32"
@@ -59,18 +60,19 @@
         />
       </fieldset>
 
-      <fieldset
-        class="w-full text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
-      >
-        <input
-          type="text"
-          placeholder="Kategória"
-          class="h-[1lh] outline-none text-medium focus:outline-0 peer text-dark_blue-500 w-full"
-          minlength="2"
-          formControlName="kategoria"
-        />
+      <fieldset class="flex gap-4 items-center col-start-2">
+        <select matNativeControl formControlName="kategoria" class="inline-block w-full px-4 py-2 text-sm text-dark_blue-500 border-2 border-dark_blue-500 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-dark_red-500 focus:border-dark_red-500 outline-dark_blue-500 focus:outline-0">
+          <option value="" disabled selected hidden>Kulcsszó</option>
+          @for(keyword of keywords; track keyword){
+            <option value="{{keyword.NEVE}}">{{keyword.NEVE}}</option>
+          }
+        </select>
+        <div class="text-dark_blue-500 hover:text-dark_red-500 flex flex-col align-center items-center">
+        <mat-icon class=" hover:cursor-pointer" (click)="showAddKeyWord = true">add</mat-icon>
+        </div>
       </fieldset>
-      <app-key-word-form (final_key_words)="key_words=$event"></app-key-word-form>
+
+        <!-- <app-key-word-form (final_key_words)="key_words=$event"></app-key-word-form> -->
 
       <fieldset class="flex gap-4 items-center col-start-2">
         <select matNativeControl formControlName="varos" class="inline-block w-full px-4 py-2 text-sm text-dark_blue-500 border-2 border-dark_blue-500 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-dark_red-500 focus:border-dark_red-500 outline-dark_blue-500 focus:outline-0">

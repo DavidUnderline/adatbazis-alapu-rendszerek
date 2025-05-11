@@ -44,27 +44,48 @@ export class PublishComponent implements OnInit {
   error_msg: string = '';
   show_success = false;
   success_msg = '';
+
   @Input() showAddCity = false;
+  @Input() showAddKeyWord = false;
+
   cities: any[] = [];
+  keywords: any[] = [];
 
   jobservice = inject(JobsService);
 
   ngOnInit(): void {
-    this.load()
+    this.loadcities();
+    this.loadkeywords();
   }
 
 
-  load(){
+  loadcities(){
      // console.log("get cities");
-     localStorage.removeItem("cities");
+    //  localStorage.removeItem("cities");
     
      this.http.get<any>('http://localhost:3000/terulet/api/getcities')
      .subscribe((response) => {
        // console.log("--- get cities ---");
        // console.table(response);
        if(response.success){
+        console.table(response.cities);
          this.cities = response.cities;
-         localStorage.setItem("cities", JSON.stringify(response.cities));
+         // this.successHandler(response.message);
+         // console.log(this.cities)
+     
+       } else{
+         this.errorHandler(response.message);
+       }
+     });
+  }
+
+  loadkeywords(){
+    this.http.get<any>('http://localhost:3000/kulcsszo/api/getkeywords')
+     .subscribe((response) => {
+       // console.log("--- get keywords ---");
+       // console.table(response);
+       if(response.success){
+         this.keywords = response.keywords;
          // this.successHandler(response.message);
          // console.log(this.cities)
      

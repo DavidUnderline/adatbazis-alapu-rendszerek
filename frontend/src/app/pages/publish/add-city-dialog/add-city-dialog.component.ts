@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { HttpClient } from '@angular/common/http';
-
 import { DisplayDirective } from '../../../shared/directives/display.directive';
 import { ErrorMsgComponent } from '../../../shared/error-msg/error-msg.component';
 import { SuccessMsgComponent } from "../../../shared/success-msg/success-msg.component"; 
@@ -49,23 +48,6 @@ export class AddCityDialogComponent {
       console.table(response);
       if(response.success){
         this.successHandler(response.message);
-
-        // TODO
-        // ! ha hozzaadunk varost akkor megint le kellene kerni
-        // this.http.get<any>('http://localhost:3000/terulet/api/getcities')
-        // .subscribe((response) => {
-        //   // console.log("--- get cities ---");
-        //   // console.table(response);
-        //   if(response.success){
-        //     this.cities = response.cities;
-        //     localStorage.setItem("cities", JSON.stringify(response.cities));
-        //     // this.successHandler(response.message);
-        //     // console.log(this.cities)
-          
-        //   } else{
-        //     this.errorHandler(response.message);
-        //   }
-        // });
         this.load.emit() // frissítünk
       } else{
         this.errorHandler(response.message);

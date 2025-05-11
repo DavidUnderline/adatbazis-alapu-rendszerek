@@ -1,35 +1,72 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
+import { HttpClient } from '@angular/common/http';
+import { DisplayDirective } from '../../../shared/directives/display.directive';
+import { ErrorMsgComponent } from '../../../shared/error-msg/error-msg.component';
+import { SuccessMsgComponent } from "../../../shared/success-msg/success-msg.component"; 
 
 @Component({
   selector: 'app-key-word-form',
-  imports: [ReactiveFormsModule, MatIcon],
+  imports: [ReactiveFormsModule, MatIcon, DisplayDirective, ErrorMsgComponent, SuccessMsgComponent],
   templateUrl: './key-word-form.component.html',
   styleUrl: './key-word-form.component.css'
 })
-export class KeyWordFormComponent {
-  key_word_number = 0
-  key_words : string[] = []
+export class KeyWordFormComponent implements OnInit{
+  @Output() show = new EventEmitter<boolean>();
+   constructor(private http: HttpClient) {}
 
-  key_word_form = new FormControl<string>('', {nonNullable: true})
-  @Output() final_key_words = new EventEmitter<string[]>();
-  add(key_word: string){
-    if(!key_word){
-      return;
-    }
-    if (this.key_words.find(existingKeyWord => existingKeyWord === key_word)){
-      //todo visszaigazolás arról, hogy kétszer ugyan azt nem lehet feltölteni
-      return;
-    }
-    this.key_words.push(key_word)
-    this.key_word_form.reset()
+  showError: boolean = false;
+  error_msg: string = '';
 
-    this.final_key_words.emit(this.key_words)
+  showSuccess:boolean = false;
+  success_msg: string = '';
+
+  keyword =  new FormControl('', [Validators.required, Validators.minLength(3)]);
+  
+  @Output() load = new EventEmitter<void>();
+
+  ngOnInit(): void {
+      this.keyword.markAsUntouched();
   }
 
-  delete(index: number){
-    this.key_words.splice(index, 1)
-    this.final_key_words.emit(this.key_words)
+  close() {
+    this.errorsToFalse();
+    this.show.emit(false);
+  }
+
+  addkeyword() {
+    this.errorsToFalse();
+    // console.log(this.keyword.getRawValue())
+
+    if(!this.keyword.valid){
+      this.errorHandler("Üres mező!");  
+      return;
+    }
+    
+    this.http.post<any>('http://localhost:3000/kulcsszo/api/addkeyword', {keyword: this.keyword.getRawValue()})
+    .subscribe((response) => {
+      console.table(response);
+      if(response.success){
+        this.successHandler(response.message);
+        this.load.emit() // frissítünk
+      } else{
+        this.errorHandler(response.message);
+      }
+    });
+
+  //   console.table(this.new_city_form.getRawValue());
+  }
+
+  errorHandler(error: string) {
+    (this.showError = true), (this.error_msg = error);
+  }
+  successHandler(success: string) {
+    (this.showSuccess = true), (this.success_msg = success);
+  }
+
+  errorsToFalse() {
+    this.showError = false;
+    this.showSuccess = false;
   }
 }
