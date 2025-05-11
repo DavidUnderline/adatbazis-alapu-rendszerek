@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { sha256 } from 'js-sha256';
@@ -9,7 +9,7 @@ import { sha256 } from 'js-sha256';
   templateUrl: './admin-form.component.html',
   styleUrl: './admin-form.component.css',
 })
-export class AdminFormComponent {
+export class AdminFormComponent{
   admin_form = new FormGroup({
     name: new FormControl<string>('', { nonNullable: true }),
     email: new FormControl<string>('', { nonNullable: true }),
@@ -65,6 +65,8 @@ export class AdminFormComponent {
       });
       return;
     }
+
+    console.log("form_email: ", temp_form.email);
 
     this.valid_admin_form.emit({
       email: temp_form.email ?? '',

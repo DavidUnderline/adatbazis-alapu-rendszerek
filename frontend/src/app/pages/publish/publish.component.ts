@@ -9,6 +9,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AddCityDialogComponent } from "./add-city-dialog/add-city-dialog.component";
 import { JobsService } from '../../services/jobs.service';
 import { KeyWordFormComponent } from "./key-word-form/key-word-form.component";
+import { AddCategoryDialogComponent } from './add-category-dialog/add-category-dialog.component';
 
 @Component({
   selector: 'app-publish',
@@ -21,7 +22,8 @@ import { KeyWordFormComponent } from "./key-word-form/key-word-form.component";
     DisplayDirective,
     HttpClientModule,
     AddCityDialogComponent,
-    KeyWordFormComponent
+    KeyWordFormComponent,
+    AddCategoryDialogComponent
 ],
   templateUrl: './publish.component.html',
   styleUrl: './publish.component.css',
@@ -47,16 +49,16 @@ export class PublishComponent implements OnInit {
   success_msg = '';
 
   @Input() showAddCity = false;
-  @Input() showAddKeyWord = false;
+  @Input() showAddCategory = false;
 
   cities: any[] = [];
-  keywords: any[] = [];
+  categories: any[] = [];
 
   jobservice = inject(JobsService);
 
   ngOnInit(): void {
     this.loadcities();
-    this.loadkeywords();
+    this.loadcategories();
   }
 
 
@@ -80,13 +82,13 @@ export class PublishComponent implements OnInit {
      });
   }
 
-  loadkeywords(){
-    this.http.get<any>('http://localhost:3000/kulcsszo/api/getkeywords')
+  loadcategories(){
+    this.http.get<any>('http://localhost:3000/kategoria/api/getcategories')
      .subscribe((response) => {
        // console.log("--- get keywords ---");
        // console.table(response);
        if(response.success){
-         this.keywords = response.keywords;
+         this.categories = response.keywords;
      
        } else{
          this.errorHandler(response.message);
@@ -107,7 +109,7 @@ export class PublishComponent implements OnInit {
       if(!form.cim.length || 
          !form.kovetelmenyek.length ||
          !form.varos.length ||
-         !form.kulcsszo.length){
+         !form.kategoria.length){
           this.errorHandler("Üres mező / mezők, helytelen formátum!");
           return;
       }
@@ -123,7 +125,7 @@ export class PublishComponent implements OnInit {
         is_accepted: false,
         // terulet_id: ceg.terulet_id,
         // ceg_adoazonosito: ceg.adoazonosito,
-        kulcsszo: form.kulcsszo,
+        kategoria: form.kategoria,
         email: localStorage.getItem('username')
       };
       console.table(allaslehetoseg);
