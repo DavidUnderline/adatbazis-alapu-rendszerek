@@ -37,28 +37,27 @@ export class SearchComponent {
   constructor(private http: HttpClient){}
 
   filter_works(work_filter: any) {
-    // console.table(work_filter);
+    console.table(work_filter);
     // console.table(this.addittional_filter);
     // return;
-    let data = {};
+    
+    let data: any = {
+      category: work_filter.category,
+      keyword: work_filter.keyword,
+      location: work_filter.city,
+    };
     this.is_searched = true;
     this.filtered_work_offers = [];
-    
     // console.table(this.addittional_filter);
-    if(this.addittional_filter != undefined){
-      data = {
-        keyword: work_filter.keyword,
-        location: work_filter.city,
-        company: this.addittional_filter.company,
-        salarymax: this.addittional_filter.max,
-        salarymin: this.addittional_filter.min
-      }
     
-    } else{
-      data = {
-        keyword: work_filter.keyword,
-        location: work_filter.city
-      }
+    if(this.addittional_filter != undefined){
+      data.company = this.addittional_filter.company,
+      data.salarymax = this.addittional_filter.max,
+      data.salarymin = this.addittional_filter.min
+    } 
+
+    if(!data.location && !data.keyword && !data.company && !data.category){
+      return;
     }
 
     this.http.post<any>('http://localhost:3000/allasok/api/searchjob', data)

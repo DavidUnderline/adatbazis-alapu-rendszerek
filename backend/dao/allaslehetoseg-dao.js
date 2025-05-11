@@ -14,8 +14,9 @@ class AllaslehetosegDao{
         // const fieldsjoin = [];
         console.log("--- FRONTEND DATA ---");
         console.table(data);
-        // keyword - location - company - salarymax - salarymin
-        if(data.location && !data.keyword && !data.company && !data.salarymax && !data.salarymin){
+        // category - keyword - location - company - salarymax - salarymin
+
+        if(data.location && !data.keyword && !data.company && !data.salarymax && !data.salarymin && !data.category){
             console.log("--- location only ---");
             binds.location = data.location;
 
@@ -25,6 +26,136 @@ class AllaslehetosegDao{
             "terulet_id = (select id from terulet where varos LIKE '%' || :location || '%')";
             return await executeQuery(query, binds);
         }
+        
+        if(data.company && !data.location && !data.keyword && !data.salarymax && !data.salarymin && !data.category){
+            console.log("--- company only ---");
+            binds.company = data.company;
+            
+            const query = ""+
+            "select * from allaslehetoseg "+
+            "where is_accepted = :is_accepted and "+
+            "ceg_adoazonosito = (select adoazonosito from ceg where neve LIKE '%' || :company || '%')";
+            return await executeQuery(query, binds);
+        }
+        
+        if(data.location && data.company && !data.keyword && !data.salarymax && !data.salarymin && !data.category){
+            console.log("--- location - company only ---");
+            binds.location = data.location;
+            binds.company = data.company;
+            
+            const query = ""+
+            "select * from allaslehetoseg "+
+            "where is_accepted = :is_accepted and "+
+            "terulet_id = (select id from terulet where varos LIKE '%' || :location || '%') and "+
+            "ceg_adoazonosito = (select adoazonosito from ceg where neve LIKE '%' || :company || '%')";
+            return await executeQuery(query, binds);
+        }
+
+        if(data.company && data.salarymin > 0 && data.salarymax > 0 && !data.location && !data.keyword && !data.category){
+            console.log("--- company - salarymin - salarymax only ---");
+            binds.company = data.company;
+            binds.salarymin = data.salarymin;
+            binds.salarymax = data.salarymax;
+            
+            const query = ""+
+            "select * from allaslehetoseg "+
+            "where is_accepted = :is_accepted and "+
+            "ceg_adoazonosito = (select adoazonosito from ceg where neve LIKE '%' || :company || '%') and "+
+            "ber >= :salarymin and ber <= :salarymax "+
+            " order by ber desc";
+            return await executeQuery(query, binds);
+        }
+
+        if(data.location && data.company && data.salarymin > 0 && data.salarymax > 0 && !data.keyword && !data.category){
+            console.log("--- location - company - salarymin - salarymax only ---");
+            binds.location = data.location;
+            binds.company = data.company;
+            binds.salarymin = data.salarymin;
+            binds.salarymax = data.salarymax;
+            
+            const query = ""+
+            "select * from allaslehetoseg "+
+            "where is_accepted = :is_accepted and "+
+            "terulet_id = (select id from terulet where varos LIKE '%' || :location || '%') and "+
+            "ceg_adoazonosito = (select adoazonosito from ceg where neve LIKE '%' || :company || '%') and "+
+            "ber >= :salarymin and ber <= :salarymax "+
+            "order by ber desc";
+            return await executeQuery(query, binds);
+        }
+
+        if(data.category && !data.location && !data.company && !data.salarymin && !data.salarymax && !data.keyword){
+            console.log("--- category only ---");
+            binds.category = data.category;
+            
+            const query = ""+
+            "select * from allaslehetoseg "+
+            "where is_accepted = :is_accepted and "+
+            "kategoria_neve = (select neve from kategoria where neve LIKE '%' || :category || '%') "+
+            "order by ber desc";
+            return await executeQuery(query, binds);
+        }
+
+        if(data.category && data.location && !data.company && !data.salarymin && !data.salarymax && !data.keyword){
+            console.log("--- category - location only ---");
+            binds.category = data.category;
+            binds.location = data.location;
+            
+            const query = ""+
+            "select * from allaslehetoseg "+
+            "where is_accepted = :is_accepted and "+
+            "kategoria_neve = (select neve from kategoria where neve LIKE '%' || :category || '%') and "+
+            "terulet_id = (select id from terulet where varos LIKE '%' || :location || '%') ";
+            return await executeQuery(query, binds);
+        }
+
+        if(data.category && data.company && !data.location && !data.salarymin && !data.salarymax && !data.keyword){
+            console.log("--- category - company only ---");
+            binds.category = data.category;
+            binds.company = data.company;
+            
+            const query = ""+
+            "select * from allaslehetoseg "+
+            "where is_accepted = :is_accepted and "+
+            "kategoria_neve = (select neve from kategoria where neve LIKE '%' || :category || '%') and "+
+            "ceg_adoazonosito = (select adoazonosito from ceg where neve LIKE '%' || :company || '%') ";
+            return await executeQuery(query, binds);
+        }
+
+        if(data.category && data.location && data.company && !data.salarymin && !data.salarymax && !data.keyword){
+            console.log("--- category - location - company only ---");
+            binds.category = data.category;
+            binds.location = data.location;
+            binds.company = data.company;
+            
+            const query = ""+
+            "select * from allaslehetoseg "+
+            "where is_accepted = :is_accepted and "+
+            "kategoria_neve = (select neve from kategoria where neve LIKE '%' || :category || '%') and "+
+            "terulet_id = (select id from terulet where varos LIKE '%' || :location || '%') and "+
+            "ceg_adoazonosito = (select adoazonosito from ceg where neve LIKE '%' || :company || '%') ";
+            return await executeQuery(query, binds);
+        }
+
+        if(data.location && data.company && data.salarymin > 0 && data.salarymax > 0  && data.category && !data.keyword){
+            console.log("--- location - company - salarymin - salarymax - category only ---");
+            binds.location = data.location;
+            binds.company = data.company;
+            binds.salarymin = data.salarymin;
+            binds.salarymax = data.salarymax;
+            binds.category = data.category;
+            
+            const query = ""+
+            "select * from allaslehetoseg "+
+            "where is_accepted = :is_accepted and "+
+            "terulet_id = (select id from terulet where varos LIKE '%' || :location || '%') and "+
+            "ceg_adoazonosito = (select adoazonosito from ceg where neve LIKE '%' || :company || '%') and "+
+            "ber >= :salarymin and ber <= :salarymax and "+
+            "kategoria_neve = (select neve from kategoria where neve LIKE '%' || :category || '%') "+
+            "order by ber desc";
+            return await executeQuery(query, binds);
+        }
+
+        
 
         return
 
@@ -173,7 +304,7 @@ class AllaslehetosegDao{
 
 module.exports = new AllaslehetosegDao();
 
-
+// ez lett volna az eredeti szűrés szépen folytonosan
     // const queries = {
     //     ceginnerjoin: "inner join ceg c ON c.adoazonosito = a.ceg_adoazonosito",
     //     kulcsszoinnerjoin: "inner join allaslehetoseg_kulcsszo_kapcsolat ak on ak.allaslehetoseg_id = a.id",
