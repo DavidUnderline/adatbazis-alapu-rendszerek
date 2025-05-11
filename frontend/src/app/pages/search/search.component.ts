@@ -1,15 +1,14 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { SearchFormComponent } from './search-form/search-form.component';
 import { SearchFilterDialogComponent } from './search-filter-dialog/search-filter-dialog.component';
-import { Allas } from '../../shared/Model/Allas';
-import { WorkService } from '../../services/work.service';
-import { Router } from '@angular/router';
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
-import { LutCompanyNamePipe } from '../../pipes/lut-company-name.pipe';
-import { LutLocationsPipe } from '../../pipes/lut-locations.pipe';
+
+
 import { CommonModule } from '@angular/common';
+import { WorkMiniComponent } from './work-mini/work-mini.component';
+
 
 
 @Component({
@@ -19,10 +18,9 @@ import { CommonModule } from '@angular/common';
     SearchFilterDialogComponent,
     DisplayDirective,
     HttpClientModule,
-    LutCompanyNamePipe,
-    LutLocationsPipe,
-    CommonModule
-  ],
+    CommonModule,
+    WorkMiniComponent
+],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css',
 })
@@ -30,9 +28,9 @@ export class SearchComponent {
   filtered_work_offers: any = [];
   is_searched = false;
   addittional_filter!: {company: string | null, min: number, max: number}
-  private work_service = inject(WorkService);
-  private router = inject(Router);
+  
   show: boolean = false;
+  show_rate_dialog = false
 
   constructor(private http: HttpClient){}
 
@@ -88,11 +86,7 @@ export class SearchComponent {
         console.table(error);
       }
     );
-  }
-
-  navigate(work: Allas){
-    this.work_service.setWork(work);
-    this.router.navigateByUrl("/work-details");
+    console.log(this.filtered_work_offers)
   }
 
   showDialog(){

@@ -1,0 +1,44 @@
+<div
+      class="bg-white-500 rounded-2xl p-5 grid grid-cols-12 gap-4 justify-center align-middle"
+    >
+      <img
+        src="assets/images/logos/asus_logo.svg"
+        alt="ide jon a kep"
+        class="float-left w-[7rem] col-span-1"
+      />
+      <div class="col-span-10 flex flex-col">
+        <div class="">
+          <h1 class="font-medium text-3xl text-dark_blue-500">
+            {{ work.cim }}
+            <span
+              class="font-medium outline-2 outline-dark_blue-500 p-1.5 text-xs rounded-2xl"
+              >{{ work.kulcsszo_neve }}</span
+            ><!--TODO Szét kell szedni-->
+          </h1>
+          <h2 class="text-dark_blue-500 font-medium text-2xl">
+            {{work.ceg_adoazonosito | lutCompanyName | async}}
+            <!--TODO Pipeot írni ehez a szépséghez-->
+          </h2>
+          <h2 class="text-dark_blue-500 font-medium text-2xl">
+            {{ work.terulet_id | lutLocations | async}}
+          </h2>
+          <h3 class="text-dark_red-500 font-medium">
+            {{ "Br. " + work.ber + " Ft" }}
+          </h3>
+        </div>
+      </div>
+      <div class="text-dark_blue-500 justify-self-end hover:text-dark_red-500 h-fit">
+        <mat-icon class="hover:cursor-pointer">reviews</mat-icon>
+      </div>
+      <p class="text-dark_blue-500 font-medium text-justify col-span-8">
+        {{ work.leiras }}
+      </p>
+      <div class="col-span-4 flex justify-end align-middle ">
+        <button
+          (click)="navigate(work)"
+          class="bg-dark_red-500 text-white-500 font-medium text-xl rounded-xl cursor-pointer p-5 pl-20 pr-20 "
+        >
+          Érdekel
+        </button>
+      </div>
+    </div>
