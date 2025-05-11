@@ -90,16 +90,17 @@ class AllaslehetosegDao{
         const insert_query = "insert into allaslehetoseg "+
         "(cim, leiras, kovetelmenyek, mikor, ber, is_accepted, terulet_id, ceg_adoazonosito, kategoria_neve) "+
         `values (:cim, :leiras, :kovetelmenyek, TO_TIMESTAMP(:mikor, 'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"'), :ber, :is_accepted, :terulet_id, :adoazonosotito, :kategoria)`;
-        
+
         const result = await executeQuery(insert_query, insert_binds);
         if(!result) return 0;
 
-        const job_id = await this.getmaxid();
+        // ! ez kelleni fog a kulcsszóhoz
+        // const job_id = await this.getmaxid();
 
-        await this.keyword_job_switchboard_insert({
-            allaslehetoseg_id: job_id[0].ID,
-            kulcsszo_neve: allas.kulcsszo
-        });
+        // await this.keyword_job_switchboard_insert({
+        //     allaslehetoseg_id: job_id[0].ID,
+        //     kulcsszo_neve: allas.kulcsszo
+        // });
         
         return result;
     }

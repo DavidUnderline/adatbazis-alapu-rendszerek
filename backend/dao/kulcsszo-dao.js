@@ -1,29 +1,6 @@
 const { executeQuery, getConnection } = require('../config/db');
 
 class KulcsszoDao {
-    async getkeywords() {
-        console.log("--- get keywords dao---");
-        const query = "select neve from kulcsszo";
-        return await executeQuery(query);
-    }
-
-    async getkeyword(data) {
-        console.log("--- get (1) keyword dao---");
-        const query = "select neve from kulcsszo where neve = :keyword";
-        return await executeQuery(query, { keyword: data.keyword });
-    }
-
-    // Új kulcsszó beszúrása
-    async insertkeyword(data) {
-        console.log("--- insert keyword dao ---");
-
-        const isduplicate = await this.getkeyword(data);
-        if (isduplicate.length > 0) return false;
-
-        const query = `INSERT INTO kulcsszo (neve) VALUES (:keyword)`;
-        return await executeQuery(query, { keyword: data.keyword });
-    }
-
     // Kulcsszavak lekérdezése egy adott álláslehetőséghez
     async getKulcsszoByAllaslehetosegId(kulcsszo) {
         let connection;
