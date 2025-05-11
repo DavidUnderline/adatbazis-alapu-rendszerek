@@ -236,6 +236,18 @@ EXCEPTION
 END;
 /
 
+CREATE OR REPLACE TRIGGER ceg_adoazonosito_update
+BEFORE UPDATE OF adoazonosito ON ceg
+FOR EACH ROW
+BEGIN
+    IF :NEW.adoazonosito <> :OLD.adoazonosito THEN
+        UPDATE allaslehetoseg
+        SET ceg_adoazonosito = :NEW.adoazonosito
+        WHERE ceg_adoazonosito = :OLD.adoazonosito;
+    END IF;
+END;
+/
+
 CREATE OR REPLACE TRIGGER update_child_email
 BEFORE UPDATE OF email ON allaskereso
 FOR EACH ROW
