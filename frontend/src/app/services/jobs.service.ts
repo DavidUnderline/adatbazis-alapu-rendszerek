@@ -1,30 +1,38 @@
-import { Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-
 export class JobsService {
   constructor(private http: HttpClient) {}
 
   showError: boolean = true;
   error_msg: string = '';
 
-  showSuccess:boolean = true;
+  showSuccess: boolean = true;
   success_msg: string = '';
 
   private key = 'jobs';
-  
-  private url = 'http://localhost:3000/allasok/api/getjobsforuser';
+
+  private url = 'http://localhost:3000/allasok/api/';
 
   getjobs(data: any): Observable<any> {
-    return this.http.post<any>(this.url, data, {
+    return this.http.post<any>(this.url + 'getjobsforuser', data, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
+  }
+
+  deleteJobById(job_id: number) {
+    this.http.post<any>(this.url + 'deleteById', {id:job_id}).subscribe(
+      (response) => {
+        console.log(response)
+      },
+      (error) => {}
+    );
   }
 
   // getjobs(data: any): any{
@@ -57,32 +65,31 @@ export class JobsService {
   //   // const localjobs = JSON.parse(localStorage.getItem(this.key));
   //   const localjobs = localStorage.getItem(this.key);
   //   console.log("--- LOCALJOBS: \n",localjobs);
-    
+
   //   let temp = [];
   //   for(let i = 0 ; i < data.length; i++){
   //     temp.push(data[i]);
   //   }
   //   console.log("--- TEMP: \n",temp);
-    
+
   //   const ids = localjobs != null ? temp.concat(JSON.parse(localjobs)) : temp;
   //   console.log("--- JOBS: \n",ids);
-    
+
   //   const jobsid = JSON.stringify(ids);
   //   localStorage.setItem(this.key, jobsid);
   // }
 
-
-  clearjobs(){
+  clearjobs() {
     // localStorage.removeItem('jobs');
   }
 
-  errorHandler(error: string): void{
+  errorHandler(error: string): void {
     console.table(error);
     this.showError = true;
     this.error_msg = error;
   }
 
-  successHandler(success: string){
+  successHandler(success: string) {
     this.showSuccess = true;
     this.success_msg = success;
   }

@@ -1,9 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Moderator } from '../../../shared/Model/Moderator';
+import { MatIcon } from '@angular/material/icon';
+
 
 @Component({
   selector: 'app-admin-datas',
-  imports: [],
+  imports: [ MatIcon],
   templateUrl: './admin-datas.component.html',
   styleUrl: './admin-datas.component.css'
 })

@@ -56,11 +56,11 @@ router.post('/api/searchPending', async(req, res) => {
     }
 });
 
-router.post('/api/deletePending', async(req, res) => {
+router.post('/api/deleteById', async(req, res) => {
     console.log('---[ route-allaslehetoseg-delete ]---');
     const id = req.body.id;
     try{
-        const jobs = await allaslehetosegdao.deletePendingAllasokById(id);
+        const jobs = await allaslehetosegdao.deleteAllasokById(id);
         if(!jobs){
             res.json({success: false, message: 'Hiba az álláslehetőség törlése során'});
             return

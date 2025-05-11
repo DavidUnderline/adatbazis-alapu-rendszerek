@@ -76,7 +76,7 @@ export class MainPageComponent implements OnInit {
 
   deleteJob(id: number) {
     this.http
-      .post('http://localhost:3000/allasok/api/deletePending', { id: id })
+      .post('http://localhost:3000/allasok/api/deleteById', { id: id })
       .subscribe(
         (response: any) => {
           console.log(response.message);

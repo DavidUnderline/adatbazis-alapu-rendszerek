@@ -29,6 +29,8 @@ export class AddCityDialogComponent {
     megye: new FormControl<string | null>(''),
     varos: new FormControl<string | null>(''),
   });
+  
+  @Output() load = new EventEmitter<void>();
 
   close() {
     this.errorsToFalse();
@@ -64,7 +66,7 @@ export class AddCityDialogComponent {
         //     this.errorHandler(response.message);
         //   }
         // });
-      
+        this.load.emit() // frissítünk
       } else{
         this.errorHandler(response.message);
       }

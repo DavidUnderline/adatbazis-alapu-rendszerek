@@ -8,6 +8,7 @@ import { LutLocationsPipe } from '../../../pipes/lut-locations.pipe';
 import { DisplayDirective } from '../../../shared/directives/display.directive';
 import { of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { response } from 'express';
 
 @Component({
   selector: 'app-work-list',
@@ -27,6 +28,10 @@ export class WorkListComponent {
   
   constructor() {
     // console.table(localStorage);
+    this.load()
+  }
+
+  private load(){
     const data = {
       tipo: "ceg",
       adoazonosito: localStorage.getItem('adoazonosito')
@@ -71,6 +76,11 @@ export class WorkListComponent {
       this.allasok = allasok;
       // console.log(this.allasok);
     });
+  }
+
+  delete(job_id: number){
+    this.job_service.deleteJobById(job_id);
+    this.load();
   }
 
   open_applicants(job_id: number){
