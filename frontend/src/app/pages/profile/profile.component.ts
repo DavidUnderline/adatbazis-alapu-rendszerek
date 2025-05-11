@@ -249,11 +249,12 @@ export class ProfileComponent {
     this.http.post<any>('http://localhost:3000/admin/api/updateAdmin', data)
     .subscribe((response) => {
       console.table(response);
-      
+
       if(response.success){
         this.user_email = response.email;
         localStorage.setItem('username', response.email);
         this.successHandler(response.message);
+        this.loadModerator();
       
       } else{
         this.errorHandler(response.message);

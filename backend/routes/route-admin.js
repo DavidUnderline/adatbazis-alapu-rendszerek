@@ -51,7 +51,7 @@ router.post('/api/updateAdmin', async(req, res)=>{
            return res.json({ success : false, message: 'Sikertelen módosítás!' });
             
         }
-        return res.json({ success : true, email: result.emailt, message: 'Sikeres módosítás!' });
+        return res.json({ success : true, email: result.email, message: 'Sikeres módosítás!' });
         
     } catch (err) {
         return res.json({ error: 'Hiba a módosítás során!' });
