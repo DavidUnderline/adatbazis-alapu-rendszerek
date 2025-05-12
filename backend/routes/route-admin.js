@@ -57,9 +57,27 @@ router.post('/api/updateAdmin', async(req, res)=>{
     } catch (err) {
         return res.json({ error: 'Hiba a módosítás során!' });
     }
-  return;
 });
 
+router.post('/api/delete_user', async(req, res)=>{
+  console.log("\n\n---[ route-admin delete ]---");
+  
+  const data = req.body
+  try {
+        const result = await adminDao.deleteuser(data);
+        console.log("res", result);
+
+        if (!result) {
+           return res.json({ success : false, message: 'Nincs ilyen felhasználó a választott körben!' });
+            
+        }
+        
+        return res.json({ success : true, email: result.email, message: 'Sikeres törlés!' });
+        
+    } catch (err) {
+        return res.json({ error: err });
+    }
+});
 
 
 module.exports = router;

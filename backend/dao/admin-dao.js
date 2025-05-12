@@ -84,6 +84,24 @@ class AdminDao {
     };
   }
 
+  async deleteuser(data){
+    console.log("--- delete user dao ---");
+    console.log(data);
+
+    let query = "";
+
+    if(data.user === 'ceg')
+      query = "DELETE FROM ceg WHERE email = :email";
+  
+    else if(data.user === 'allaskereso')
+      query = "DELETE FROM allaskereso WHERE email = :email";
+
+    else if(data.user === 'moderator')
+      query = "DELETE FROM moderator WHERE email = :email";
+    
+    return await executeQuery(query, {email: data.email});
+  }
+
 }
 
 
