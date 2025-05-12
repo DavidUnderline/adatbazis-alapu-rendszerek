@@ -259,7 +259,7 @@ class AllaslehetosegDao{
                 }
             }
         }catch(err){
-            console.err("\n\n\n",err)
+            console.error("\n\n\n",err)
         }
         
         return result;

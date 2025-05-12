@@ -19,7 +19,7 @@ class KulcsszoDao {
     }
 
     async getaKeyWord(data) {
-        console.log("--- get (1) category dao---");
+        console.log("--- get (1) keyword dao---");
         console.log(data)
         
         const query = "select neve from kulcsszo where neve = :keyword";
@@ -41,8 +41,8 @@ class KulcsszoDao {
 
     async keyword_job_switchboard_insert(data){
         console.log("--- keyword_job_switchboard_insert ---");
-        const a = this.getaKeyWord(data.kulcsszo_neve)
-        if (!a) return;
+        // const a = this.getaKeyWord(data.kulcsszo_neve)
+        // if (!a) return;
         const query = `INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve) VALUES (:allaslehetoseg_id, :kulcsszo_neve)`;
         return await executeQuery(query, data);
     }

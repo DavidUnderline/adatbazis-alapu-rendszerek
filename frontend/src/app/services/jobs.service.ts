@@ -26,13 +26,17 @@ export class JobsService {
     });
   }
 
-  deleteJobById(job_id: number) {
+  deleteJobById(job_id: number) : {success: boolean, message: string } {
+    let message !: {success: boolean, message: string }
     this.http.post<any>(this.url + 'deleteById', {id:job_id}).subscribe(
       (response) => {
-        console.log(response)
+        message =  {success: true, message: "Sikeresen törölted az álláshírdetésed!"};
       },
-      (error) => {}
+      (error) => {
+        message = {success: false, message: "Sikertelen álláshírdetés törlés."};
+      }
     );
+    return message;
   }
 
   // getjobs(data: any): any{
