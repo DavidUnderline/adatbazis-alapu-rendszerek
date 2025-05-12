@@ -5,15 +5,14 @@ const { keywordDao } = require('../dao/kulcsszo-dao');
 
 class AllaslehetosegDao{
     async getAllasok(data){
+        console.log("--- get allasok dao ---");
+        console.table(data);
+
         const is_accapted = 'true';
 
         const binds = {
             is_accepted: is_accapted,
         };
-        // const fields = [];
-        // const fieldsjoin = [];
-        console.log("--- FRONTEND DATA ---");
-        console.table(data);
         // category - keyword - location - company - salarymax - salarymin
 
         if(data.location && !data.keyword && !data.company && !data.salarymax && !data.salarymin && !data.category){
@@ -155,19 +154,60 @@ class AllaslehetosegDao{
             return await executeQuery(query, binds);
         }
 
-        
+// ez lett volna az eredeti szűrés szépen folytonosan
+        const fieldsjoin = [];
+        const fields = [];
+        const queries = {
+            ceginnerjoin: "inner join ceg c ON c.adoazonosito = a.ceg_adoazonosito",
+            kulcsszoinnerjoin: "inner join allaslehetoseg_kulcsszo_kapcsolat ak on ak.allaslehetoseg_id = a.id",
+            teruletinnerjoin: "inner join terulet t ON t.id = a.terulet_id",
+            kategoriainnerjoin: "inner join kategoria k ON k.neve = a.kategoria_neve",
+            likecompany: "AND c.neve LIKE '%' || :company || '%'",
+            likekeyword: "AND ak.kulcsszo_neve LIKE '%' || :keyword || '%'",
+            likelocation: "AND t.varos LIKE '%' || :location || '%'",
+            likecategory: "AND k.neve LIKE '%' || :category || '%'"
+        }
 
-        return
+        if(data.company){
+            fieldsjoin.push(queries.ceginnerjoin);
+            fields.push(queries.likecompany);
+            binds.company = data.company;
+        }
+
+        if(data.keyword){
+            fieldsjoin.push(queries.kulcsszoinnerjoin);
+            fields.push(queries.likekeyword);
+            binds.keyword = data.keyword;
+        }
+
+        if(data.location){
+            fieldsjoin.push(queries.teruletinnerjoin);
+            fields.push(queries.likelocation);
+            binds.location = data.location;
+        }
+
+        if(data.category){
+            fieldsjoin.push(queries.kategoriainnerjoin);
+            fields.push(queries.likecategory);
+            binds.category = data.category;
+        }
+        
+        if(data.salarymax){
+            fields.push("AND ber <= :salarymax");
+            binds.salarymax = data.salarymax;
+            fields.push("AND ber >= :salarymin");
+            binds.salarymin = data.salarymin;
+        }
 
         const query = `select * from allaslehetoseg a ${fieldsjoin.join(' ')}`+
         ` where is_accepted = :is_accepted ${fields.join(' ')}`;
-        // console.log("--- QUERY:\n" + query);
-        // console.log("\n--- BINDS:")
-        // console.table(binds);
+        console.log("--- QUERY:\n" + query);
+        console.log("\n--- BINDS:")
+        console.table(binds);
         // return;
 
         const result = await executeQuery(query, binds);   
-        // console.log(result);
+        console.log(result);
         
         return result.length > 0 ? result : false;
     }
@@ -303,38 +343,3 @@ class AllaslehetosegDao{
 };
 
 module.exports = new AllaslehetosegDao();
-
-// ez lett volna az eredeti szűrés szépen folytonosan
-    // const queries = {
-    //     ceginnerjoin: "inner join ceg c ON c.adoazonosito = a.ceg_adoazonosito",
-    //     kulcsszoinnerjoin: "inner join allaslehetoseg_kulcsszo_kapcsolat ak on ak.allaslehetoseg_id = a.id",
-    //     teruletinnerjoin: "inner join terulet t ON t.id = a.terulet_id",
-    //     likecompany: "AND c.neve LIKE '%' || :company || '%'",
-    //     likekeyword: "AND ak.kulcsszo_neve LIKE '%' || :keyword || '%'",
-    //     likelocation: "AND t.varos LIKE '%' || :location || '%'"
-    // }
-
-    // if(data.company){
-    //     fieldsjoin.push(queries.ceginnerjoin);
-    //     fields.push(queries.likecompany);
-    //     binds.company = data.company;
-    // }
-
-    // if(data.keyword){
-    //     fieldsjoin.push(queries.kulcsszoinnerjoin);
-    //     fields.push(queries.likekeyword);
-    //     binds.keyword = data.keyword;
-    // }
-
-    // if(data.location){
-    //     fieldsjoin.push(queries.teruletinnerjoin);
-    //     fields.push(queries.likelocation);
-    //     binds.location = data.location;
-    // }
-    
-    // if(data.salarymax){
-    //     fields.push("AND ber <= :salarymax");
-    //     binds.salarymax = data.salarymax;
-    //     fields.push("AND ber >= :salarymin");
-    //     binds.salarymin = data.salarymin;
-    // }
