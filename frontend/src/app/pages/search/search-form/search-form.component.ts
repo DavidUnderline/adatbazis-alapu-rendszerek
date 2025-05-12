@@ -13,20 +13,16 @@ export class SearchFormComponent {
   @Output() valid_filter = new EventEmitter<any>();
   @Output() show = new EventEmitter<boolean>();
   work_filter = new FormGroup({
+    form_category: new FormControl<string | null>(''),
     form_keyword: new FormControl<string | null>(''),
     form_location: new FormControl<string | null>(''),
   });
 
   Submit() {
-    if(!this.work_filter.valid || 
-      (this.work_filter.value.form_keyword === '' && this.work_filter.value.form_location) === ''){
-      console.log('Üres / Nem szabályos mezők, nem elfogadható!');
-      return;
-    }
-
     this.valid_filter.emit({
       city: this.work_filter.value.form_location ?? '',
       keyword: this.work_filter.value.form_keyword ?? '',
+      category: this.work_filter.value.form_category ?? '',
     });
 
     return;
