@@ -2,12 +2,45 @@
   <h1 class="mr-auto ml-auto text-center text-2xl text-dark_blue-500 font-medium">
     Felhasználó törlése
   </h1>
-  <form action="" class="flex flex-col gap-8 align-middle w-fit items-center">
-    <section class="flex w-full justify-center gap-16">
-      <label for="c" class="has-checked:bg-dark_blue-500 has-checked:text-white-500 text-lg font-medium p-1.5 pt-0.5 pb-0.5  rounded-xl hover:cursor-pointer">Cég<input type="radio" name="user" id="c" class="hidden" checked #r/></label>
-      <label for="a" class="has-checked:bg-dark_blue-500 has-checked:text-white-500 text-lg font-medium p-1.5 pt-0.5 pb-0.5  rounded-xl hover:cursor-pointer">Álláskereső<input type="radio" name="user" id="a" class="hidden" #r/></label>
-      <label for="m" class="has-checked:bg-dark_blue-500 has-checked:text-white-500 text-lg font-medium p-1.5 pt-0.5 pb-0.5  rounded-xl hover:cursor-pointer">Admin<input type="radio" name="user" id="m" class="hidden" #r/></label>
-    </section>
+  <form [formGroup]="userTypeForm" (ngSubmit)="delete_user()" class="flex flex-col gap-8 align-middle w-fit items-center">
+     <section class="flex w-full justify-center gap-16">
+    <label
+      for="c"
+      [class.has-checked]="userTypeForm.get('user')?.value === 'c'"
+      class="has-checked:bg-dark_blue-500 has-checked:text-white-500 text-lg font-medium p-1.5 pt-0.5 pb-0.5 rounded-xl hover:cursor-pointer"
+      >Cég<input
+        type="radio"
+        name="user"
+        id="c"
+        class="hidden"
+        value="ceg"
+        formControlName="user"
+    /></label>
+    <label
+      for="a"
+      [class.has-checked]="userTypeForm.get('user')?.value === 'a'"
+      class="has-checked:bg-dark_blue-500 has-checked:text-white-500 text-lg font-medium p-1.5 pt-0.5 pb-0.5 rounded-xl hover:cursor-pointer"
+      >Álláskereső<input
+        type="radio"
+        name="user"
+        id="a"
+        class="hidden"
+        value="allaskereso"
+        formControlName="user"
+    /></label>
+    <label
+      for="m"
+      [class.has-checked]="userTypeForm.get('user')?.value === 'm'"
+      class="has-checked:bg-dark_blue-500 has-checked:text-white-500 text-lg font-medium p-1.5 pt-0.5 pb-0.5 rounded-xl hover:cursor-pointer"
+      >Admin<input
+        type="radio"
+        name="user"
+        id="m"
+        class="hidden"
+        value="moderator"
+        formControlName="user"
+    /></label>
+  </section>
     <fieldset
       class="w-full text-dark_blue-500 p-1 relative border-b-2 group invalid:border-dark_red-500 invalid:text-dark_red-500 flex items-end"
     >
@@ -15,7 +48,7 @@
         type="text"
         placeholder="Email"
         class="h-[1lh] outline-none pl-8 text-medium focus:outline-0 peer text-dark_blue-500 w-full"
-        minlength="2"
+        minlength="6"
         formControlName="email"
       />
       <mat-icon
@@ -28,10 +61,17 @@
     <button
           type="submit"
           class="bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl cursor-pointer flex justify-center gap-1.5"
-        >
+          >
           <mat-icon>delete</mat-icon>
           Törlés
         </button>
-
-  </form>
+      </form>
+  <app-error-msg
+  [error_msg]="error_msg"
+  [appDisplay]="showError"
+  ></app-error-msg>
+  <app-success-msg
+    [success_msg]="success_msg"
+    [appDisplay]="showSuccess"
+  ></app-success-msg>
 </div>
