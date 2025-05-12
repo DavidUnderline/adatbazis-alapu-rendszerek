@@ -16,12 +16,12 @@ export class StatisticsService {
   }> {
     let result: { megyek: string[]; allasok_megyenkent: number[] } = { megyek: [], allasok_megyenkent: [] };
     let count = 0
-    console.log('statistics service');
+    // console.log('statistics service');
     const response: any = await this.http.post(this.url + 'munkaEroHiany', {}).toPromise();
-    console.log(response.result);
+    // console.log(response.result);
     if (response.success) {
       response.result.forEach((data: any) => {
-        console.log(data);
+        // console.log(data);
         result.megyek.push(data.MEGYE as string);
         result.allasok_megyenkent.push(data.ALLASOK_SZAMA as number);
         count += data.ALLASOK_SZAMA;
@@ -30,5 +30,23 @@ export class StatisticsService {
       console.error(response.message);
     }
     return { ...result, sum_allasok_count: count };
+  }
+
+  public async getTopCeg(): Promise<{cegek: string[], jelentkezok_szama: number[]}> {
+    let result: { cegek: string[]; jelentkezok_szama: number[] } = { cegek: [], jelentkezok_szama: [] };
+    const response : any = await this.http.post(this.url + 'getTopCeg', {}).toPromise();
+    // console.log('getTopCeg');
+    // console.log(response)
+    if(response.success){
+      response.result.forEach((data : any) => {
+        // console.log(data);
+        result.cegek.push(data.NEVE);
+        result.jelentkezok_szama.push(data.JELENTKEZOK_SZAMA)
+      });
+    }else{
+      console.error("");
+    }
+
+    return result;
   }
 }

@@ -17,6 +17,20 @@ router.post('/api/munkaEroHiany', async (req, res) => {
   }
 })
 
+router.post('/api/getTopCeg', async (req, res) => {
+  console.log("---[ getTopCeg ]---")
+try{
+  const result = await statisticsDao.getTopCeg();
+  if(!result)
+    res.json({success: false, message: "nem lehetett lekérdezni az adatokat"}) 
+  
+  res.json({success: true, result: result} )
+}catch(err){
+  res.json({success: false, message: "nem lehetett lekérdezni az adatokat"}) 
+  console.error(err)
+}
+})
+
 
 
 

@@ -11,65 +11,68 @@ import { StatisticsService } from '../../../../../services/statistics.service';
   styleUrl: './top-comp.component.css',
 })
 export class TopCompComponent implements OnInit {
-  datas: { name: string; y: number }[] = [];
-
+  datas: {type: 'column', name: 'Jelentkezők', data: number[]}[] = [];
+  categories: string[] = [];
   statistic_service = inject(StatisticsService);
-
+  title = '';
+  
   Highcharts: typeof Highcharts = Highcharts;
-  chartOptions: Highcharts.Options = {
-    chart: {
-      plotBackgroundColor: undefined,
-      plotBorderWidth: undefined,
-      plotShadow: false,
-      type: 'pie',
+    chartOptions: Highcharts.Options = {
+      chart: {
+        type: 'column'
     },
     title: {
-      text: 'Megyénkénti álláslehetőségek száma.',
+        text: "Közkedvelt cégek"
+    },
+    xAxis: {
+        categories: this.categories,
+        crosshair: true,
+        accessibility: {
+            description: 'Cégek'
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Állásjelentkezőik száma.'
+        }
     },
     tooltip: {
-      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
-    },
-    accessibility: {
-      point: {
-        valueSuffix: '%',
-      },
+        valueSuffix: ' db'
     },
     plotOptions: {
-      pie: {
-        allowPointSelect: true,
-        cursor: 'pointer',
-        dataLabels: {
-          enabled: false,
-        },
-        showInLegend: true,
-      },
+        column: {
+            pointPadding: 0.0,
+            borderWidth: 0
+        }
     },
-    series: [
-      {
-        type: 'pie',
-        name: 'Brands',
-        data: this.datas
-      },
-    ],
-  };
+    series: this.datas
+}
+    
 
   ngOnInit(): void {
-    this.statistic_service
-      .getAllasCountByMegye()
-      .then((res) => {
-        console.log(res);
-        for (let i = 0; i < res.megyek.length; i++) {
-          const megye = res.megyek[i];
-          const allasok_db = res.allasok_megyenkent[i]
-          this.datas.push({
-            name : megye,
-            y: (allasok_db) / res.sum_allasok_count
-          });
+    this.statistic_service.getTopCeg().then(
+      (res: any) => {
+        console.log("res",res);
+        let temp = []
+        for (let i = 0; i < res.cegek.length; i++) {
+          const category = res.cegek[i];
+          temp.push( res.jelentkezok_szama[i]);
+          this.categories.push(category);
         }
-        console.table(this.datas);
-        })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
+        this.datas.push({
+          type: "column",
+          name: "Jelentkezők",
+          data: temp
+        });
+        console.log("datas\n", JSON.stringify(this.datas))
+        console.log("datas\n", JSON.stringify(this.categories))
+        this.title += "Top " + this.datas.length + " cég jelentkezések alapján"
+      },
+      (err) => {
+        console.error(err)
+      }
+    )
+    
   }
 }
