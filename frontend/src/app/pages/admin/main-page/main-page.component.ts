@@ -11,6 +11,7 @@ import { SuccessMsgComponent } from '../../../shared/success-msg/success-msg.com
 import { DisplayDirective } from '../../../shared/directives/display.directive';
 import { AddAdminFormComponent } from "./add-admin-form/add-admin-form.component";
 import { DeleteUserFormComponent } from "./delete-user-form/delete-user-form.component";
+import { StatisticsComponent } from "./statistics/statistics.component";
 
 @Component({
   selector: 'app-main-page',
@@ -24,7 +25,8 @@ import { DeleteUserFormComponent } from "./delete-user-form/delete-user-form.com
     SuccessMsgComponent,
     DisplayDirective,
     AddAdminFormComponent,
-    DeleteUserFormComponent
+    DeleteUserFormComponent,
+    StatisticsComponent
 ],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.css',
