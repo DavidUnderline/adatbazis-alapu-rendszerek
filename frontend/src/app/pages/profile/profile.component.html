@@ -12,7 +12,7 @@
       @case ("ceg") {
         <app-ceg-datas [ceg_data]="user_ceg"></app-ceg-datas>
         <app-ceg-form (valid_form)="modifyCeg($event)"></app-ceg-form>
-        <app-work-list class="col-span-2" (show_applicant)="show_applicant = $event.show" (show_applicant)="applicant_job_id = $event.job_id"></app-work-list>
+        <app-work-list class="col-span-2" (show_applicant)="show_applicant = $event.show" (show_applicant)="applicant_job_id = $event.job_id" (msg)="handleMsg($event)"></app-work-list>
       }
 
       @case ("allaskereso") {

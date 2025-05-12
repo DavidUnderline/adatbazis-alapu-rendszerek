@@ -251,15 +251,12 @@ class AllaslehetosegDao{
         try{
             for (const k of allas.kulcs_szavak) {
                 console.table({allaslehetoseg_id: job_id, kulcsszo_neve: k});
-                // console.log("insertKeyWord type:", typeof keywordDao.getKeyWords); 
-                const succ = await keywordDao.insertKeyWord(k);
-                console.log("succ", succ);
-                if (succ){
-                    await keywordDao.keyword_job_switchboard_insert({allaslehetoseg_id: job_id, kulcsszo_neve: k});
-                }
+                 
+                await keywordDao.insertKeyWord(k);
+                await keywordDao.keyword_job_switchboard_insert({allaslehetoseg_id: job_id, kulcsszo_neve: k});
             }
         }catch(err){
-            console.err("\n\n\n",err)
+            console.error("\n\n\n",err)
         }
         
         return result;

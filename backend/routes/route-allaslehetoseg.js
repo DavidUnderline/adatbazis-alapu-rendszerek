@@ -49,6 +49,7 @@ router.post('/api/insert', async (req, res) => {
         return res.json({ success : true, message: 'Sikeres állásfeltöltés, jóváhagyás alatt!' });
         
     } catch (err) {
+        console.error(err);
         return res.json({ error: 'Hiba a regisztráció során' });
     }
 });

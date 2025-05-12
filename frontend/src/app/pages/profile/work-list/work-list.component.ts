@@ -18,76 +18,81 @@ import { response } from 'express';
 })
 export class WorkListComponent {
   job_service = inject(JobsService);
-  allasok: (Allas & {id: number})[] = [];
+  allasok: (Allas & { id: number })[] = [];
 
   @Output() show_applicant = new EventEmitter<{
-    show: boolean,
-    job_id: number
+    show: boolean;
+    job_id: number;
   }>();
 
-  
+  @Output() msg = new EventEmitter<{
+    success: boolean;
+    message: string;
+  }>();
+
   constructor() {
-    // console.table(localStorage);
-    this.load()
-  }
-
-  private load(){
-    const data = {
-      tipo: "ceg",
-      adoazonosito: localStorage.getItem('adoazonosito')
-    }
-    // console.log(data);
-    // return;
-
-    this.job_service.getjobs(data).pipe(
-      map((response: any) => {
-        // any[] = []
-        const allasArray: (Allas & { id: number })[] = [];
-
-        if (response && response.jobs) {
-          response.jobs.forEach((work: any) => {
-            console.table(work);
-            allasArray.push({
-              id: work.ID,
-              cim: work.CIM,
-              leiras: work.LEIRAS,
-              kovetelmenyek: work.KOVETELMENYEK,
-              mikor: work.MIKOR,
-              ber: work.BER,
-              is_accepted: work.IS_ACCEPTED,
-              terulet_id: work.TERULET_ID,
-              ceg_adoazonosito: work.ADOAZONOSITO,
-              kulcsszo_neve: work.key_words, //TODO
-              kategoria_neve: "string",
-            });
-          });
-          return allasArray;
-        }
-
-        return [];
-      }), // map
-
-      catchError(error => {
-        console.error(error);
-        return of([]);
-      })
-    ) // pipe
-
-    .subscribe(allasok => {
-      this.allasok = allasok;
-      // console.log(this.allasok);
-    });
-  }
-
-  delete(job_id: number){
-    this.job_service.deleteJobById(job_id);
     this.load();
   }
 
-  open_applicants(job_id: number){
+  private load() {
+    const data = {
+      tipo: 'ceg',
+      adoazonosito: localStorage.getItem('adoazonosito'),
+    };
+    // console.log(data);
+    // return;
+
+    this.job_service
+      .getjobs(data)
+      .pipe(
+        map((response: any) => {
+          // any[] = []
+          const allasArray: (Allas & { id: number })[] = [];
+
+          if (response && response.jobs) {
+            response.jobs.forEach((work: any) => {
+              console.table(work);
+              allasArray.push({
+                id: work.ID,
+                cim: work.CIM,
+                leiras: work.LEIRAS,
+                kovetelmenyek: work.KOVETELMENYEK,
+                mikor: work.MIKOR,
+                ber: work.BER,
+                is_accepted: work.IS_ACCEPTED,
+                terulet_id: work.TERULET_ID,
+                ceg_adoazonosito: work.ADOAZONOSITO,
+                kulcsszo_neve: work.key_words, //TODO
+                kategoria_neve: 'string',
+              });
+            });
+            return allasArray;
+          }
+
+          return [];
+        }), // map
+
+        catchError((error) => {
+          console.error(error);
+          return of([]);
+        })
+      ) // pipe
+
+      .subscribe((allasok) => {
+        this.allasok = allasok;
+        // console.log(this.allasok);
+      });
+  }
+
+  delete(job_id: number) {
+    this.msg.emit(this.job_service.deleteJobById(job_id));
+    this.allasok = this.allasok.filter((allas) => allas.id !== job_id);
+  }
+
+  open_applicants(job_id: number) {
     this.show_applicant.emit({
       show: true,
-      job_id: job_id
+      job_id: job_id,
     });
   }
 }
