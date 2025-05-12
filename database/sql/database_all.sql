@@ -381,11 +381,10 @@ INSERT INTO kulcsszo (neve) VALUES
 
 ---------- Pelda rekordok allaslehetoseg_kulcsszo_kapcsolat tabla
 
-INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve) VALUES
-(1, 'Hegesztés kulcsszo'),
-(2, 'Gépészet kulcsszo'),
-(3, 'Programozás kulcsszo'),
-(4, 'Üzlet kulcsszo'),
-(5, 'Programozás kulcsszo'), -- Grafikai allashoz ket kulcsszo
-(5, 'Művészet kulcsszo');
-
+-- INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve) VALUES
+-- (1, 'Hegesztés kulcsszo'),
+-- (2, 'Gépészet kulcsszo'),
+-- (3, 'Programozás kulcsszo'),
+-- (4, 'Üzlet kulcsszo'),
+-- (5, 'Programozás kulcsszo'), -- Grafikai allashoz ket kulcsszo
+-- (5, 'Művészet kulcsszo');

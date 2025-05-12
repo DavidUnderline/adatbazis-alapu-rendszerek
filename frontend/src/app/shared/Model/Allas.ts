@@ -7,6 +7,6 @@ export type Allas = {
   is_accepted: boolean;
   terulet_id: number;
   ceg_adoazonosito: string;
-  kulcsszo_neve: string;
+  kulcsszo_neve: string[];
   kategoria_neve: string;
 };

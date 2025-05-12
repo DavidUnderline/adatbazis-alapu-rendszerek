@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const allaslehetosegdao = require('../dao/allaslehetoseg-dao');
+const kulcsszoDao = require('../dao/kulcsszo-dao');
+const allaslehetosegDao = require('../dao/allaslehetoseg-dao');
 
 // Allások lekérdezése Álláskereső filterezése alapján
 router.post('/api/searchjob', async (req, res) => {
@@ -12,8 +14,15 @@ router.post('/api/searchjob', async (req, res) => {
 
         if(!allasok){
             return res.json({ success: false, error: 'Nem található allás' });
-        
         } else{
+            for (const job of allasok){
+                job.key_words = []
+                temp_key_words = await kulcsszoDao.getKulcsszoByAllaslehetosegID(job.ID)
+                temp_key_words.forEach((k) => {
+                    job.key_words.push(k.KULCSSZO_NEVE);
+                });
+                console.log(job.key_words);
+            }
             return res.json({ success: true, allasok });
         }
         
@@ -36,6 +45,7 @@ router.post('/api/insert', async (req, res) => {
            return res.json({ success : false, message: 'Sikertelen állásfeltöltés!' });
             
         }
+        // const key_success = await kulcsszoDao
         return res.json({ success : true, message: 'Sikeres állásfeltöltés, jóváhagyás alatt!' });
         
     } catch (err) {
@@ -51,7 +61,14 @@ router.post('/api/searchPending', async(req, res) => {
             res.json({success: false, jobs: undefined});
             return
         }
-        res.json({success: true, jobs: jobs.rows});
+        for (const job of jobs){
+            job.key_words = []
+            temp_key_words = await kulcsszoDao.getKulcsszoByAllaslehetosegID(job.ID)
+            temp_key_words.forEach((k) => {
+                job.key_words.push(k.KULCSSZO_NEVE);
+            })
+        }
+        res.json({success: true, jobs: jobs});
     }catch(err){
         console.error(err);
         throw err;
@@ -94,7 +111,7 @@ router.post('/api/acceptPending', async(req, res) => {
 
 router.post('/api/getjobsforuser', async (req, res) => {
     console.log('--- getjobsforuser ---');
-    // console.log(req.body)
+    console.log(req.body)
 
     try{
         const jobs = await allaslehetosegdao.getUserJobs(req.body);
@@ -102,7 +119,15 @@ router.post('/api/getjobsforuser', async (req, res) => {
         if(!jobs){
             return res.json({success: false, message: 'Nem található munka!', jobs: undefined});
         }
-
+        for (const job of jobs){
+            job.key_words = []
+            temp_key_words = await kulcsszoDao.getKulcsszoByAllaslehetosegID(job.ID)
+            temp_key_words.forEach((k) => {
+                job.key_words.push(k.KULCSSZO_NEVE);
+            });
+            console.log(job.key_words);
+        }
+        console.table(jobs);
         return res.json({success: true, message: 'Még nincs rögzített munka!', jobs: jobs});
     }catch(err){
         console.error(err);

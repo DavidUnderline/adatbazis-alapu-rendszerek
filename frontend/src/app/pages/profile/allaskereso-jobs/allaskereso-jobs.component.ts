@@ -43,6 +43,7 @@ export class AllaskeresoJobsComponent {
 
         if (response.success && response.jobs) {
           response.jobs.forEach((work: any) => {
+            console.log(work);
             jobsArray.push({
               id: work.ID,
               cim: work.CIM,
@@ -53,7 +54,7 @@ export class AllaskeresoJobsComponent {
               is_accepted: work.IS_ACCEPTED,
               terulet_id: work.TERULET_ID,
               ceg_adoazonosito: work.CEG_ADOAZONOSITO,
-              kulcsszo_neve: work.KULCSSZO_NEVE,
+              kulcsszo_neve: work.key_words,
               kategoria_neve: work.KATEGORIA_NEVE
             });
           });

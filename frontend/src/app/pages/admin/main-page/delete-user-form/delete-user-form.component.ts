@@ -8,5 +8,5 @@ import { MatIcon } from '@angular/material/icon';
   styleUrl: './delete-user-form.component.css'
 })
 export class DeleteUserFormComponent {
-
+  
 }

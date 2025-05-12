@@ -46,6 +46,7 @@ export class WorkListComponent {
 
         if (response && response.jobs) {
           response.jobs.forEach((work: any) => {
+            console.table(work);
             allasArray.push({
               id: work.ID,
               cim: work.CIM,
@@ -56,7 +57,7 @@ export class WorkListComponent {
               is_accepted: work.IS_ACCEPTED,
               terulet_id: work.TERULET_ID,
               ceg_adoazonosito: work.ADOAZONOSITO,
-              kulcsszo_neve: "string",
+              kulcsszo_neve: work.key_words, //TODO
               kategoria_neve: "string",
             });
           });

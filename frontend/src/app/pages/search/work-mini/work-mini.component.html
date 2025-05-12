@@ -8,13 +8,16 @@
       />
       <div class="col-span-10 flex flex-col">
         <div class="">
-          <h1 class="font-medium text-3xl text-dark_blue-500">
-            {{ work.cim }}
+          <h1
+          class="font-medium text-3xl text-dark_blue-500 flex items-center gap-2"
+        >
+          {{ work.cim }}
+          @for(key_words of work.kulcsszo_neve; track $index){
             <span
-              class="font-medium outline-2 outline-dark_blue-500 p-1.5 text-xs rounded-2xl"
-              >{{ work.kulcsszo_neve }}</span
-            ><!--TODO Szét kell szedni-->
-          </h1>
+            class="font-medium outline-2 outline-dark_blue-500 p-1.5 pt-0.5 pb-0.5 text-xs rounded-2xl"
+            >{{ key_words }}</span>
+          }
+        </h1>
           <h2 class="text-dark_blue-500 font-medium text-2xl">
             {{work.ceg_adoazonosito | lutCompanyName | async}}
             <!--TODO Pipeot írni ehez a szépséghez-->
