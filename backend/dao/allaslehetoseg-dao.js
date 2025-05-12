@@ -1,5 +1,5 @@
 const { executeQuery, getConnection } = require('../config/db');
-const { keywordDao } = require('../dao/kulcsszo-dao');
+const  keywordDao  = require('../dao/kulcsszo-dao');
 // const { all } = require('../routes/route-terulet');
 // const { all } = require('../routes/route-allaskereso');
 
@@ -242,45 +242,49 @@ class AllaslehetosegDao{
         `values (:cim, :leiras, :kovetelmenyek, TO_TIMESTAMP(:mikor, 'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"'), :ber, :is_accepted, :terulet_id, :adoazonosotito, :kategoria)`;
 
         const result = await executeQuery(insert_query, insert_binds);
-        if(!result) return 0;
-
+        console.log("result:\t",result);
+        // if(result !== 1) return 0;
         // ! ez kelleni fog a kulcsszóhoz
-        // const job_id = await this.getmaxid();
+        const job_id = await this.getmaxid();
+        console.log("job_id:\t",job_id);
 
-        // await this.keyword_job_switchboard_insert({
-        //     allaslehetoseg_id: job_id[0].ID,
-        //     kulcsszo_neve: allas.kulcsszo
-        // });
+        try{
+            for (const k of allas.kulcs_szavak) {
+                console.table({allaslehetoseg_id: job_id, kulcsszo_neve: k});
+                // console.log("insertKeyWord type:", typeof keywordDao.getKeyWords); 
+                const succ = await keywordDao.insertKeyWord(k);
+                console.log("succ", succ);
+                if (succ){
+                    await keywordDao.keyword_job_switchboard_insert({allaslehetoseg_id: job_id, kulcsszo_neve: k});
+                }
+            }
+        }catch(err){
+            console.err("\n\n\n",err)
+        }
         
         return result;
     }
     
     // allaslehetoseg_kulcsszo_kapcstablaba insert
-    async keyword_job_switchboard_insert(data){
-        const query = `INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve) VALUES (:allaslehetoseg_id, :kulcsszo_neve)`;
-        return await executeQuery(query, data);
-    }
+    
 
     async getmaxid(){
         const query = "select max(id) as id from allaslehetoseg";
-        return await executeQuery(query, {});
+        const maxId = await executeQuery(query, {});
+        return maxId[0].ID
     }
 
     async getPendingAllasok(){
+        console.log("---[ getPendingAllasok ]---")
         let connection;
         let query = 'SELECT * FROM ALLASLEHETOSEG WHERE IS_ACCEPTED = FALSE';
-        try{
-            connection = await getConnection();
-            const jobs = await connection.execute(query);
-            return jobs;
-        }catch(err){
-            console.error(err);
-            throw err;
-        }
+        const jobs = await executeQuery(query);
+        console.log(jobs)
+        return jobs;
     }
 
     async getUserJobs(data){
-        console.log("inside allasok dao getUserJobs");
+        console.log("--- dao getUserJobs ---");
         console.table(data);
         // return;
     
@@ -289,15 +293,13 @@ class AllaslehetosegDao{
             query = "select * from allaslehetoseg a "+
             "inner join jelentkezo j on j.allaslehetoseg_id = a.id "+
             "where j.allaskereso_email = :email";
-            
         } else{
             query = "select * from allaslehetoseg where ceg_adoazonosito = :adoazonosito";
         }
 
-        // console.table(query);
+        console.table(query);
         // console.table(data);
         const jobs = await executeQuery(query, data.tipo === 'ceg' ? { adoazonosito: data.adoazonosito } : {email: data.email});
-        console.table(jobs);
 
         return jobs;
     }

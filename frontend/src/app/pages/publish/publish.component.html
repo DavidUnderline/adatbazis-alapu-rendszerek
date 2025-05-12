@@ -90,7 +90,8 @@
       <div class="pt-10 col-span-2 flex justify-end">
         <button
           type="submit"
-          class="bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl cursor-pointer flex justify-center gap-1.5"
+          class="bg-dark_red-500 text-white-500 p-2 pl-6 pr-8 font-medium text-xl rounded-xl cursor-pointer flex justify-center gap-1.5 disabled:bg-dark_blue-500 disabled:cursor-not-allowed"
+          [disabled]="login_service.isLoggedIn() == false"
         >
           <mat-icon>done_all</mat-icon>
           Tedd közzé!

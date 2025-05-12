@@ -2,26 +2,50 @@ const { executeQuery, getConnection } = require('../config/db');
 
 class KulcsszoDao {
     // Kulcsszavak lekérdezése egy adott álláslehetőséghez
-    async getKulcsszoByAllaslehetosegId(kulcsszo) {
-        let connection;
-        try {
-            connection = await getConnection();
-            const result = await connection.execute(
-                `SELECT k.* FROM kulcsszo k
-                 INNER JOIN allaslehetoseg_kulcsszo_kapcsolat akk
-                 ON k.neve = akk.kulcsszo_neve
-                 WHERE akk.allaslehetoseg_id = :allaslehetoseg_id`,
-                { allaslehetoseg_id: kulcsszo.allaslehetoseg_id }
-            );
-            return result.rows;
-        } catch (err) {
-            console.error('Error fetching kulcsszo by allaslehetoseg_id:', err);
-            throw err;
-        } finally {
-            if (connection) await connection.close();
-        }
+    async getKulcsszoByAllaslehetosegID(job_id) {
+        const query =`
+        SELECT KULCSSZO_NEVE FROM ALLASLEHETOSEG_KULCSSZO_KAPCSOLAT
+        WHERE ALLASLEHETOSEG_ID =: job_id
+        `;
+        const key_words = await executeQuery(query, {job_id: job_id})
+        
+        return key_words;
     }
 
+    async getKeyWords() {
+        console.log("--- get categories dao---");
+        const query = "select neve from kulcsszo";
+        return await executeQuery(query);
+    }
+
+    async getaKeyWord(data) {
+        console.log("--- get (1) category dao---");
+        console.log(data)
+        
+        const query = "select neve from kulcsszo where neve = :keyword";
+        return await executeQuery(query, { keyword: data });
+    }
+
+    // Új categoria beszúrása
+    async insertKeyWord(data) {
+        console.log("--- insert keyWord dao ---");
+        console.log(data)
+        const isduplicate = await this.getaKeyWord(data);
+        console.log("isduplicate",isduplicate)
+        if (isduplicate.length > 0) return false;
+        console.log(isduplicate)
+
+        const query = `INSERT INTO kulcsszo (neve) VALUES (:keyword)`;
+        return await executeQuery(query, { keyword: data });
+    }
+
+    async keyword_job_switchboard_insert(data){
+        console.log("--- keyword_job_switchboard_insert ---");
+        const a = this.getaKeyWord(data.kulcsszo_neve)
+        if (!a) return;
+        const query = `INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve) VALUES (:allaslehetoseg_id, :kulcsszo_neve)`;
+        return await executeQuery(query, data);
+    }
     // UTOLAGOSAN MODOSITJUK A KULCSSZO TABLAT. 
     // NEM TUDOM EZT BIZTOSAN AKARJUK E, ELVEGRE AKKOR MINDEN ALKALLOMMAL LENNE LEHETOSEG UJ KULCSSZO IRASARA
 

@@ -51,17 +51,17 @@ export class MainPageComponent implements OnInit {
           response.jobs.map((work: any) => {
             console.table(work);
             let temp_allas: Allas & { id: number } = {
-              id: work[0],
-              cim: work[1],
-              leiras: work[2],
-              kovetelmenyek: work[3],
-              mikor: work[4] as Date,
-              ber: work[5] as number,
-              terulet_id: work[7] as number,
-              ceg_adoazonosito: work[8],
-              kategoria_neve: 'valami_kategoria',
-              kulcsszo_neve: 'valami_kulcsszo',
-              is_accepted: false,
+              id: work.ID,
+              cim: work.CIM,
+              leiras: work.LEIRAS,
+              kovetelmenyek: work.KOVETELMENYEK,
+              mikor: work.MIKOR,
+              ber: work.BER,
+              is_accepted: work.IS_ACCEPTED,
+              terulet_id: work.TERULET_ID,
+              ceg_adoazonosito: work.CEG_ADOAZONOSITO,
+              kulcsszo_neve: work.key_words,
+              kategoria_neve: work.KATEGORIA_NEVE
             };
             this.allasok.push(temp_allas);
           });

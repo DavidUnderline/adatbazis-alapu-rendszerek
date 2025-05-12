@@ -10,6 +10,7 @@ import { AddCityDialogComponent } from "./add-city-dialog/add-city-dialog.compon
 import { JobsService } from '../../services/jobs.service';
 import { KeyWordFormComponent } from "./key-word-form/key-word-form.component";
 import { AddCategoryDialogComponent } from './add-category-dialog/add-category-dialog.component';
+import { LoginService } from '../../services/login.service';
 
 @Component({
   selector: 'app-publish',
@@ -55,6 +56,7 @@ export class PublishComponent implements OnInit {
   categories: any[] = [];
 
   jobservice = inject(JobsService);
+  login_service = inject(LoginService)
 
   ngOnInit(): void {
     this.loadcities();
@@ -126,7 +128,8 @@ export class PublishComponent implements OnInit {
         // terulet_id: ceg.terulet_id,
         // ceg_adoazonosito: ceg.adoazonosito,
         kategoria: form.kategoria,
-        email: localStorage.getItem('username')
+        email: localStorage.getItem('username'),
+        kulcs_szavak: this.key_words
       };
       console.table(allaslehetoseg);
 
