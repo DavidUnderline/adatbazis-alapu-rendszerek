@@ -24,6 +24,7 @@
     "cors": "^2.8.5",
     "encrypt-rsa": "^3.3.0",
     "express": "^5.1.0",
+    "highcharts-angular": "^4.0.1",
     "js-sha256": "^0.11.0",
     "oracledb": "^6.8.0",
     "rxjs": "~7.8.0",

@@ -4,27 +4,27 @@ const cegDao = require('../dao/ceg-dao');
 
 // ceg regisztralas
 router.post('/api/register', async (req, res) => {
-    const { id, name, email, password } = req.body;
-    
-    try {
-        const ceg = {
-            id: id,
-            name: name,
-            email: email,
-            password: password,
-        };
+  const { id, name, email, password } = req.body;
 
-        const success = await cegDao.insertCeg(ceg);
+  try {
+    const ceg = {
+      id: id,
+      name: name,
+      email: email,
+      password: password,
+    };
 
-        if (!success) {
-            res.json({ success : false, message: 'Regisztráció sikertelen' });
-            return;
-        }
+    const success = await cegDao.insertCeg(ceg);
 
-        res.json({ success : true, email: ceg.EMAIL });
-    } catch (err) {
-        res.status(500).json({ error: 'Hiba a regisztráció során' });
+    if (!success) {
+      res.json({ success: false, message: 'Regisztráció sikertelen' });
+      return;
     }
+
+    res.json({ success: true, email: ceg.EMAIL });
+  } catch (err) {
+    res.status(500).json({ error: 'Hiba a regisztráció során' });
+  }
 });
 
 //ceg modositasa
@@ -33,32 +33,32 @@ router.post('/api/update', async (req, res) => {
     email: req.body.data.email
   };
 
-//   console.log(req.body.data);
+  //   console.log(req.body.data);
 
-  if(req.body.data.adoazonosito && req.body.data.adoazonosito.trim() != '')
+  if (req.body.data.adoazonosito && req.body.data.adoazonosito.trim() != '')
     ceg.adoazonosito = req.body.data.adoazonosito;
 
-  if(req.body.data.nev && req.body.data.nev.trim() != '') 
+  if (req.body.data.nev && req.body.data.nev.trim() != '')
     ceg.nev = req.body.data.nev;
 
-  if(req.body.data.jelszo)
+  if (req.body.data.jelszo)
     ceg.jelszo = req.body.data.jelszo;
 
-  if(req.body.data.originalemail)
+  if (req.body.data.originalemail)
     ceg.originalemail = req.body.data.originalemail;
 
-//   console.table(ceg);
-//   return;
-  
+  //   console.table(ceg);
+  //   return;
+
   try {
     const success = await cegDao.updateCeg(ceg);
 
     if (!success) {
-        res.json({ success : false, message: 'Adatok frissítése sikertelen' });
-        return;
+      res.json({ success: false, message: 'Adatok frissítése sikertelen' });
+      return;
     }
 
-    res.json({ success : true, message: 'Adatok frissítése sikeres', email: ceg.email });
+    res.json({ success: true, message: 'Adatok frissítése sikeres', email: ceg.email });
   } catch (err) {
     res.status(500).json({ error: 'Hiba az adatok frissítése során' });
   }
@@ -68,17 +68,17 @@ router.post('/api/update', async (req, res) => {
 router.post('/api/get', async (req, res) => {
   console.log("---[ getCegByEmail ]---");
   // console.log(req.body);
-    const email = req.body.email;
+  const email = req.body.email;
 
-    try{
-        const ceg = await cegDao.getCegByEmail(email);
-        if(!ceg){
-            return res.json({error: 'Cég nem található'});
-        }
-        return res.json({success: true, ceg: ceg});
-    }catch(err){
-        res.json({ error: 'Hiba a cég lekérdezésekor'});
+  try {
+    const ceg = await cegDao.getCegByEmail(email);
+    if (!ceg) {
+      return res.json({ error: 'Cég nem található' });
     }
+    return res.json({ success: true, ceg: ceg });
+  } catch (err) {
+    res.json({ error: 'Hiba a cég lekérdezésekor' });
+  }
 });
 
 router.post('/api/getCegByAdo', async (req, res) => {
@@ -87,16 +87,48 @@ router.post('/api/getCegByAdo', async (req, res) => {
 
   const adoazonosito = req.body.adoazonosito;
 
-  try{
+  try {
     const nev = await cegDao.getCegByAdo(adoazonosito);
-    if(!nev){
+    if (!nev) {
       res.status(401).json({})
     }
-    res.json({success: true, name: nev});
-  }catch(err){
+    res.json({ success: true, name: nev });
+  } catch (err) {
     console.error(err);
     throw err;
   }
 });
+
+router.post('/api/setCegErtekeles', async (req, res) => {
+  console.log('--- setCegErtekeles ---');
+  const { rating, user_email, ceg_ado } = req.body
+  console.log({
+    rating: rating,
+    user_email: user_email,
+    ceg_ado: ceg_ado
+  });
+  try {
+    const result = await cegDao.setCegErtekeles(rating, user_email, ceg_ado);
+    console.log(result);
+    if (!result) {
+      res.json({ success: false, message: "nem sikerült értékelni..." })
+    }
+    res.json({ success: true, message: "" })
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, message: "Hibakód: " + err.errorNum });
+  }
+});
+
+router.post('/api/getCegErtekeles', async (req, res) => {
+  console.log("--- getCegErtekeles ---")
+  const { ceg_ado, user_email } = req.body;
+  console.log([ceg_ado, user_email])
+  try {
+    const result = await cegDao.getCegErtekeles(ceg_ado, (!user_email) ? '' : user_email);
+    if(!result) res.json({success: false, message: "nem található értékelés"});
+    res.json({success: true, result: result})
+  } catch (err) { console.error(err) }
+})
 
 module.exports = router;
