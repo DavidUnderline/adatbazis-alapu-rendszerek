@@ -29,7 +29,37 @@ try{
   res.json({success: false, message: "nem lehetett lekérdezni az adatokat"}) 
   console.error(err)
 }
-})
+});
+
+router.post('/api/getAvgFizu', async (req, res) => {
+  console.log('--- getAvgFizu ---');
+  try{
+
+    const result = await statisticsDao.getAvgFizu();
+    console.log(result);
+    if(!result)
+      res.json({success: false, message: 'nem lehetett lekérdezni az adatokat'});
+
+    res.json({success: true, result: result});
+  }catch(err){
+    console.error(err);
+  }});
+
+  router.post('/api/getPopularCategories', async(req, res) => {
+    console.log('--- getPopularCategories ---');
+    
+    try{
+      const result = await statisticsDao.getPopularCategories()
+      console.log("getPopularCategories",result);
+      if(!result)
+        res.json({success: false, message: 'nem lehetett lekérdezni az adatokat'})
+      res.json({success: true, result: result});
+    }catch(err){
+      console.error(err);
+    }
+  }),
+
+
 
 
 

@@ -40,6 +40,38 @@ async getTopCeg(){
   return res;
 }
 
+async getAvgFizu(){
+  const query= `
+    SELECT 
+      (SELECT megye FROM terulet t WHERE t.id = a.terulet_id) AS megye,
+      ROUND(AVG(a.ber), 0) AS atlag_ber
+    FROM allaslehetoseg a
+    WHERE a.ber IS NOT NULL
+    GROUP BY a.terulet_id
+    ORDER BY atlag_ber DESC
+  `;
+
+  const res = await executeQuery(query);
+  return res
+
+}
+
+async getPopularCategories(){
+  const query = `
+      SELECT kategoria_neve, jelentkezesek_szama
+    FROM (
+      SELECT a.kategoria_neve, COUNT(*) AS jelentkezesek_szama
+      FROM jelentkezo j
+      JOIN allaslehetoseg a ON j.allaslehetoseg_id = a.id
+      GROUP BY a.kategoria_neve
+      ORDER BY jelentkezesek_szama DESC
+    )
+    FETCH FIRST 5 ROWS ONLY
+      `;
+  const res = await executeQuery(query)
+  return res
+}
+
 
 }
 

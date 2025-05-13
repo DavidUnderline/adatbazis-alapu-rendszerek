@@ -56,7 +56,7 @@ export class MegyeCountJobsComponent implements OnInit {
     this.statistic_service
       .getAllasCountByMegye()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         for (let i = 0; i < res.megyek.length; i++) {
           const megye = res.megyek[i];
           const allasok_db = res.allasok_megyenkent[i]
@@ -65,7 +65,7 @@ export class MegyeCountJobsComponent implements OnInit {
             y: allasok_db
           });
         }
-        console.table(this.datas);
+        // console.table(this.datas);
         })
       .catch((error) => {
         console.error('Error fetching data:', error);

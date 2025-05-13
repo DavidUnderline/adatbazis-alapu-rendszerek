@@ -53,7 +53,7 @@ export class TopCompComponent implements OnInit {
   ngOnInit(): void {
     this.statistic_service.getTopCeg().then(
       (res: any) => {
-        console.log("res",res);
+        // console.log("res",res);
         let temp = []
         for (let i = 0; i < res.cegek.length; i++) {
           const category = res.cegek[i];
@@ -65,8 +65,8 @@ export class TopCompComponent implements OnInit {
           name: "Jelentkezők",
           data: temp
         });
-        console.log("datas\n", JSON.stringify(this.datas))
-        console.log("datas\n", JSON.stringify(this.categories))
+        // console.log("datas\n", JSON.stringify(this.datas))
+        // console.log("datas\n", JSON.stringify(this.categories))
         this.title += "Top " + this.datas.length + " cég jelentkezések alapján"
       },
       (err) => {
