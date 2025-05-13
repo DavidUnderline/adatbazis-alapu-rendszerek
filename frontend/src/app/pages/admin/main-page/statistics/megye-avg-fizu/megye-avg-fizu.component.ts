@@ -35,7 +35,7 @@ export class MegyeAvgFizuComponent implements OnInit {
       },
     },
     tooltip: {
-      valueSuffix: ' db',
+      valueSuffix: ' Ft',
     },
     plotOptions: {
       column: {

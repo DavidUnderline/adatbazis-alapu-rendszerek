@@ -10,7 +10,7 @@ class CegDao {
                 `INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles, terulet_id)
                  VALUES (:ado, :name, :email, :password, :rating, :area_id)`,
                 {
-                    ado: ceg.id, 
+                    ado: ceg.id,
                     name: ceg.name,
                     email: ceg.email,
                     password: ceg.password,
@@ -21,7 +21,7 @@ class CegDao {
             );
 
             return result.rowsAffected === 1;
-            
+
         } catch (err) {
             console.error('Error inserting ceg:', err);
             throw err;
@@ -43,7 +43,7 @@ class CegDao {
                 email: ceg.email
             };
 
-            if(ceg.adoazonosito){
+            if (ceg.adoazonosito) {
                 fields.push('adoazonosito = :adoazonosito');
                 binds.adoazonosito = ceg.adoazonosito;
             }
@@ -52,7 +52,7 @@ class CegDao {
                 fields.push('neve = :neve');
                 binds.neve = ceg.nev;
             }
-            
+
             if (ceg.jelszo) {
                 fields.push('jelszo = :jelszo');
                 binds.jelszo = ceg.jelszo;
@@ -65,7 +65,7 @@ class CegDao {
                 binds.jelszo = ceg.jelszo;
             }
 
-            
+
             if (fields.length === 0) {
                 throw new Error('Nincs frissítendő mező');
             }
@@ -87,37 +87,78 @@ class CegDao {
             if (connection) await connection.close();
         }
     }
-    
 
-    async getCegByEmail(email){
+
+    async getCegByEmail(email) {
         console.log(email);
 
         let connection;
-        try{
+        try {
             connection = await getConnection();
             const query = `SELECT ADOAZONOSITO, NEVE, ERTEKELES, TERULET_ID FROM CEG
             WHERE EMAIL = :email`;
-            const result = await connection.execute(query, {email: email});
-    
+            const result = await connection.execute(query, { email: email });
+
             return result.rows.length === 1 ? result.rows[0] : null;
-        }catch(err){
+        } catch (err) {
             console.error(err);
             throw err;
         }
     }
 
-    async getCegByAdo(adoazonosito){
+    async getCegByAdo(adoazonosito) {
         // console.log(adoazonosito)
         // return;
         let connection;
-        try{
+        try {
             connection = await getConnection();
             const query = 'SELECT neve FROM CEG WHERE ADOAZONOSITO = :adoazonosito';
-            const name = await connection.execute(query, {adoazonosito: adoazonosito});
+            const name = await connection.execute(query, { adoazonosito: adoazonosito });
 
             return name.rows[0][0];
-        }catch(err){
+        } catch (err) {
             console.log("\n\n--- Nincs a munkához rendelve cég (adóazonosító) ---\n\n", err);
+        }
+    }
+
+    async setCegErtekeles(rating, user_email, ceg_ado) {
+        const query = `
+        INSERT INTO CEGERTEKELES (ERTEKELES, CEG_ADOAZONOSITO, ALLASKERESO_EMAIL) 
+        VALUES (:rating, :ceg_ado, :user_email)
+        `;
+        try {
+
+            const res = await executeQuery(query, { rating: rating, ceg_ado: ceg_ado, user_email: user_email });
+
+            return res;
+        } catch (err) {
+            if (err.errorNum == 1)
+                console.error("Már Értékelted a céget.")
+            else
+                console.error(err);
+        }
+    }
+
+
+    async getCegErtekeles(ceg_ado, user_email) {
+        const binds = { ceg_ado: ceg_ado }
+        let query = ''
+        if (!user_email) {
+            query = `
+                SELECT ERTEKELES FROM CEG
+                WHERE ADOAZONOSITO =: ceg_ado`;
+        } else {
+            query = `
+                SELECT ERTEKELES FROM CEGERTEKELES
+                WHERE CEG_ADOAZONOSITO =: ceg_ado AND ALLASKERESO_EMAIL =: user_email`;
+                binds.user_email = user_email;
+        }
+        console.log(query, binds)
+        try {
+            const res = await executeQuery(query, binds)
+            return res;
+        } catch (error) {
+            console.error(error);
         }
     }
 }
