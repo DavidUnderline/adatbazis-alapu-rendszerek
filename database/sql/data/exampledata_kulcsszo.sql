@@ -1,5 +1,15 @@
-INSERT INTO kulcsszo (neve) VALUES ('Hegesztés kulcsszo');
-INSERT INTO kulcsszo (neve) VALUES ('Gépészet kulcsszo');
-INSERT INTO kulcsszo (neve) VALUES ('Programozás kulcsszo');
-INSERT INTO kulcsszo (neve) VALUES ('Művészet kulcsszo');
-INSERT INTO kulcsszo (neve) VALUES ('Üzlet kulcsszo');
+INSERT INTO kulcsszo (neve) VALUES
+('Java kulcsszo'),
+('AutoCAD kulcsszo'),
+('Logisztika kulcsszo'),
+('Excel kulcsszo'),
+('Marketing kulcsszo'),
+('HR kulcsszo'),
+('Vendéglátás kulcsszo'),
+('Orvostudomány kulcsszo'),
+('Oktatás kulcsszo'),
+('Gépészet kulcsszo'),
+('Kereskedelem kulcsszo'),
+('Jog kulcsszo'),
+('Grafika kulcsszo'),
+('Adminisztráció kulcsszo');
