@@ -1,5 +1,15 @@
-INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( "john.doe@example.com", 1);
-INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( "jane.smith@example.com", 2);
-INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( "alice.wonderland@example.com", 3);
-INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( "bob.builder@example.com", 4);
-INSERT INTO jelentkezo ( allaskereso_email, allaslehetoseg_id) VALUES ( "charlie.brown@example.com", 5);
+INSERT INTO jelentkezo (allaskereso_email, allaslehetoseg_id) VALUES
+('kovacs.janos@gmail.com', 1),
+('nagy.anna@gmail.com', 2),
+('toth.peter@gmail.com', 3),
+('szabo.eva@gmail.com', 4),
+('horvath.laszlo@gmail.com', 5),
+('kiss.zsofia@gmail.com', 6),
+('molnar.istvan@gmail.com', 7),
+('farkas.katalin@gmail.com', 8),
+('balogh.gabor@gmail.com', 9),
+('papp.viktoria@gmail.com', 10),
+('simon.robert@gmail.com', 11),
+('veres.julia@gmail.com', 12),
+('lukacs.tamas@gmail.com', 13),
+('orosz.dora@gmail.com', 14);
