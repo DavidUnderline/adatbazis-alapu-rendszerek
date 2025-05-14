@@ -1,15 +1,7 @@
-INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_email) VALUES
-(4, 12345678901, 'kovacs.janos@gmail.com'),
-(5, 12345678901, 'nagy.anna@gmail.com'),
-(3, 23456789012, 'toth.peter@gmail.com'),
-(4, 23456789012, 'szabo.eva@gmail.com'),
-(5, 34567890123, 'horvath.laszlo@gmail.com'),
-(3, 34567890123, 'kiss.zsofia@gmail.com'),
-(4, 45678901234, 'molnar.istvan@gmail.com'),
-(5, 45678901234, 'farkas.katalin@gmail.com'),
-(3, 56789012345, 'balogh.gabor@gmail.com'),
-(4, 56789012345, 'papp.viktoria@gmail.com'),
-(5, 67890123456, 'simon.robert@gmail.com'),
-(4, 67890123456, 'veres.julia@gmail.com'),
-(3, 78901234567, 'lukacs.tamas@gmail.com'),
-(5, 78901234567, 'orosz.dora@gmail.com');
+---------- Pelda rekordok cegertekeles tabla
+
+INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES (DEFAULT, 35903957804, NULL);
+INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES (DEFAULT, 13907287593, NULL);
+INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES (DEFAULT, 13478097449, NULL);
+INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES (DEFAULT, 40560285869, NULL);
+INSERT INTO cegertekeles (ertekeles, ceg_adoazonosito, allaskereso_id) VALUES ( DEFAULT, 79613553671, NULL);

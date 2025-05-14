@@ -2,10 +2,6 @@ INSERT INTO moderator (email,neve, jelszo) VALUES ('admin@gmail.com', 'admin', '
 -- og_password: 'admin'
 SELECT * FROM moderator;
 SELECT * FROM allaskereso;
-SELECT * FROM ceg;
-SELECT * FROM ALLASLEHETOSEG;
-
-
 
 DELETE FROM JELENTKEZO WHERE ALLASKERESO_EMAIL = 'jagerpeter04@gmail.com' AND ALLASLEHETOSEG_ID = 3;
 
