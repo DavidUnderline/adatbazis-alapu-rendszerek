@@ -1,0 +1,15 @@
+INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve) VALUES
+(1, 'Java kulcsszo'),
+(2, 'AutoCAD kulcsszo'),
+(3, 'Logisztika kulcsszo'),
+(4, 'Excel kulcsszo'),
+(5, 'Marketing kulcsszo'),
+(6, 'HR kulcsszo'),
+(7, 'Vendéglátás kulcsszo'),
+(8, 'Orvostudomány kulcsszo'),
+(9, 'Oktatás kulcsszo'),
+(10, 'Gépészet kulcsszo'),
+(11, 'Kereskedelem kulcsszo'),
+(12, 'Jog kulcsszo'),
+(13, 'Grafika kulcsszo'),
+(14, 'Adminisztráció kulcsszo');
