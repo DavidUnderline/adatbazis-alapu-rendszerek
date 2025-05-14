@@ -224,7 +224,7 @@ CREATE TABLE jelentkezo( --Ez is csak egy kapcsolotabla
 );
 
 ---------------------------------------- TRIGGEREK ----------------------------------------
--------------------- jelentkezo (allaslehetoseg_allaskereso_kapcsolat) tabla frissito trigger
+-------------------- ceg adoazonosito update trigger
 CREATE OR REPLACE TRIGGER ceg_adoazonosito_update
 BEFORE UPDATE OF adoazonosito ON ceg
 FOR EACH ROW
@@ -236,6 +236,8 @@ BEGIN
     END IF;
 END;
 /
+
+-------------------- jelentkezo frissito allasereso email trigger
 
 BEGIN
     EXECUTE IMMEDIATE 'DROP TRIGGER update_child_email';
