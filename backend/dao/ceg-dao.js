@@ -3,9 +3,14 @@ const { executeQuery, getConnection } = require('../config/db');
 class CegDao {
     // uj ceg regisztralas
     async insertCeg(ceg) {
+        console.log("---[ insertCeg ]---");
+
         let connection;
         try {
             connection = await getConnection();
+
+            if (await this.getCegByEmail(ceg.email) != null) return false;
+
             const result = await connection.execute(
                 `INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles, terulet_id)
                  VALUES (:ado, :name, :email, :password, :rating, :area_id)`,
@@ -90,13 +95,12 @@ class CegDao {
 
 
     async getCegByEmail(email) {
-        console.log(email);
+        console.log("---[ getCegByEmail ]---");
 
         let connection;
         try {
             connection = await getConnection();
-            const query = `SELECT ADOAZONOSITO, NEVE, ERTEKELES, TERULET_ID FROM CEG
-            WHERE EMAIL = :email`;
+            const query = `SELECT ADOAZONOSITO, NEVE, ERTEKELES, TERULET_ID FROM CEG WHERE EMAIL = :email`;
             const result = await connection.execute(query, { email: email });
 
             return result.rows.length === 1 ? result.rows[0] : null;

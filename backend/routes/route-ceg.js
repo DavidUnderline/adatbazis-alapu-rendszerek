@@ -17,13 +17,14 @@ router.post('/api/register', async (req, res) => {
     const success = await cegDao.insertCeg(ceg);
 
     if (!success) {
-      res.json({ success: false, message: 'Regisztráció sikertelen' });
+      res.json({ success: false, message: 'A megaddott email már regisztrált!' });
       return;
     }
 
     res.json({ success: true, email: ceg.EMAIL });
+    
   } catch (err) {
-    res.status(500).json({ error: 'Hiba a regisztráció során' });
+    res.status(500).json({ error: err, personal_message: 'A megaddott adoazonosító már regisztrált!'});
   }
 });
 
