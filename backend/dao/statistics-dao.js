@@ -9,7 +9,6 @@ class StatisticsDao{
       FROM ALLASLEHETOSEG a
       WHERE a.IS_ACCEPTED = 1
       GROUP BY a.TERULET_ID
-      FETCH FIRST 5 ROWS ONLY
     `;
 
     const res = executeQuery(query, {});

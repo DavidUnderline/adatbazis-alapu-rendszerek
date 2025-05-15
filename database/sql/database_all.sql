@@ -40,7 +40,6 @@ CREATE TABLE ceg(
     email   VARCHAR(255),
     jelszo  VARCHAR(255),
     ertekeles   FLOAT, -- Az itt megjeleno szam egy atlag lesz a ceg ertekeleseibol
-    terulet_id  NUMBER,
     CONSTRAINT foreign_key_terulet FOREIGN KEY (terulet_id) REFERENCES terulet(id) ON DELETE SET NULL--mert a cég létezhet terület nélkül
 );
 
