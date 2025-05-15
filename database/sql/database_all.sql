@@ -251,6 +251,34 @@ BEGIN
 END;
 /
 
+-----------------
+
+CREATE OR REPLACE TRIGGER email_update_cegertekeles
+BEFORE UPDATE OF email ON allaskereso
+FOR EACH ROW
+BEGIN
+    IF :NEW.email <> :OLD.email THEN
+        UPDATE cegertekeles
+        SET allaskereso_email = :NEW.email
+        WHERE allaskereso_email = :OLD.email;
+    END IF;
+END;
+/
+
+------------------
+
+CREATE OR REPLACE TRIGGER email_update
+BEFORE UPDATE OF email ON allaskereso
+FOR EACH ROW
+BEGIN
+    IF :NEW.email <> :OLD.email THEN
+        UPDATE cv
+        SET allaskereso_email = :NEW.email
+        WHERE allaskereso_email = :OLD.email;
+    END IF;
+END;
+/
+
 -------------------- cegertekeles atlag frissito trigger
 
 CREATE OR REPLACE TRIGGER update_ertekeles
