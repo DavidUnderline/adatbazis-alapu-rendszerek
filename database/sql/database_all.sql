@@ -36,12 +36,10 @@ END;
 CREATE TABLE ceg(
    -- adoazonosito INT
     adoazonosito    NUMBER(11,0) PRIMARY KEY NOT NULL,
-    neve    VARCHAR(255),
-    email   VARCHAR(255),
-    jelszo  VARCHAR(255),
-    ertekeles   FLOAT, -- Az itt megjeleno szam egy atlag lesz a ceg ertekeleseibol
-    terulet_id  NUMBER,
-    CONSTRAINT foreign_key_terulet FOREIGN KEY (terulet_id) REFERENCES terulet(id) ON DELETE SET NULL--mert a cég létezhet terület nélkül
+    neve    VARCHAR2(255),
+    email   VARCHAR2(255),
+    jelszo  VARCHAR2(255),
+    ertekeles   FLOAT -- Az itt megjeleno szam egy atlag lesz a ceg ertekeleseibol
 );
 
 -------------------- allaskereso tabla
@@ -57,11 +55,11 @@ END;
 /
 
 CREATE TABLE allaskereso (
-   email                VARCHAR(255) PRIMARY KEY NOT NULL,
-   neve                 VARCHAR(255),
-   jelszo               VARCHAR(255),
+   email                VARCHAR2(255) PRIMARY KEY NOT NULL,
+   neve                 VARCHAR2(255),
+   jelszo               VARCHAR2(255),
    utolso_bejelentkezes DATE,
-   vegzettseg           VARCHAR(255),
+   vegzettseg           VARCHAR2(255),
    statusz              BOOLEAN
 );
 
@@ -79,7 +77,7 @@ END;
 
 CREATE TABLE cv(
   cv_link VARCHAR2(255) PRIMARY KEY NOT NULL,
-  allaskereso_email VARCHAR(255),
+  allaskereso_email VARCHAR2(255),
   CONSTRAINT foreign_key_allaskereso_cv FOREIGN KEY (allaskereso_email) REFERENCES allaskereso(email) ON DELETE CASCADE
 );
 
@@ -98,7 +96,7 @@ END;
 CREATE TABLE cegertekeles(
     ertekeles   NUMBER(1,0) DEFAULT 0,
     ceg_adoazonosito  NUMBER,
-    allaskereso_email  VARCHAR(255),
+    allaskereso_email  VARCHAR2(255),
     PRIMARY KEY(ceg_adoazonosito, allaskereso_email),
     CONSTRAINT foreign_key_ceg FOREIGN KEY (ceg_adoazonosito) REFERENCES ceg(adoazonosito) ON DELETE CASCADE,--Cég törlésekor az értékelései is törlődjenek
     CONSTRAINT foreign_key_allaskereso FOREIGN KEY (allaskereso_email) REFERENCES allaskereso(email) ON DELETE CASCADE --Álláskereső törlésekor az általa adott értékelések is törlődjenek
@@ -134,7 +132,7 @@ END;
 
 CREATE TABLE allaslehetoseg (
    id            INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-   cim           VARCHAR(255),
+   cim           VARCHAR2(255),
    leiras        VARCHAR2(255),
    kovetelmenyek VARCHAR2(255),
    mikor         DATE,
@@ -216,7 +214,7 @@ END;
 /
 
 CREATE TABLE jelentkezo( --Ez is csak egy kapcsolotabla
-  allaskereso_email VARCHAR(255) NOT NULL,
+  allaskereso_email VARCHAR2(255) NOT NULL,
   allaslehetoseg_id NUMBER NOT NULL,
 
   CONSTRAINT foreign_key_allaskereso_jelentkezo FOREIGN KEY ( allaskereso_email ) REFERENCES allaskereso(email) ON DELETE CASCADE, -- Álláskereső törlésekor a jelentkezései is törlődjenek
@@ -224,7 +222,9 @@ CREATE TABLE jelentkezo( --Ez is csak egy kapcsolotabla
 );
 
 ---------------------------------------- TRIGGEREK ----------------------------------------
--------------------- jelentkezo (allaslehetoseg_allaskereso_kapcsolat) tabla frissito trigger
+
+-------------------- ceg adoazonosito update trigger
+
 CREATE OR REPLACE TRIGGER ceg_adoazonosito_update
 BEFORE UPDATE OF adoazonosito ON ceg
 FOR EACH ROW
@@ -237,15 +237,7 @@ BEGIN
 END;
 /
 
-BEGIN
-    EXECUTE IMMEDIATE 'DROP TRIGGER update_child_email';
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Nem létezik nincs semmi: ' || SQLERRM);
-        NULL;
-END;
-/
+-------------------- jelentkezo frissito allasereso email trigger
 
 CREATE OR REPLACE TRIGGER update_child_email
 BEFORE UPDATE OF email ON allaskereso
@@ -260,19 +252,9 @@ END;
 /
 
 -------------------- cegertekeles atlag frissito trigger
-BEGIN
-    EXECUTE IMMEDIATE 'DROP TRIGGER update_ertekeles';
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Nem létezik nincs semmi: ' || SQLERRM);
-        NULL;
-END;
-/
 
 CREATE OR REPLACE TRIGGER update_ertekeles
 AFTER INSERT OR UPDATE OR DELETE ON cegertekeles
-DECLARE
 BEGIN
     -- Frissíti a ceg táblát a beszúrt értékelések átlagával
     UPDATE ceg
@@ -281,17 +263,7 @@ BEGIN
 END;
 /
 
---------------------allaskereso 90 napon tuli inaktivitas trigger
-
-BEGIN
-    EXECUTE IMMEDIATE 'DROP TRIGGER allaskereso_inactive_trigger';
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Nem létezik nincs semmi: ' || SQLERRM);
-        NULL;
-END;
-/
+-------------------- allaskereso 90 napon tuli inaktivitas trigger
 
 CREATE OR REPLACE TRIGGER allaskereso_inactive_trigger
 AFTER LOGON ON DATABASE
@@ -304,7 +276,228 @@ BEGIN
 END;
 /
 
+-------------------- allaslehetoseg_kulcsszo_kapcsolat torles utan kulcsszo trigger
+
+-- CREATE OR REPLACE TRIGGER trg_clean_kulcsszo_before_parent_delete
+-- BEFORE DELETE ON allaslehetoseg
+-- FOR EACH ROW
+-- DECLARE
+-- BEGIN
+--   DELETE FROM allaslehetoseg_kulcsszo_kapcsolat
+--    WHERE allaslehetoseg_id = :OLD.id;
+
+--   DELETE FROM kulcsszo k
+--    WHERE NOT EXISTS (
+--      SELECT 1
+--      FROM allaslehetoseg_kulcsszo_kapcsolat ak
+--      WHERE ak.kulcsszo_neve = k.neve
+--    );
+-- END;
+-- /
+
+---------------------------------------- Tarolt eljarasok ----------------------------------------
+
+-------------------- INSERT Ceg tablaba
+
+CREATE OR REPLACE FUNCTION insert_ceg_func(
+  ado IN NUMBER, neve IN VARCHAR2, email IN VARCHAR2, jelszo IN VARCHAR2, ertekeles IN FLOAT)
+  RETURN NUMBER
+  AS 
+  rows_out NUMBER := 0;-- Lokalis deklaracio
+  BEGIN
+
+    INSERT INTO ceg
+    VALUES (ado, neve, email, jelszo, ertekeles);
+    rows_out := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('----------rows_out erteke: ' || TO_CHAR(rows_out));
+
+    RETURN rows_out;
+
+    EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Duplikált adóazonosító vagy kulcs!');
+        RETURN rows_out;
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen adat (pl. túl hosszú szöveg vagy rossz formátum)!');
+        RETURN rows_out;
+    WHEN INVALID_NUMBER THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen számformátum!');
+        RETURN rows_out;
+    WHEN PROGRAM_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Belső programozási hiba!');
+        RETURN rows_out;
+    WHEN ACCESS_INTO_NULL THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: NULL objektumra való hivatkozás!');
+        RETURN rows_out;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Egyéb hiba: ' || SQLERRM || ' (Kód: ' || SQLCODE || ')');
+        RETURN rows_out;
+    
+END;
+/
+
+-------------------- DELETE Ceg tablabol
+
+CREATE OR REPLACE FUNCTION delete_ceg_func(p_email IN VARCHAR2)
+RETURN NUMBER
+AS 
+rows_out NUMBER := 0;-- Lokalis deklaraciO
+BEGIN
+
+    DELETE FROM ceg WHERE email = p_email;
+
+    rows_out := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('----------rows_out erteke: ' || TO_CHAR(rows_out));
+
+    RETURN rows_out;
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Nincs ilyen email-cím!');
+        RETURN 0;
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen adat (pl. túl hosszú szöveg vagy rossz formátum)!');
+        RETURN 0;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Egyéb hiba: ' || SQLERRM || ' (Kód: ' || SQLCODE || ')');
+        RETURN 0;
+END;
+/
+
+-------------------- INSERT Allaskereso tablaba
+
+CREATE OR REPLACE FUNCTION insert_allaskereso_func(email IN VARCHAR2, neve IN VARCHAR2, jelszo IN VARCHAR2, utolso_bejelentkezes IN DATE, vegzettseg IN VARCHAR2, statusz IN BOOLEAN)
+  RETURN NUMBER
+  AS 
+  rows_out NUMBER := 0;-- Lokális deklaráció
+  BEGIN
+
+    INSERT INTO allaskereso
+    VALUES (email, neve, jelszo, utolso_bejelentkezes, vegzettseg, statusz);
+
+    rows_out := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('----------rows_out erteke: ' || TO_CHAR(rows_out));
+
+    RETURN rows_out;
+
+    EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Duplikált adóazonosító vagy kulcs!');
+        RETURN rows_out;
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen adat (pl. túl hosszú szöveg vagy rossz formátum)!');
+        RETURN rows_out;
+    WHEN INVALID_NUMBER THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen számformátum!');
+        RETURN rows_out;
+    WHEN PROGRAM_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Belső programozási hiba!');
+        RETURN rows_out;
+    WHEN ACCESS_INTO_NULL THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: NULL objektumra való hivatkozás!');
+        RETURN rows_out;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Egyéb hiba: ' || SQLERRM || ' (Kód: ' || SQLCODE || ')');
+        RETURN rows_out;
+    
+END;
+/
+
+-------------------- DELETE Allaskereso tablabol
+
+CREATE OR REPLACE FUNCTION delete_allaskereso_func(p_email IN VARCHAR2)
+RETURN NUMBER
+AS 
+rows_out NUMBER := 0;-- Lokalis deklaraciO
+BEGIN
+
+    DELETE FROM allaskereso WHERE email = p_email;
+
+    rows_out := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('----------rows_out erteke: ' || TO_CHAR(rows_out));
+
+    RETURN rows_out;
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Nincs ilyen email-cím!');
+        RETURN 0;
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen adat (pl. túl hosszú szöveg vagy rossz formátum)!');
+        RETURN 0;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Egyéb hiba: ' || SQLERRM || ' (Kód: ' || SQLCODE || ')');
+        RETURN 0;
+END;
+/
+
+-------------------- INSERT CV tablaba
+
+CREATE OR REPLACE FUNCTION insert_cv_func(cv_link IN VARCHAR2, allaskereso_email IN VARCHAR2)
+RETURN NUMBER
+AS 
+rows_out NUMBER := 0;-- Lokális deklaráció
+BEGIN
+
+    INSERT INTO cv
+    VALUES(cv_link, allaskereso_email);
+
+    rows_out := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('----------rows_out erteke: ' || TO_CHAR(rows_out));
+
+    RETURN rows_out;
+
+    EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Duplikált adóazonosító vagy kulcs!');
+        RETURN rows_out;
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen adat (pl. túl hosszú szöveg vagy rossz formátum)!');
+        RETURN rows_out;
+    WHEN INVALID_NUMBER THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen számformátum!');
+        RETURN rows_out;
+    WHEN PROGRAM_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Belső programozási hiba!');
+        RETURN rows_out;
+    WHEN ACCESS_INTO_NULL THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: NULL objektumra való hivatkozás!');
+        RETURN rows_out;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Egyéb hiba: ' || SQLERRM || ' (Kód: ' || SQLCODE || ')');
+        RETURN rows_out;
+    
+END;
+/
+
+-------------------- DELETE moderator tablabol
+
+CREATE OR REPLACE FUNCTION delete_moderator_func(p_email IN VARCHAR2)
+RETURN NUMBER
+AS 
+rows_out NUMBER := 0;-- Lokalis deklaraciO
+BEGIN
+
+    DELETE FROM moderator WHERE email = p_email;
+
+    rows_out := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('----------rows_out erteke: ' || TO_CHAR(rows_out));
+
+    RETURN rows_out;
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Nincs ilyen email-cím!');
+        RETURN 0;
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen adat (pl. túl hosszú szöveg vagy rossz formátum)!');
+        RETURN 0;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Egyéb hiba: ' || SQLERRM || ' (Kód: ' || SQLCODE || ')');
+        RETURN 0;
+END;
+/
+
+
 ---------------------------------------- Oracle Scheduler ----------------------------------------
+
 -- Csak mert megtehetem es ilyet is tudok, de azert triggerrel is megcsinalom, hogy a kovetelmeny ki legyen elegitve
 
 BEGIN
@@ -356,34 +549,34 @@ INSERT INTO terulet (orszag, megye, varos) VALUES
 
 ---------- Pelda rekordok ceg tabla
 
-Insert into ceg (ADOAZONOSITO,NEVE,EMAIL,JELSZO,ERTEKELES,TERULET_ID) values
-(12345678901,'TechTrend Kft.','info@techtrend.hu','cfa1fab990a59f1d415810f6bbfd853b27f9b30dd4b3354a5bd0bbc6ee3b964e',0, null),
+Insert into ceg (ADOAZONOSITO,NEVE,EMAIL,JELSZO,ERTEKELES) values
+(12345678901,'TechTrend Kft.','info@techtrend.hu','cfa1fab990a59f1d415810f6bbfd853b27f9b30dd4b3354a5bd0bbc6ee3b964e',0),
 -- (12345678901, 'info@techtrend.hu', 'tech123');
-(23456789012,'Érdi Építő Zrt.','epito@erdi.hu','febeb54a56bbddb38a86443bc3ab1c75ef7754ebeb71cdaf13ab0b8b4cf187d9',0, null),
+(23456789012,'Érdi Építő Zrt.','epito@erdi.hu','febeb54a56bbddb38a86443bc3ab1c75ef7754ebeb71cdaf13ab0b8b4cf187d9',0),
 -- (23456789012, 'epito@erdi.hu', 'epito456');
-(34567890123,'Győri Logisztika Kft.','logisztika@gyor.hu','96d934c3e974d53768f761a353bf0c361621d9c8b2cdd00581060e2a0e763d39',0, null),
+(34567890123,'Győri Logisztika Kft.','logisztika@gyor.hu','96d934c3e974d53768f761a353bf0c361621d9c8b2cdd00581060e2a0e763d39',0),
 -- (34567890123, 'logisztika@gyor.hu', 'logi789');
-(45678901234,'Debreceni Szoftver Rt.','szoftver@debrecen.hu','314a43daa966ea268b72c64d18447734ee83601a4de862ceb6215c284e98be0f',0, null),
+(45678901234,'Debreceni Szoftver Rt.','szoftver@debrecen.hu','314a43daa966ea268b72c64d18447734ee83601a4de862ceb6215c284e98be0f',0),
 -- (45678901234, 'szoftver@debrecen.hu', 'szoft123');
-(56789012345,'Szegedi Kereskedelmi Kft.','kereskedelem@szeged.hu','1ac01cbd1bd8fc440d2dba5dbcd953c36b4ec70f79cae9535055191a00b49f91',0, null),
+(56789012345,'Szegedi Kereskedelmi Kft.','kereskedelem@szeged.hu','1ac01cbd1bd8fc440d2dba5dbcd953c36b4ec70f79cae9535055191a00b49f91',0),
 -- (56789012345,'kereskedelem@szeged.hu', 'ker123');
-(67890123456,'Pécsi Gyártó Zrt.','gyarto@pecs.hu','f776f6717007caacc972a958982886f4cf56c4c8e3cb3899b16636778dbcbc09',0, null),
+(67890123456,'Pécsi Gyártó Zrt.','gyarto@pecs.hu','f776f6717007caacc972a958982886f4cf56c4c8e3cb3899b16636778dbcbc09',0),
 -- (67890123456,, 'gyarto@pecs.hu', 'gyart456');
-(78901234567,'Kecskeméti Autószerviz Kft.','szerviz@kecskemet.hu','faf2212b0c0514e213a0b9c32fed378e1eba948ec2891dc51a988c3e7c9fa73c',0, null),
+(78901234567,'Kecskeméti Autószerviz Kft.','szerviz@kecskemet.hu','faf2212b0c0514e213a0b9c32fed378e1eba948ec2891dc51a988c3e7c9fa73c',0),
 -- (78901234567, 'szerviz@kecskemet.hu', 'auto789');
-(89012345678,'Székesfehérvári Iroda Bt.','iroda@szekesfehervar.hu','fab1ed9f83fd000f8757a96246863b5d77c2670547d69fb511c2747be5701843',0, null),
+(89012345678,'Székesfehérvári Iroda Bt.','iroda@szekesfehervar.hu','fab1ed9f83fd000f8757a96246863b5d77c2670547d69fb511c2747be5701843',0),
 -- (89012345678, 'iroda@szekesfehervar.hu', 'iroda123');
-(90123456789,'Kaposvári Vendéglátó Kft.','vendeglato@kaposvar.hu','da6fcfa1cee3ec84723c3e4db8af882eb899c5e674f4951c248553c0265f656f',0, null),
+(90123456789,'Kaposvári Vendéglátó Kft.','vendeglato@kaposvar.hu','da6fcfa1cee3ec84723c3e4db8af882eb899c5e674f4951c248553c0265f656f',0),
 -- (90123456789, 'vendeglato@kaposvar.hu', 'vend123');
-(11234567890,'Zalaegerszegi Építőipari Rt.','epito@zalaegerszeg.hu','daa939b82d36f3532433e65f826148437dc092674e22bf8f092d7751001fe714',0, null),
+(11234567890,'Zalaegerszegi Építőipari Rt.','epito@zalaegerszeg.hu','daa939b82d36f3532433e65f826148437dc092674e22bf8f092d7751001fe714',0),
 -- (11234567890, 'epito@zalaegerszeg.hu', 'epit456');
-(22345678901,'Veszprémi Kereskedő Bt.','kereskedelem@veszprem.hu','e6d01d035dc55b0deceedd3b5fb75fd204c938e90532d7ff7597841f08c79df1',0, null),
+(22345678901,'Veszprémi Kereskedő Bt.','kereskedelem@veszprem.hu','e6d01d035dc55b0deceedd3b5fb75fd204c938e90532d7ff7597841f08c79df1',0),
 -- (22345678901, 'kereskedelem@veszprem.hu', 'ker789');
-(33456789012,'Miskolci Gyártó Kft.','gyarto@miskolc.hu','f3eafb84e86d3d7ba7e52efeb006ea4e1fa6f307b2d7d1260cce9d69dcb0eb24',0, null),
+(33456789012,'Miskolci Gyártó Kft.','gyarto@miskolc.hu','f3eafb84e86d3d7ba7e52efeb006ea4e1fa6f307b2d7d1260cce9d69dcb0eb24',0),
 -- (33456789012, 'gyarto@miskolc.hu', 'gyart123');
-(44567890123,'Nyíregyházi Szolgáltató Zrt.','szolgaltato@nyiregyhaza.hu','80f91692b89e1f48d87480bcafa02f3c00bc47ebdc340f84449fb53926a63954',0, null),
+(44567890123,'Nyíregyházi Szolgáltató Zrt.','szolgaltato@nyiregyhaza.hu','80f91692b89e1f48d87480bcafa02f3c00bc47ebdc340f84449fb53926a63954',0),
 -- (44567890123, 'szolgaltato@nyiregyhaza.hu', 'szolg456');
-(55678901234,'Szolnoki Logisztika Bt.','logisztika@szolnok.hu','a459f59ef60e6d89116041e3696e153c033be0080cd32aa0fd7a26cfe7d68d4f',0, null);
+(55678901234,'Szolnoki Logisztika Bt.','logisztika@szolnok.hu','a459f59ef60e6d89116041e3696e153c033be0080cd32aa0fd7a26cfe7d68d4f',0);
 -- (55678901234, 'logisztika@szolnok.hu', 'logi123');
 
 ---------- Pelda rekordok allaskereso tabla
