@@ -276,6 +276,20 @@ BEGIN
 END;
 /
 
+--------------------
+
+CREATE OR REPLACE TRIGGER email_update
+BEFORE UPDATE OF email ON allaskereso
+FOR EACH ROW
+BEGIN
+    IF :NEW.email <> :OLD.email THEN
+        UPDATE cv
+        SET allaskereso_email = :NEW.email
+        WHERE allaskereso_email = :OLD.email;
+    END IF;
+END;
+/
+
 -------------------- allaslehetoseg_kulcsszo_kapcsolat torles utan kulcsszo trigger
 
 -- CREATE OR REPLACE TRIGGER trg_clean_kulcsszo_before_parent_delete
