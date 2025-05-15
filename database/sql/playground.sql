@@ -4,6 +4,9 @@ SELECT * FROM moderator;
 SELECT * FROM allaskereso;
 SELECT * FROM ceg;
 SELECT * FROM ALLASLEHETOSEG;
+SELECT * FROM cv;
+SELECT * FROM TERULET;
+SELECT * FROM KULCSSZO;
 
 
 
@@ -11,6 +14,26 @@ DELETE FROM JELENTKEZO WHERE ALLASKERESO_EMAIL = 'jagerpeter04@gmail.com' AND AL
 
   select ALLASKERESO_EMAIL from JELENTKEZO WHERE ALLASLEHETOSEG_ID = 6;
 
+
+SELECT * FROM ALLASLEHETOSEG;
+SELECT * FROM allaslehetoseg_kulcsszo_kapcsolat;
+SELECT * FROM kulcsszo;
+
+-- Tesztadatok
+INSERT INTO kulcsszo (neve) VALUES ('asd1');
+INSERT INTO kulcsszo (neve) VALUES ('asd');
+Insert into allaslehetoseg (CIM,LEIRAS,KOVETELMENYEK,MIKOR,BER,IS_ACCEPTED,TERULET_ID,CEG_ADOAZONOSITO,KATEGORIA_NEVE) values ('a','aa','a',to_date('14/05/25','DD/MM/RR'),123123,FALSE,8,12345678901,'Hegesztés kategoria');
+INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve) VALUES (16, 'asd1');
+INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve) VALUES (16, 'asd');
+
+
+-- Törlés
+DELETE FROM ALLASLEHETOSEG WHERE id = 16;
+
+-- Ellenőrzés
+SELECT * FROM kulcsszo; -- A 'Java' megmarad, mert még van kapcsolat
+DELETE FROM allaslehetoseg_kulcsszo_kapcsolat WHERE allaslehetoseg_id = 2;
+SELECT * FROM kulcsszo; -- A 'Java' törlődik, mert nincs több kapcsolat
 
 
 --Megyénkénti átlagbér

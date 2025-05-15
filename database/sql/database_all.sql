@@ -36,9 +36,9 @@ END;
 CREATE TABLE ceg(
    -- adoazonosito INT
     adoazonosito    NUMBER(11,0) PRIMARY KEY NOT NULL,
-    neve    VARCHAR(255),
-    email   VARCHAR(255),
-    jelszo  VARCHAR(255),
+    neve    VARCHAR2(255),
+    email   VARCHAR2(255),
+    jelszo  VARCHAR2(255),
     ertekeles   FLOAT, -- Az itt megjeleno szam egy atlag lesz a ceg ertekeleseibol
     terulet_id  NUMBER,
     CONSTRAINT foreign_key_terulet FOREIGN KEY (terulet_id) REFERENCES terulet(id) ON DELETE SET NULL--mert a cég létezhet terület nélkül
@@ -57,11 +57,11 @@ END;
 /
 
 CREATE TABLE allaskereso (
-   email                VARCHAR(255) PRIMARY KEY NOT NULL,
-   neve                 VARCHAR(255),
-   jelszo               VARCHAR(255),
+   email                VARCHAR2(255) PRIMARY KEY NOT NULL,
+   neve                 VARCHAR2(255),
+   jelszo               VARCHAR2(255),
    utolso_bejelentkezes DATE,
-   vegzettseg           VARCHAR(255),
+   vegzettseg           VARCHAR2(255),
    statusz              BOOLEAN
 );
 
@@ -79,7 +79,7 @@ END;
 
 CREATE TABLE cv(
   cv_link VARCHAR2(255) PRIMARY KEY NOT NULL,
-  allaskereso_email VARCHAR(255),
+  allaskereso_email VARCHAR2(255),
   CONSTRAINT foreign_key_allaskereso_cv FOREIGN KEY (allaskereso_email) REFERENCES allaskereso(email) ON DELETE CASCADE
 );
 
@@ -98,7 +98,7 @@ END;
 CREATE TABLE cegertekeles(
     ertekeles   NUMBER(1,0) DEFAULT 0,
     ceg_adoazonosito  NUMBER,
-    allaskereso_email  VARCHAR(255),
+    allaskereso_email  VARCHAR2(255),
     PRIMARY KEY(ceg_adoazonosito, allaskereso_email),
     CONSTRAINT foreign_key_ceg FOREIGN KEY (ceg_adoazonosito) REFERENCES ceg(adoazonosito) ON DELETE CASCADE,--Cég törlésekor az értékelései is törlődjenek
     CONSTRAINT foreign_key_allaskereso FOREIGN KEY (allaskereso_email) REFERENCES allaskereso(email) ON DELETE CASCADE --Álláskereső törlésekor az általa adott értékelések is törlődjenek
@@ -134,7 +134,7 @@ END;
 
 CREATE TABLE allaslehetoseg (
    id            INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-   cim           VARCHAR(255),
+   cim           VARCHAR2(255),
    leiras        VARCHAR2(255),
    kovetelmenyek VARCHAR2(255),
    mikor         DATE,
@@ -216,7 +216,7 @@ END;
 /
 
 CREATE TABLE jelentkezo( --Ez is csak egy kapcsolotabla
-  allaskereso_email VARCHAR(255) NOT NULL,
+  allaskereso_email VARCHAR2(255) NOT NULL,
   allaslehetoseg_id NUMBER NOT NULL,
 
   CONSTRAINT foreign_key_allaskereso_jelentkezo FOREIGN KEY ( allaskereso_email ) REFERENCES allaskereso(email) ON DELETE CASCADE, -- Álláskereső törlésekor a jelentkezései is törlődjenek
@@ -224,7 +224,9 @@ CREATE TABLE jelentkezo( --Ez is csak egy kapcsolotabla
 );
 
 ---------------------------------------- TRIGGEREK ----------------------------------------
+
 -------------------- ceg adoazonosito update trigger
+
 CREATE OR REPLACE TRIGGER ceg_adoazonosito_update
 BEFORE UPDATE OF adoazonosito ON ceg
 FOR EACH ROW
@@ -239,16 +241,6 @@ END;
 
 -------------------- jelentkezo frissito allasereso email trigger
 
-BEGIN
-    EXECUTE IMMEDIATE 'DROP TRIGGER update_child_email';
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Nem létezik nincs semmi: ' || SQLERRM);
-        NULL;
-END;
-/
-
 CREATE OR REPLACE TRIGGER update_child_email
 BEFORE UPDATE OF email ON allaskereso
 FOR EACH ROW
@@ -262,19 +254,9 @@ END;
 /
 
 -------------------- cegertekeles atlag frissito trigger
-BEGIN
-    EXECUTE IMMEDIATE 'DROP TRIGGER update_ertekeles';
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Nem létezik nincs semmi: ' || SQLERRM);
-        NULL;
-END;
-/
 
 CREATE OR REPLACE TRIGGER update_ertekeles
 AFTER INSERT OR UPDATE OR DELETE ON cegertekeles
-DECLARE
 BEGIN
     -- Frissíti a ceg táblát a beszúrt értékelések átlagával
     UPDATE ceg
@@ -283,17 +265,7 @@ BEGIN
 END;
 /
 
---------------------allaskereso 90 napon tuli inaktivitas trigger
-
-BEGIN
-    EXECUTE IMMEDIATE 'DROP TRIGGER allaskereso_inactive_trigger';
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Ha a tabla nem letezik semmi nincs
-        DBMS_OUTPUT.PUT_LINE('Nem létezik nincs semmi: ' || SQLERRM);
-        NULL;
-END;
-/
+-------------------- allaskereso 90 napon tuli inaktivitas trigger
 
 CREATE OR REPLACE TRIGGER allaskereso_inactive_trigger
 AFTER LOGON ON DATABASE
@@ -306,7 +278,228 @@ BEGIN
 END;
 /
 
+-------------------- allaslehetoseg_kulcsszo_kapcsolat torles utan kulcsszo trigger
+
+CREATE OR REPLACE TRIGGER trg_clean_kulcsszo_before_parent_delete
+BEFORE DELETE ON allaslehetoseg
+FOR EACH ROW
+DECLARE
+BEGIN
+  DELETE FROM allaslehetoseg_kulcsszo_kapcsolat
+   WHERE allaslehetoseg_id = :OLD.id;
+
+  DELETE FROM kulcsszo k
+   WHERE NOT EXISTS (
+     SELECT 1
+     FROM allaslehetoseg_kulcsszo_kapcsolat ak
+     WHERE ak.kulcsszo_neve = k.neve
+   );
+END;
+/
+
+---------------------------------------- Tarolt eljarasok ----------------------------------------
+
+-------------------- INSERT Ceg tablaba
+
+CREATE OR REPLACE FUNCTION insert_ceg_func(
+  ado IN NUMBER, name IN VARCHAR2, email IN VARCHAR2, password IN VARCHAR2, rating IN FLOAT, area_id IN NUMBER)
+  RETURN NUMBER
+  AS 
+  rows_out NUMBER := 0;-- Lokalis deklaracio
+  BEGIN
+
+    INSERT INTO ceg
+    VALUES (ado, name, email, password, rating, area_id);
+    rows_out := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('----------rows_out erteke: ' || TO_CHAR(rows_out));
+
+    RETURN rows_out;
+
+    EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Duplikált adóazonosító vagy kulcs!');
+        RETURN rows_out;
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen adat (pl. túl hosszú szöveg vagy rossz formátum)!');
+        RETURN rows_out;
+    WHEN INVALID_NUMBER THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen számformátum!');
+        RETURN rows_out;
+    WHEN PROGRAM_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Belső programozási hiba!');
+        RETURN rows_out;
+    WHEN ACCESS_INTO_NULL THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: NULL objektumra való hivatkozás!');
+        RETURN rows_out;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Egyéb hiba: ' || SQLERRM || ' (Kód: ' || SQLCODE || ')');
+        RETURN rows_out;
+    
+END;
+/
+
+-------------------- DELETE Ceg tablabol
+
+CREATE OR REPLACE FUNCTION delete_ceg_func(p_email IN VARCHAR2)
+RETURN NUMBER
+AS 
+rows_out NUMBER := 0;-- Lokalis deklaraciO
+BEGIN
+
+    DELETE FROM ceg WHERE email = p_email;
+
+    rows_out := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('----------rows_out erteke: ' || TO_CHAR(rows_out));
+
+    RETURN rows_out;
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Nincs ilyen email-cím!');
+        RETURN 0;
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen adat (pl. túl hosszú szöveg vagy rossz formátum)!');
+        RETURN 0;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Egyéb hiba: ' || SQLERRM || ' (Kód: ' || SQLCODE || ')');
+        RETURN 0;
+END;
+/
+
+-------------------- INSERT Allaskereso tablaba
+
+CREATE OR REPLACE FUNCTION insert_allaskereso_func(email IN VARCHAR2, neve IN VARCHAR2, jelszo IN VARCHAR2, utolso_bejelentkezes IN DATE, vegzettseg IN VARCHAR2, statusz IN BOOLEAN)
+  RETURN NUMBER
+  AS 
+  rows_out NUMBER := 0;-- Lokális deklaráció
+  BEGIN
+
+    INSERT INTO allaskereso
+    VALUES (email, neve, jelszo, utolso_bejelentkezes, vegzettseg, statusz);
+
+    rows_out := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('----------rows_out erteke: ' || TO_CHAR(rows_out));
+
+    RETURN rows_out;
+
+    EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Duplikált adóazonosító vagy kulcs!');
+        RETURN rows_out;
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen adat (pl. túl hosszú szöveg vagy rossz formátum)!');
+        RETURN rows_out;
+    WHEN INVALID_NUMBER THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen számformátum!');
+        RETURN rows_out;
+    WHEN PROGRAM_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Belső programozási hiba!');
+        RETURN rows_out;
+    WHEN ACCESS_INTO_NULL THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: NULL objektumra való hivatkozás!');
+        RETURN rows_out;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Egyéb hiba: ' || SQLERRM || ' (Kód: ' || SQLCODE || ')');
+        RETURN rows_out;
+    
+END;
+/
+
+-------------------- DELETE Allaskereso tablabol
+
+CREATE OR REPLACE FUNCTION delete_allaskereso_func(p_email IN VARCHAR2)
+RETURN NUMBER
+AS 
+rows_out NUMBER := 0;-- Lokalis deklaraciO
+BEGIN
+
+    DELETE FROM allaskereso WHERE email = p_email;
+
+    rows_out := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('----------rows_out erteke: ' || TO_CHAR(rows_out));
+
+    RETURN rows_out;
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Nincs ilyen email-cím!');
+        RETURN 0;
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen adat (pl. túl hosszú szöveg vagy rossz formátum)!');
+        RETURN 0;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Egyéb hiba: ' || SQLERRM || ' (Kód: ' || SQLCODE || ')');
+        RETURN 0;
+END;
+/
+
+-------------------- INSERT CV tablaba
+
+CREATE OR REPLACE FUNCTION insert_cv_func(cv_link IN VARCHAR2, allaskereso_email IN VARCHAR2)
+RETURN NUMBER
+AS 
+rows_out NUMBER := 0;-- Lokális deklaráció
+BEGIN
+
+    INSERT INTO cv
+    VALUES(cv_link, allaskereso_email);
+
+    rows_out := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('----------rows_out erteke: ' || TO_CHAR(rows_out));
+
+    RETURN rows_out;
+
+    EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Duplikált adóazonosító vagy kulcs!');
+        RETURN rows_out;
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen adat (pl. túl hosszú szöveg vagy rossz formátum)!');
+        RETURN rows_out;
+    WHEN INVALID_NUMBER THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen számformátum!');
+        RETURN rows_out;
+    WHEN PROGRAM_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Belső programozási hiba!');
+        RETURN rows_out;
+    WHEN ACCESS_INTO_NULL THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: NULL objektumra való hivatkozás!');
+        RETURN rows_out;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Egyéb hiba: ' || SQLERRM || ' (Kód: ' || SQLCODE || ')');
+        RETURN rows_out;
+    
+END;
+/
+
+-------------------- DELETE moderator tablabol
+
+CREATE OR REPLACE FUNCTION delete_moderator_func(p_email IN VARCHAR2)
+RETURN NUMBER
+AS 
+rows_out NUMBER := 0;-- Lokalis deklaraciO
+BEGIN
+
+    DELETE FROM moderator WHERE email = p_email;
+
+    rows_out := SQL%ROWCOUNT;
+    DBMS_OUTPUT.PUT_LINE('----------rows_out erteke: ' || TO_CHAR(rows_out));
+
+    RETURN rows_out;
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Nincs ilyen email-cím!');
+        RETURN 0;
+    WHEN VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('Hiba: Érvénytelen adat (pl. túl hosszú szöveg vagy rossz formátum)!');
+        RETURN 0;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Egyéb hiba: ' || SQLERRM || ' (Kód: ' || SQLCODE || ')');
+        RETURN 0;
+END;
+/
+
+
 ---------------------------------------- Oracle Scheduler ----------------------------------------
+
 -- Csak mert megtehetem es ilyet is tudok, de azert triggerrel is megcsinalom, hogy a kovetelmeny ki legyen elegitve
 
 BEGIN

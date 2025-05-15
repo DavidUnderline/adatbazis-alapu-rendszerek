@@ -1,4 +1,5 @@
 const { executeQuery, getConnection } = require('../config/db');
+const oracledb = require('oracledb'); // oracledb modult
 
 class CvDao {
     // Új CV link beszúrása
@@ -10,19 +11,22 @@ class CvDao {
             //Cv beszuraas tablaba
             console.table(cv);
             const result = await connection.execute(
-                `INSERT INTO cv (cv_link, allaskereso_email) VALUES (:cv_link, :email)`,
-                { cv_link: cv.cv_link, 
-                    email: cv.email
-                },
-                { autoCommit: false }
+            `
+            BEGIN
+                :retval := insert_cv_func(:cv_link, :email);
+            END;
+            `,
+            { cv_link: cv.cv_link, 
+                email: cv.email,
+                retval: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
+            },
+            { autoCommit: true }
                 
             );
-            if (result.rowsAffected != 1) {
-                throw new Error('CV beszúrása sikertelen');
-            }            
 
-            await connection.commit();
-            return true;
+            // A fgv return erteke alapjan ertekelunk
+            return result.outBinds.retval === 1;
+            
         } catch (err) {
             if (connection) await connection.rollback();
             console.error('\n\nError inserting CV:', err);
