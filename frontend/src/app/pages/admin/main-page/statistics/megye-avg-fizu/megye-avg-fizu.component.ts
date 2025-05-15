@@ -19,7 +19,7 @@ export class MegyeAvgFizuComponent implements OnInit {
       type: 'column',
     },
     title: {
-      text: 'Legnagyobb átlag kereset megyénként',
+      text: 'Átlag kereset megyénként',
     },
     xAxis: {
       categories: this.categories,
