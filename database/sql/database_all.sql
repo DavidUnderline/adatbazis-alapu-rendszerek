@@ -276,7 +276,21 @@ BEGIN
 END;
 /
 
---------------------
+-------------------- cegertekeles tablaban emailt frissito trigger
+
+CREATE OR REPLACE TRIGGER email_update_cegertekeles
+BEFORE UPDATE OF email ON allaskereso
+FOR EACH ROW
+BEGIN
+    IF :NEW.email <> :OLD.email THEN
+        UPDATE cegertekeles
+        SET allaskereso_email = :NEW.email
+        WHERE allaskereso_email = :OLD.email;
+    END IF;
+END;
+/
+
+-------------------- cv tablaban email frissito trigger
 
 CREATE OR REPLACE TRIGGER email_update
 BEFORE UPDATE OF email ON allaskereso
@@ -290,24 +304,6 @@ BEGIN
 END;
 /
 
--------------------- allaslehetoseg_kulcsszo_kapcsolat torles utan kulcsszo trigger
-
--- CREATE OR REPLACE TRIGGER trg_clean_kulcsszo_before_parent_delete
--- BEFORE DELETE ON allaslehetoseg
--- FOR EACH ROW
--- DECLARE
--- BEGIN
---   DELETE FROM allaslehetoseg_kulcsszo_kapcsolat
---    WHERE allaslehetoseg_id = :OLD.id;
-
---   DELETE FROM kulcsszo k
---    WHERE NOT EXISTS (
---      SELECT 1
---      FROM allaslehetoseg_kulcsszo_kapcsolat ak
---      WHERE ak.kulcsszo_neve = k.neve
---    );
--- END;
--- /
 
 ---------------------------------------- Tarolt eljarasok ----------------------------------------
 
