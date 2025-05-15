@@ -12,7 +12,7 @@ class CegDao {
             const result = await connection.execute(
             `
             BEGIN
-                :retval := insert_ceg_func(:ado, :name, :email, :password, :rating, :area_id);
+                :retval := insert_ceg_func(:ado, :name, :email, :password, :rating);
             END;
             `,
             {
@@ -21,7 +21,6 @@ class CegDao {
                 email: ceg.email,
                 password: ceg.password,
                 rating: 0,
-                area_id: null,
                 retval: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
             },
             { autoCommit: true }
