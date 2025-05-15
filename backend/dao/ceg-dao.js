@@ -1,26 +1,35 @@
 const { executeQuery, getConnection } = require('../config/db');
+const oracledb = require('oracledb'); // oracledb modult
 
 class CegDao {
     // uj ceg regisztralas
     async insertCeg(ceg) {
+        console.log("---[ insertCeg ]---");
         let connection;
         try {
+            console.log(ceg)
             connection = await getConnection();
             const result = await connection.execute(
-                `INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles, terulet_id)
-                 VALUES (:ado, :name, :email, :password, :rating, :area_id)`,
-                {
-                    ado: ceg.id,
-                    name: ceg.name,
-                    email: ceg.email,
-                    password: ceg.password,
-                    rating: 0,
-                    area_id: null
-                },
-                { autoCommit: true }
+            `
+            BEGIN
+                :retval := insert_ceg_func(:ado, :name, :email, :password, :rating, :area_id);
+            END;
+            `,
+            {
+                ado: ceg.id,
+                name: ceg.name,
+                email: ceg.email,
+                password: ceg.password,
+                rating: 0,
+                area_id: null,
+                retval: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
+            },
+            { autoCommit: true }
+            
             );
 
-            return result.rowsAffected === 1;
+            // A fgv return erteke alapjan ertekelunk
+            return result.outBinds.retval === 1;
 
         } catch (err) {
             console.error('Error inserting ceg:', err);

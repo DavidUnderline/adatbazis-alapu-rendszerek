@@ -1,4 +1,5 @@
 const { executeQuery, getConnection } = require('../config/db');
+const oracledb = require('oracledb'); // oracledb modult
 // const cvDao = require('../dao/cv-dao');
 
 class AllaskeresoDao {
@@ -24,24 +25,32 @@ class AllaskeresoDao {
 
     // Új álláskereső regisztrálása
     async insertAllaskereso(allaskereso) {
+        console.log("---[ insertAllaskereso ]---");
         let connection;
         try {
+            console.log(allaskereso);
             connection = await getConnection();
             const result = await connection.execute(
-                `INSERT INTO allaskereso (email, neve, jelszo, utolso_bejelentkezes, vegzettseg, statusz)
-                 VALUES (:email, :name, :password, TO_TIMESTAMP(:last_signed_in, 'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"'), :education, :status)`,
-                {
-                    email: allaskereso.email,
-                    name: allaskereso.name,
-                    password: allaskereso.password, //jelszot hashelt
-                    last_signed_in: allaskereso.last_signed_in || null,
-                    education: allaskereso.education || null,
-                    status: allaskereso.status === 'online' ? true : false
-                },
-                { autoCommit: true }
+            `
+            BEGIN
+                :retval := insert_allaskereso_func(:email, :name, :password,  TO_TIMESTAMP(:last_signed_in, 'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"'), :education, :status);
+            END;
+            `,
+            {
+                email: allaskereso.email,
+                name: allaskereso.name,
+                password: allaskereso.password, //jelszo hashelt
+                last_signed_in: allaskereso.last_signed_in || null,
+                education: allaskereso.education || null,
+                status: allaskereso.status === 'online' ? true : false,
+                retval: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
+            },
+            { autoCommit: true }
+
             );
 
-            return result.rowsAffected === 1;
+            // A fgv return erteke alapjan ertekelunk
+            return result.outBinds.retval === 1;
             
         } catch (err) {
             console.error('Error inserting allaskereso:', err);
