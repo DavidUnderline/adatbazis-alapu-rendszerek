@@ -9,22 +9,25 @@ class CegDao {
         try {
             console.log(ceg)
             connection = await getConnection();
+
+            if (await this.getCegByEmail(ceg.email) != null) return false;
+
             const result = await connection.execute(
-            `
+                `
             BEGIN
                 :retval := insert_ceg_func(:ado, :name, :email, :password, :rating);
             END;
             `,
-            {
-                ado: ceg.id,
-                name: ceg.name,
-                email: ceg.email,
-                password: ceg.password,
-                rating: 0,
-                retval: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
-            },
-            { autoCommit: true }
-            
+                {
+                    ado: ceg.id,
+                    name: ceg.name,
+                    email: ceg.email,
+                    password: ceg.password,
+                    rating: 0,
+                    retval: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
+                },
+                { autoCommit: true }
+
             );
 
             // A fgv return erteke alapjan ertekelunk
@@ -42,7 +45,7 @@ class CegDao {
     async updateCeg(ceg) {
         let connection;
         // console.log(ceg);
-
+        if (await this.getCegByEmail(ceg.email) != null) return false;
         try {
             connection = await getConnection();
 
@@ -98,13 +101,12 @@ class CegDao {
 
 
     async getCegByEmail(email) {
-        console.log(email);
+        console.log("---[ getCegByEmail ]---");
 
         let connection;
         try {
             connection = await getConnection();
-            const query = `SELECT ADOAZONOSITO, NEVE, ERTEKELES, TERULET_ID FROM CEG
-            WHERE EMAIL = :email`;
+            const query = `SELECT ADOAZONOSITO, NEVE, ERTEKELES FROM CEG WHERE EMAIL = :email`;
             const result = await connection.execute(query, { email: email });
 
             return result.rows.length === 1 ? result.rows[0] : null;
@@ -159,7 +161,7 @@ class CegDao {
             query = `
                 SELECT ERTEKELES FROM CEGERTEKELES
                 WHERE CEG_ADOAZONOSITO =: ceg_ado AND ALLASKERESO_EMAIL =: user_email`;
-                binds.user_email = user_email;
+            binds.user_email = user_email;
         }
         console.log(query, binds)
         try {

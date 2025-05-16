@@ -14,6 +14,7 @@ import { SuccessMsgComponent } from '../../shared/success-msg/success-msg.compon
 import { DisplayDirective } from '../../shared/directives/display.directive';
 import { LoginComponent } from '../login/login.component';
 import { LoginService } from '../../services/login.service';
+import { response } from 'express';
 
 @Component({
   selector: 'app-register',
@@ -55,17 +56,12 @@ export class RegisterComponent {
       };
       console.table(registerData);
 
-      this.http
-        .post<any>(
-          'http://localhost:3000/allaskereso/api/register',
-          registerData
-        )
-        .subscribe(
-          (response) => {
+      this.http.post<any>('http://localhost:3000/allaskereso/api/register', registerData)
+        .subscribe((response) => {
             if (response.success) {
               this.successHandler('Sikeres Regisztráció!');
             } else {
-              this.errorHandler('Hiba a regisztráció folyamán.');
+              this.errorHandler(response.message);
             }
           },
           (error) => {
@@ -73,29 +69,28 @@ export class RegisterComponent {
           }
         );
     } else if ('adoazonosito' in user) {
-      const registerData = {
-        id: user.adoazonosito,
-        name: user.neve,
-        email: user.email,
-        password: user.jelszo,
-      };
+        const registerData = {
+          id: user.adoazonosito,
+          name: user.neve,
+          email: user.email,
+          password: user.jelszo,
+        };
 
-      this.http
-        .post<any>('http://localhost:3000/ceg/api/register', registerData)
-        .subscribe(
-          (response) => {
+      this.http.post<any>('http://localhost:3000/ceg/api/register', registerData)
+        .subscribe((response) => {
             if (response.success) {
               this.successHandler('Sikeres Regisztráció!');
             } else {
-              this.errorHandler('Hiba a regisztráció folyamán.');
+              this.errorHandler(response.message);
             }
           },
-          (error) => {
-            this.errorHandler(error.error.error);
+          (err) => {
+            this.errorHandler(err.error.personal_message);
+            console.log(err);
           }
         );
     } else {
-      this.errorHandler('Hiba a regisztráció folyamán.');
+      this.errorHandler('Nem létezik ilyen felhasználó tipus!');
     }
 
     // console.table(user)
