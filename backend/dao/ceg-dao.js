@@ -13,21 +13,21 @@ class CegDao {
             if (await this.getCegByEmail(ceg.email) != null) return false;
 
             const result = await connection.execute(
-            `
+                `
             BEGIN
                 :retval := insert_ceg_func(:ado, :name, :email, :password, :rating);
             END;
             `,
-            {
-                ado: ceg.id,
-                name: ceg.name,
-                email: ceg.email,
-                password: ceg.password,
-                rating: 0,
-                retval: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
-            },
-            { autoCommit: true }
-            
+                {
+                    ado: ceg.id,
+                    name: ceg.name,
+                    email: ceg.email,
+                    password: ceg.password,
+                    rating: 0,
+                    retval: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
+                },
+                { autoCommit: true }
+
             );
 
             // A fgv return erteke alapjan ertekelunk
@@ -45,7 +45,7 @@ class CegDao {
     async updateCeg(ceg) {
         let connection;
         // console.log(ceg);
-
+        if (await this.getCegByEmail(ceg.email) != null) return false;
         try {
             connection = await getConnection();
 
@@ -161,7 +161,7 @@ class CegDao {
             query = `
                 SELECT ERTEKELES FROM CEGERTEKELES
                 WHERE CEG_ADOAZONOSITO =: ceg_ado AND ALLASKERESO_EMAIL =: user_email`;
-                binds.user_email = user_email;
+            binds.user_email = user_email;
         }
         console.log(query, binds)
         try {

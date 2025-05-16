@@ -194,7 +194,7 @@ export class ProfileComponent {
             this.user_email = response.email;
             this.loadAllaskereso();
           } else {
-            this.errorHandler(response.message);
+            this.errorHandler("Létező email / " + response.error);
           }
         },
         (err) => {
