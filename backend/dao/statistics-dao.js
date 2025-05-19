@@ -9,7 +9,6 @@ class StatisticsDao{
       FROM ALLASLEHETOSEG a
       WHERE a.IS_ACCEPTED = 1
       GROUP BY a.TERULET_ID
-      FETCH FIRST 5 ROWS ONLY
     `;
 
     const res = executeQuery(query, {});
@@ -19,19 +18,23 @@ class StatisticsDao{
 
 async getTopCeg(){
   const query = `
+          SELECT * 
+    FROM (
       SELECT 
-      c.neve,
-      (
-        SELECT COUNT(*) 
-        FROM jelentkezo j 
-        WHERE j.allaslehetoseg_id IN (
-          SELECT a2.id 
-          FROM allaslehetoseg a2 
-          WHERE a2.ceg_adoazonosito = c.adoazonosito 
-            AND a2.is_accepted = 1
-        )
-      ) AS jelentkezok_szama
-    FROM ceg c
+        c.neve,
+        (
+          SELECT COUNT(*) 
+          FROM jelentkezo j 
+          WHERE j.allaslehetoseg_id IN (
+            SELECT a2.id 
+            FROM allaslehetoseg a2 
+            WHERE a2.ceg_adoazonosito = c.adoazonosito 
+              AND a2.is_accepted = 1
+          )
+        ) AS jelentkezok_szama
+      FROM ceg c
+    ) 
+    WHERE jelentkezok_szama != 0
     ORDER BY jelentkezok_szama DESC
     FETCH FIRST 5 ROWS ONLY
   `

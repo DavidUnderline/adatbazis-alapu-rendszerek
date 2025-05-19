@@ -1,4 +1,5 @@
 const { executeQuery, getConnection } = require('../config/db');
+const oracledb = require('oracledb');
 
 class AdminDao {
   async user(email, password){
@@ -88,22 +89,66 @@ class AdminDao {
     console.log("--- delete user dao ---");
     console.log(data);
 
-    let query = "";
+    let connection;
+    try {
+      connection = await getConnection();    
+      let result;
 
-    if(data.user === 'ceg')
-      query = "DELETE FROM ceg WHERE email = :email";
-  
-    else if(data.user === 'allaskereso')
-      query = "DELETE FROM allaskereso WHERE email = :email";
+      switch(data.user){
+        case 'ceg':
+          result = await connection.execute(
+            `
+            BEGIN
+                :retval := delete_ceg_func(:email);
+            END;
+            `,{
+              email: data.email,
+              retval: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
+            },
+            { autoCommit: true }
+            );
+              // A fgv return erteke alapjan ertekelunk
+              return result.outBinds.retval > 0;
 
-    else if(data.user === 'moderator')
-      query = "DELETE FROM moderator WHERE email = :email";
-    
-    return await executeQuery(query, {email: data.email});
+        case 'allaskereso':
+          result = await connection.execute(
+            `
+            BEGIN
+                :retval := delete_allaskereso_func(:email);
+            END;
+            `,{
+              email: data.email,
+              retval: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
+            },
+            { autoCommit: true }
+            );
+              // A fgv return erteke alapjan ertekelunk
+              return result.outBinds.retval > 0;
+
+        case 'moderator':
+          result = await connection.execute(
+            `
+            BEGIN
+                :retval := delete_moderator_func(:email);
+            END;
+            `,{
+              email: data.email,
+              retval: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
+            },
+            { autoCommit: true }
+            );
+              // A fgv return erteke alapjan ertekelunk
+              return result.outBinds.retval > 0;
+        default:
+          throw new Error('Ismeretlen user típus: ' + data.user);
+      }
+    } catch(err){
+        console.error('Error deleting user:', err.message || err);
+        throw err;
+    } finally {
+        if (connection) await connection.close();
+    }
   }
-
 }
-
-
 
 module.exports = new AdminDao
