@@ -122,13 +122,6 @@ class AllaskeresoDao {
         let connection;
         try {
             connection = await getConnection();
-            // const query = includePassword
-            //     ? `SELECT a.email, a.neve, a.jelszo, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
-            //               (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
-            //        FROM allaskereso a WHERE a.email = :email`
-            //     : `SELECT a.email, a.neve, a.utolso_bejelentkezes, a.vegzettseg, a.statusz,
-            //               (SELECT LISTAGG(ac.cv_link, ',') FROM allaskereso_cv_kapcsolat ac WHERE ac.email = a.email) AS cv_links
-            //        FROM allaskereso a WHERE a.email = :email`;
             const query = `SELECT email, neve, utolso_bejelentkezes, vegzettseg, statusz FROM ALLASKERESO
                WHERE email = :email`;
             const result = await connection.execute(query, { email });
@@ -186,24 +179,6 @@ class AllaskeresoDao {
         }
     }
 
-    // Álláskereső törlése (kapcsolatok automatikusan törlődnek CASCADE miatt)
-    // async deleteAllaskereso(email) {
-    //     let connection;
-    //     try {
-    //         // connection = await getConnection();
-    //         const result = await connection.execute(
-    //             `DELETE FROM allaskereso WHERE email = :email`,
-    //             { email },
-    //             { autoCommit: true }
-    //         );
-    //         return result.rowsAffected === 1;
-    //     } catch (err) {
-    //         console.error('Error deleting allaskereso:', err);
-    //         throw err;
-    //     } finally {
-    //         if (connection) await connection.close();
-    //     }
-    // }
 }
 
 module.exports = new AllaskeresoDao();
