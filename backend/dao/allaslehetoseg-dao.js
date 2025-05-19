@@ -154,7 +154,7 @@ class AllaslehetosegDao{
             return await executeQuery(query, binds);
         }
 
-// ez lett volna az eredeti szűrés szépen folytonosan
+        // ez lett volna az eredeti szűrés szépen folytonosan
         const fieldsjoin = [];
         const fields = [];
         const queries = {

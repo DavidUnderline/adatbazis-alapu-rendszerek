@@ -133,7 +133,7 @@ END;
 CREATE TABLE allaslehetoseg (
    id            INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
    cim           VARCHAR2(255),
-   leiras        VARCHAR2(255),
+   leiras        VARCHAR2(4000),
    kovetelmenyek VARCHAR2(255),
    mikor         DATE,
    ber           NUMBER,
