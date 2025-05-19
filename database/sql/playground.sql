@@ -85,6 +85,7 @@ WHERE a.TERULET_ID IN (
 GROUP BY a.KATEGORIA_NEVE
 FETCH FIRST 5 ROWS ONLY;
 
+--
 
 SELECT 
   TRUNC(utolso_bejelentkezes) AS datum,
