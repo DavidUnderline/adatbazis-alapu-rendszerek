@@ -55,25 +55,6 @@ class TeruletDao {
             throw err;
         }
     }
-    
-    // Terület törlése
-    // async deleteTerulet(id) {
-    //     let connection;
-    //     try {
-    //         connection = await getConnection();
-    //         const result = await connection.execute(
-    //             `DELETE FROM terulet WHERE id = :id`,
-    //             { id },
-    //             { autoCommit: true }
-    //         );
-    //         return result.rowsAffected === 1;
-    //     } catch (err) {
-    //         console.error('Error deleting terulet:', err);
-    //         throw err;
-    //     } finally {
-    //         if (connection) await connection.close();
-    //     }
-    // }
 
 }
 
