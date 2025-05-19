@@ -12,8 +12,8 @@ class CegDao {
             if (await this.getCegByEmail(ceg.email) != null) return false;
 
             const result = await connection.execute(
-                `INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles, terulet_id)
-                 VALUES (:ado, :name, :email, :password, :rating, :area_id)`,
+                `INSERT INTO ceg (adoazonosito, neve, email, jelszo, ertekeles)
+                 VALUES (:ado, :name, :email, :password, :rating)`,
                 {
                     ado: ceg.id,
                     name: ceg.name,
@@ -39,6 +39,8 @@ class CegDao {
     async updateCeg(ceg) {
         let connection;
         // console.log(ceg);
+        
+        if (await this.getCegByEmail(ceg.email) != null) return false;
 
         try {
             connection = await getConnection();
@@ -96,12 +98,14 @@ class CegDao {
 
     async getCegByEmail(email) {
         console.log("---[ getCegByEmail ]---");
+        console.log(email)
 
         let connection;
         try {
             connection = await getConnection();
-            const query = `SELECT ADOAZONOSITO, NEVE, ERTEKELES, TERULET_ID FROM CEG WHERE EMAIL = :email`;
+            const query = `SELECT ADOAZONOSITO, NEVE, ERTEKELES FROM CEG WHERE EMAIL = :email`;
             const result = await connection.execute(query, { email: email });
+            console.log("--- CEG: \n",result)
 
             return result.rows.length === 1 ? result.rows[0] : null;
         } catch (err) {

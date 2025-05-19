@@ -57,6 +57,8 @@ class AllaskeresoDao {
         let connection;
         // console.table(allaskereso);
 
+        if (await this.getAllaskeresoByEmail(allaskereso.email) != null) return false;
+
         try {
             connection = await getConnection();
             const fields = [];

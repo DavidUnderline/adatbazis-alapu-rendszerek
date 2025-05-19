@@ -53,6 +53,7 @@ router.post('/api/update', async (req, res) => {
 
   try {
     const success = await cegDao.updateCeg(ceg);
+    console.log(success);
 
     if (!success) {
       res.json({ success: false, message: 'Adatok frissítése sikertelen' });
@@ -73,6 +74,8 @@ router.post('/api/get', async (req, res) => {
 
   try {
     const ceg = await cegDao.getCegByEmail(email);
+    console.log(ceg);
+    
     if (!ceg) {
       return res.json({ error: 'Cég nem található' });
     }

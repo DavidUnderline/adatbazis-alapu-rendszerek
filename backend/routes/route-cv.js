@@ -8,9 +8,11 @@ const cvDao = require('../dao/cv-dao');
 // Új CV link hozzáadása
 router.post('/api/CVinsert', async (req, res) => {
     try {
+      console.log("--- inside CVinsert route ---");
       console.table(req.body);
         const cv_data = {cv_link, email } = req.body;
         const success = await cvDao.insertCv(cv_data);
+        console.log(success);
 
         if (!success) {
           res.json({ error: 'CV feltöltés sikertelen', success: false });

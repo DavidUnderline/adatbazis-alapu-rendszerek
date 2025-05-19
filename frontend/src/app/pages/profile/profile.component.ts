@@ -99,6 +99,7 @@ export class ProfileComponent {
       })
       .subscribe(
         (response) => {
+          console.log("CEG INFO",response);
           const ceg_adat = response.ceg;
           this.user_ceg = {
             adoazonosito: ceg_adat[0] as string,
