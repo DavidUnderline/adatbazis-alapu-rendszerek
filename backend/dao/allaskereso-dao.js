@@ -53,12 +53,15 @@ class AllaskeresoDao {
     }
 
     async updateAllaskereso(allaskereso) {
+        console.log("--- [ updateAllaskereso ] dao ---");
         // console.log(allaskereso);
-        let connection;
         // console.table(allaskereso);
-
-        if (await this.getAllaskeresoByEmail(allaskereso.email) != null) return false;
-
+        
+        if(allaskereso.originalemail != null && await this.getAllaskeresoByEmail(allaskereso.email) != null){ 
+            return false;
+        }
+            
+        let connection;
         try {
             connection = await getConnection();
             const fields = [];
