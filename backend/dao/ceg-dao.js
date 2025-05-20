@@ -38,9 +38,10 @@ class CegDao {
 
     async updateCeg(ceg) {
         let connection;
-        // console.log(ceg);
-        
-        if (await this.getCegByEmail(ceg.email) != null) return false;
+        console.log("--- [ updateCeg ] dao ---", ceg);
+        if(ceg.originalemaill != null && await this.getCegByEmail(ceg.email) != null){ 
+            return false;
+        }
 
         try {
             connection = await getConnection();

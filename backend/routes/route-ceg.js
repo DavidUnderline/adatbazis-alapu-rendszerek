@@ -30,11 +30,12 @@ router.post('/api/register', async (req, res) => {
 
 //ceg modositasa
 router.post('/api/update', async (req, res) => {
+  console.log("--- [ updateCeg ] ---");
+
   const ceg = {
     email: req.body.data.email
   };
 
-  //   console.log(req.body.data);
 
   if (req.body.data.adoazonosito && req.body.data.adoazonosito.trim() != '')
     ceg.adoazonosito = req.body.data.adoazonosito;
@@ -75,7 +76,7 @@ router.post('/api/get', async (req, res) => {
   try {
     const ceg = await cegDao.getCegByEmail(email);
     console.log(ceg);
-    
+
     if (!ceg) {
       return res.json({ error: 'Cég nem található' });
     }
