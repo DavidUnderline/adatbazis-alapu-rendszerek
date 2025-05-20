@@ -230,10 +230,16 @@ BEFORE UPDATE OF adoazonosito ON ceg
 FOR EACH ROW
 BEGIN
     IF :NEW.adoazonosito <> :OLD.adoazonosito THEN
-        UPDATE allaslehetoseg
-        SET ceg_adoazonosito = :NEW.adoazonosito
-        WHERE ceg_adoazonosito = :OLD.adoazonosito;
-    END IF;
+    -- Update the adoazonosito in the cegertekeles table
+    UPDATE cegertekeles
+    SET ceg_adoazonosito = :NEW.adoazonosito
+    WHERE ceg_adoazonosito = :OLD.adoazonosito;
+
+    -- Update the adoazonosito in the allaslehetosegek table
+    UPDATE allaslehetoseg
+    SET ceg_adoazonosito = :NEW.adoazonosito
+    WHERE ceg_adoazonosito = :OLD.adoazonosito;
+  END IF;
 END;
 /
 
@@ -254,7 +260,7 @@ END;
 -------------------- cegertekeles atlag frissito trigger
 
 CREATE OR REPLACE TRIGGER update_ertekeles
-AFTER INSERT OR UPDATE OR DELETE ON cegertekeles
+AFTER INSERT OR DELETE ON cegertekeles
 BEGIN
     -- Frissíti a ceg táblát a beszúrt értékelések átlagával
     UPDATE ceg

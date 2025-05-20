@@ -44,8 +44,10 @@ class CegDao {
 
     async updateCeg(ceg) {
         let connection;
-        // console.log(ceg);
-        if (await this.getCegByEmail(ceg.email) != null) return false;
+        console.log(ceg);
+        console.log(await this.getCegByEmail(ceg.email));
+        console.log((await this.getCegByEmail(ceg.email) != null) && ceg.originalemail);
+        if ((await this.getCegByEmail(ceg.email) != null) && ceg.originalemail) return false;
         try {
             connection = await getConnection();
 
@@ -82,13 +84,13 @@ class CegDao {
             }
 
             const query = `UPDATE ceg SET ${fields.join(', ')} WHERE email = :email`;
-            // console.log("--- QUERY: \n", query);
-            // console.log("--- BINDS: \n");
-            // console.table(binds);
-            // return;
-
+            console.log("--- QUERY: \n", query);
+            console.log("--- BINDS: \n");
+            console.table(binds);
+            
             const result = await connection.execute(query, binds, { autoCommit: true });
-
+            
+            console.table(result);
             return result.rowsAffected === 1;
 
         } catch (err) {

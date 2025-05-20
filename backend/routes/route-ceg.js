@@ -53,13 +53,13 @@ router.post('/api/update', async (req, res) => {
 
   try {
     const success = await cegDao.updateCeg(ceg);
-
+    console.log("success", success);
     if (!success) {
       res.json({ success: false, message: 'Adatok frissítése sikertelen' });
       return;
     }
 
-    res.json({ success: true, message: 'Adatok frissítése sikeres', email: ceg.email });
+    res.json({ success: true, message: 'Adatok frissítése sikeres', email: ceg.email, adoazonosito: ceg.adoazonosito });
   } catch (err) {
     res.status(500).json({ error: 'Hiba az adatok frissítése során' });
   }

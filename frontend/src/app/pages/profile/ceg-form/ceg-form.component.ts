@@ -59,7 +59,7 @@ export class CegFormComponent {
           jelszo: form.jelszo1 != '' ? sha256(sha256(form.jelszo1 as string + ((form.email)? form.email : localStorage.getItem("username")))) : '',
         });
       } else{
-        this.errorHandler("Jelszók nem egyeznek")
+        this.errorHandler("Jelszavak nem egyeznek")
         return;
       }
     } else {

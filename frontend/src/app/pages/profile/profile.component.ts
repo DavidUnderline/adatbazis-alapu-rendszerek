@@ -230,6 +230,7 @@ export class ProfileComponent {
           if (response.success) {
             this.successHandler(response.message);
             localStorage.setItem('username', response.email);
+            localStorage.setItem('adoazonosito', response.adoazonosito);
             this.user_email = response.email;
             this.loadCeg();
           } else {

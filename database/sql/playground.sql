@@ -30,6 +30,31 @@ INSERT INTO allaslehetoseg_kulcsszo_kapcsolat (allaslehetoseg_id, kulcsszo_neve)
 -- Törlés
 DELETE FROM ALLASLEHETOSEG WHERE id = 16;
 
+DROP TRIGGER update_ceg_ertekeles_after_cegertekeles;
+
+CREATE OR REPLACE TRIGGER update_ceg_ertekeles_after_cegertekeles
+AFTER INSERT OR UPDATE OR DELETE ON cegertekeles
+FOR EACH ROW
+BEGIN
+    DECLARE
+        v_ceg_adoazonosito VARCHAR2(20); -- Feltételezzük, hogy az adoazonosito VARCHAR2(20)
+    BEGIN
+        IF DELETING THEN
+            v_ceg_adoazonosito := :OLD.ceg_adoazonosito;
+        ELSE
+            v_ceg_adoazonosito := :NEW.ceg_adoazonosito;
+        END IF;
+
+        -- Frissíti a ceg táblát a módosított értékeléshez tartozó cég átlagával
+        UPDATE ceg
+        SET ertekeles = (SELECT NVL(AVG(ertekeles), 0)
+                          FROM cegertekeles
+                          WHERE ceg_adoazonosito = v_ceg_adoazonosito)
+        WHERE adoazonosito = v_ceg_adoazonosito;
+    END;
+END;
+/
+
 -- Ellenőrzés
 SELECT * FROM kulcsszo; -- A 'Java' megmarad, mert még van kapcsolat
 DELETE FROM allaslehetoseg_kulcsszo_kapcsolat WHERE allaslehetoseg_id = 2;
